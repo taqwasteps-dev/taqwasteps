@@ -156,7 +156,7 @@
       margin-bottom: 48px;
       animation: fadeIn 1s ease 0.9s both;
     }
-    .feature { cursor:pointer;
+    .feature {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(201,168,76,0.2);
       border-radius: 14px;
@@ -269,9 +269,24 @@
       to { opacity: 1; }
     }
 
+    .features-full { width:100%; max-width:560px; margin-bottom:48px; }
+    .feat-block { margin-bottom:8px; animation: fadeIn 1s ease both; }
+    .feat-header { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+    .feat-icon { font-size:36px; }
+    .feat-title { font-family:'Cinzel',serif; font-size:18px; color:#e8c96a; letter-spacing:0.08em; }
+    .feat-desc { font-size:14px; line-height:1.9; color:rgba(245,240,232,0.8); margin-bottom:16px; }
+    .feat-desc strong { color:#e8c96a; }
+    .feat-quote { background:rgba(201,168,76,0.08); border-left:3px solid #c9a84c; border-radius:0 10px 10px 0; padding:14px 16px; margin-bottom:12px; }
+    .feat-arabic { font-size:18px; color:rgba(201,168,76,0.9); margin-bottom:8px; line-height:1.8; text-align:right; direction:rtl; }
+    .feat-trans { font-size:13px; color:rgba(245,240,232,0.7); line-height:1.7; font-style:italic; }
+    .feat-hadith { background:rgba(255,255,255,0.04); border-radius:10px; padding:14px 16px; margin-bottom:8px; }
+    .feat-source { color:#c9a84c; font-size:12px; font-style:normal; }
+    .premium-badge { background:#c9a84c; color:#0d3d3d; font-size:9px; padding:3px 8px; border-radius:20px; vertical-align:middle; font-family:'Lato',sans-serif; letter-spacing:0.1em; }
+    .divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent); margin:32px 0; }
+
     @media (max-width: 480px) {
       .features { gap: 14px; }
-      .feature { cursor:pointer; width: 120px; padding: 14px 16px; }
+      .feature { width: 120px; padding: 14px 16px; }
       .form-row button { padding: 14px 16px; font-size: 11px; }
     }
   </style>
@@ -298,26 +313,19 @@
   </p>
 
   <div class="features">
-    <div class="feature" onclick="openModal('salah')">
+    <div class="feature">
       <div class="feature-icon">🕌</div>
       <div class="feature-label">Salah Tracker</div>
     </div>
-    <div class="feature" onclick="openModal('dhikr')">
+    <div class="feature">
       <div class="feature-icon">📿</div>
       <div class="feature-label">Dhikr Counter</div>
     </div>
-    <div class="feature" onclick="openModal('tahajjud')">
+    <div class="feature">
       <div class="feature-icon">🌙</div>
       <div class="feature-label">Tahajjud</div>
     </div>
-  </div>
-
-  <!-- Modal -->
-  <div id="modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;padding:20px;">
-    <div style="background:#0d3d3d;border:1px solid rgba(201,168,76,0.4);border-radius:20px;max-width:420px;width:100%;padding:32px 24px;position:relative;max-height:85vh;overflow-y:auto;">
-      <button onclick="closeModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#c9a84c;font-size:22px;cursor:pointer;">✕</button>
-      <div id="modal-icon" style="font-size:48px;text-align:center;margin-bottom:12px;"></div>
-      <h2 id="modal-title" style="font-family:'Cinzel',serif;color:#e8c96a;text-align:center;margin-bottom:20px;font-size:20px;letter-spacing:0.1em;"></h2>
+  </div>      <h2 id="modal-title" style="font-family:'Cinzel',serif;color:#e8c96a;text-align:center;margin-bottom:20px;font-size:20px;letter-spacing:0.1em;"></h2>
       <div id="modal-body" style="color:rgba(245,240,232,0.85);font-size:14px;line-height:1.9;"></div>
     </div>
   </div>
@@ -341,85 +349,6 @@
 </div>
 
 <script>
-  // Modal data
-  const modals = {
-    salah: {
-      icon: '🕌',
-      title: 'Salah Tracker',
-      body: `
-        <p style="margin-bottom:14px;">Never miss a prayer again — TaqwaSteps keeps you accountable every single day.</p>
-        <div style="background:rgba(201,168,76,0.1);border-left:3px solid #c9a84c;padding:12px 16px;margin-bottom:16px;border-radius:0 8px 8px 0;font-style:italic;font-size:13px;">
-          "When you hear the Adhān, say what the Mu'adhdhin says."<br>
-          <span style="color:#c9a84c;font-size:12px;">— Sahih al-Bukhari, Sahih Muslim</span>
-        </div>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">⏰ 5 min before Azan</span><br>You receive a gentle reminder to prepare — put your phone down, make wudu, get ready.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">📢 At Azan time</span><br>A notification with the Hadith reminds you to repeat after the Mu'adhdhin.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">🔒 At Iqamah time</span><br>All social media apps get blocked. Two options appear:</p>
-        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;margin-bottom:10px;">
-          <p style="margin-bottom:8px;">🚨 <span style="color:#e8c96a;">Emergency</span> — 5 more minutes, then blocks again</p>
-          <p>✅ <span style="color:#e8c96a;">Already Prayed</span> — apps permanently unlocked</p>
-        </div>
-        <p style="color:#c9a84c;font-size:13px;text-align:center;margin-top:16px;">Each completed Salah = +0.2 streak 🔥</p>
-      `
-    },
-    dhikr: {
-      icon: '📿',
-      title: 'Dhikr Counter',
-      body: `
-        <p style="margin-bottom:14px;">Build a daily habit of remembering Allah — morning, evening, and after every Salah.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">🌅 Morning Adhkar</span><br>Reminder at Fajr time to read your morning adhkar and start the day with Allah's remembrance.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">🌆 Evening Adhkar</span><br>Reminder at Asr/Maghrib time to read your evening adhkar before the day ends.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">📿 15 min after Iqamah</span><br>Notification to read post-Salah dhikr:</p>
-        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;margin-bottom:10px;">
-          <p style="margin-bottom:6px;">• Tasbih e Fatima (33x SubhanAllah, 33x Alhamdulillah, 34x Allahu Akbar)</p>
-          <p style="margin-bottom:6px;">• Ayatul Kursi</p>
-          <p>• Other Masnoon Adhkar</p>
-        </div>
-        <div style="background:rgba(201,168,76,0.1);border-radius:10px;padding:12px;">
-          <p style="margin-bottom:6px;">✅ Complete before next Azan → <span style="color:#e8c96a;">+0.2 streak</span></p>
-          <p>❌ Don't complete → <span style="color:rgba(245,240,232,0.5);">no streak added</span></p>
-        </div>
-      `
-    },
-    tahajjud: {
-      icon: '🌙',
-      title: 'Tahajjud ✨ Premium',
-      body: `
-        <div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:10px;text-align:center;margin-bottom:16px;">
-          <span style="color:#e8c96a;font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.15em;">PREMIUM FEATURE</span>
-        </div>
-        <p style="margin-bottom:14px;">The most powerful feature in TaqwaSteps — because you cannot escape Allah's call.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">⏰ Infinite Alarm</span><br>An alarm goes off at Tahajjud time. It keeps ringing — it cannot be dismissed or swiped away.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">✍️ To stop the alarm</span><br>You must write a heartfelt reflection or dua — minimum 100 characters. No shortcut. No skip.</p>
-        <p style="margin-bottom:10px;"><span style="color:#e8c96a;">🔒 Private Journal</span><br>Your reflection is saved privately — only you can see it. A personal diary between you and Allah.</p>
-        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;margin-top:16px;text-align:center;">
-          <p style="font-style:italic;color:rgba(245,240,232,0.7);font-size:13px;">"And during a part of the night, pray Tahajjud beyond what is incumbent on you."</p>
-          <p style="color:#c9a84c;font-size:12px;margin-top:6px;">— Surah Al-Isra 17:79</p>
-        </div>
-      `
-    }
-  };
-
-  function openModal(type) {
-    const m = modals[type];
-    document.getElementById('modal-icon').textContent = m.icon;
-    document.getElementById('modal-title').textContent = m.title;
-    document.getElementById('modal-body').innerHTML = m.body;
-    const modal = document.getElementById('modal');
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-    document.body.style.overflow = '';
-  }
-
-  // Close on backdrop click
-  document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
-
   // Generate stars
   const container = document.getElementById('stars');
   for (let i = 0; i < 120; i++) {
@@ -461,4 +390,4 @@
 </script>
 
 </body>
-  </html>
+</html>
