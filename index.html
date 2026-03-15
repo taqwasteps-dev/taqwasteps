@@ -4,112 +4,172 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>TaqwaSteps – Coming Soon</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px}
-.crescent{font-size:70px;margin-top:20px;filter:drop-shadow(0 0 20px rgba(201,168,76,0.8))}
-.name{font-family:'Cinzel',serif;font-size:32px;letter-spacing:0.2em;color:#e8c96a;margin:16px 0 8px}
-.tag{font-size:14px;color:rgba(245,240,232,0.7);margin-bottom:32px;font-style:italic}
-.badge{border:1px solid rgba(201,168,76,0.4);border-radius:40px;padding:6px 22px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.25em;color:#c9a84c;margin-bottom:40px;display:inline-block}
-.wrap{width:100%;max-width:560px}
-.feat{margin-bottom:40px;text-align:left}
-.feat-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.feat-icon{font-size:32px}
-.feat-title{font-family:'Cinzel',serif;font-size:17px;color:#e8c96a;letter-spacing:0.08em}
-.premium{background:#c9a84c;color:#0d3d3d;font-size:9px;padding:3px 8px;border-radius:20px;font-family:'Lato',sans-serif;letter-spacing:0.1em;vertical-align:middle}
-.feat-desc{font-size:14px;line-height:1.9;color:rgba(245,240,232,0.8);margin-bottom:14px}
-.feat-desc strong{color:#e8c96a}
-.ayah{background:rgba(201,168,76,0.08);border-left:3px solid #c9a84c;border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:10px}
-.arabic{font-size:17px;color:rgba(201,168,76,0.9);margin-bottom:8px;line-height:1.8;text-align:right;direction:rtl}
-.trans{font-size:13px;color:rgba(245,240,232,0.7);line-height:1.7;font-style:italic}
-.hadith{background:rgba(255,255,255,0.04);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px;overflow-x:hidden}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite;opacity:0}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.8)}50%{opacity:var(--o,.6);transform:scale(1.2)}}
+.glow{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,.15) 0%,transparent 70%);pointer-events:none;z-index:0}
+.page{position:relative;z-index:1;width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center}
+.logo{width:180px;height:180px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(201,168,76,.5));animation:pulse 4s ease-in-out infinite;margin-bottom:8px}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 18px rgba(201,168,76,.6))}50%{filter:drop-shadow(0 0 32px rgba(201,168,76,1))}}
+.tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(245,240,232,.75);margin-bottom:28px}
+.divider-gold{width:100px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0 auto 24px}
+.badge{border:1px solid rgba(201,168,76,.4);border-radius:40px;padding:6px 22px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.25em;color:#c9a84c;margin-bottom:28px;display:inline-block}
+
+/* Description box */
+.desc-box{min-height:160px;margin-bottom:28px;max-width:520px;transition:all .4s ease}
+.desc-box .desc-text{font-size:15px;line-height:1.9;color:rgba(245,240,232,.85)}
+.desc-box .desc-text strong{color:#e8c96a}
+.desc-box .ayah{background:rgba(201,168,76,.08);border-left:3px solid #c9a84c;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;text-align:right;display:none}
+.desc-box .arabic{font-size:16px;color:rgba(201,168,76,.9);margin-bottom:6px;line-height:1.8;direction:rtl}
+.desc-box .trans{font-size:13px;color:rgba(245,240,232,.7);line-height:1.7;font-style:italic;text-align:left}
+.desc-box .hadith-box{background:rgba(255,255,255,.04);border-radius:10px;padding:12px 16px;margin-top:10px;display:none}
 .source{color:#c9a84c;font-size:12px;font-style:normal}
-.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);margin:8px 0 40px}
-.form-wrap{width:100%;max-width:420px;margin:20px 0 40px}
-.form-label{font-size:15px;color:rgba(245,240,232,0.7);margin-bottom:14px;font-style:italic}
-.form-row{display:flex;border:1px solid rgba(201,168,76,0.35);border-radius:50px;overflow:hidden;background:rgba(255,255,255,0.05)}
-.form-row input{flex:1;background:transparent;border:none;outline:none;padding:14px 18px;font-size:14px;color:#f5f0e8}
-.form-row input::placeholder{color:rgba(245,240,232,0.35)}
-.form-row button{background:#c9a84c;color:#0d3d3d;border:none;padding:14px 20px;font-family:'Cinzel',serif;font-size:11px;cursor:pointer;letter-spacing:0.05em}
-.success{display:none;margin-top:14px;color:#e8c96a;font-size:14px}
-.footer-ayah{color:rgba(201,168,76,0.6);font-size:16px;margin-bottom:8px;direction:rtl}
-.footer-trans{font-size:11px;color:rgba(245,240,232,0.4)}
+
+/* Feature Cards */
+.features{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.feature{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:20px 18px;width:145px;cursor:pointer;transition:transform .3s,border-color .3s,background .3s}
+.feature.active{border-color:rgba(201,168,76,.8);background:rgba(201,168,76,.12);transform:translateY(-4px)}
+.feature:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.5)}
+.feature-icon{font-size:32px;margin-bottom:10px}
+.feature-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:#c9a84c;line-height:1.4}
+
+/* Form */
+.form-wrap{width:100%;max-width:420px;margin-bottom:48px}
+.form-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(245,240,232,.7);margin-bottom:14px}
+.form-row{display:flex;border:1px solid rgba(201,168,76,.35);border-radius:50px;overflow:hidden;background:rgba(255,255,255,.05)}
+.form-row:focus-within{border-color:#c9a84c;box-shadow:0 0 20px rgba(201,168,76,.2)}
+.form-row input{flex:1;background:transparent;border:none;outline:none;padding:14px 20px;font-size:14px;color:#f5f0e8}
+.form-row input::placeholder{color:rgba(245,240,232,.35)}
+.form-row button{background:#c9a84c;color:#0d3d3d;border:none;padding:14px 20px;font-family:'Cinzel',serif;font-size:11px;cursor:pointer;letter-spacing:.08em}
+.success{display:none;margin-top:14px;color:#e8c96a;font-size:15px}
+.footer-arabic{font-size:18px;color:rgba(201,168,76,.6);margin-bottom:8px;direction:rtl}
+.footer-trans{font-size:11px;color:rgba(245,240,232,.4)}
+.premium-tag{background:#c9a84c;color:#0d3d3d;font-size:9px;padding:3px 8px;border-radius:20px;font-family:'Lato',sans-serif;letter-spacing:.1em;vertical-align:middle}
 </style>
 </head>
 <body>
+<div class="stars" id="stars"></div>
+<div class="glow"></div>
 
-<div class="crescent">☽</div>
-<div class="name">TAQWASTEPS</div>
-<div class="tag">Walk With Faith · Each Step Is a Step Toward Allah</div>
-<div class="badge">COMING SOON</div>
+<div class="page">
+  <img src="logo.png" alt="TaqwaSteps" class="logo"/>
+  <div class="tag">Walk With Faith · Each Step Is a Step Toward Allah</div>
+  <div class="divider-gold"></div>
+  <div class="badge">COMING SOON</div>
 
-<div class="wrap">
-
-  <!-- Salah -->
-  <div class="feat">
-    <div class="feat-head"><span class="feat-icon">🕌</span><span class="feat-title">Salah Tracker</span></div>
-    <p class="feat-desc">Never miss a prayer again. Get notified <strong>5 minutes before Azan</strong> to prepare yourself. At Iqamah time, all social media gets <strong>blocked</strong> — choose Emergency (5 more mins) or Already Prayed (permanently unlocked). Each completed Salah earns <strong>+0.2 streak</strong>.</p>
-    <div class="ayah">
-      <div class="arabic">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
-      <div class="trans">"Indeed, prayer has been decreed upon the believers a decree of specified times." — Surah An-Nisa 4:103</div>
+  <!-- Description Box -->
+  <div class="desc-box" id="descBox">
+    <div class="desc-text" id="descText">TaqwaSteps is an <strong>Islamic habit-tracking app</strong> designed to help you build a consistent connection with Allah. Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, and rise for <strong>Tahajjud</strong> — one step at a time, every single day.</div>
+    <div class="ayah" id="ayahBox">
+      <div class="arabic" id="arabicText"></div>
+      <div class="trans" id="ayahTrans"></div>
     </div>
-    <div class="hadith">
-      <div class="trans">"When you hear the Adhān, say what the Mu'adhdhin says." <span class="source">— Sahih al-Bukhari 611, Muslim 383</span></div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- Dhikr -->
-  <div class="feat">
-    <div class="feat-head"><span class="feat-icon">📿</span><span class="feat-title">Dhikr Counter</span></div>
-    <p class="feat-desc">Build a daily habit of remembering Allah. Get reminders for <strong>Morning & Evening Adhkar</strong>. 15 minutes after every Salah, get notified to read <strong>Tasbih e Fatima, Ayatul Kursi</strong> and Masnoon adhkar. Complete before next Azan to earn <strong>+0.2 streak</strong>.</p>
-    <div class="ayah">
-      <div class="arabic">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
-      <div class="trans">"Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra'd 13:28</div>
-    </div>
-    <div class="hadith">
-      <div class="trans">"Whoever says SubhanAllah 33x, Alhamdulillah 33x, and Allahu Akbar 34x after every prayer — his sins will be forgiven even if they are as much as the foam of the sea." <span class="source">— Sahih Muslim 597</span></div>
+    <div class="hadith-box" id="hadithBox">
+      <div class="trans" id="hadithText"></div>
     </div>
   </div>
 
-  <div class="divider"></div>
-
-  <!-- Tahajjud -->
-  <div class="feat">
-    <div class="feat-head"><span class="feat-icon">🌙</span><span class="feat-title">Tahajjud <span class="premium">PREMIUM</span></span></div>
-    <p class="feat-desc">The most powerful feature. An <strong>infinite alarm</strong> goes off at Tahajjud time — it cannot be dismissed until you write a heartfelt <strong>reflection or dua (100+ characters)</strong>. Your reflection is saved privately — a personal diary between you and Allah only. 🤲</p>
-    <div class="ayah">
-      <div class="arabic">وَمِنَ اللَّيْلِ فَتَهَجَّدْ بِهِ نَافِلَةً لَّكَ عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا</div>
-      <div class="trans">"And during part of the night, pray Tahajjud — your Lord may raise you to a praised station." — Surah Al-Isra 17:79</div>
+  <!-- Feature Cards -->
+  <div class="features">
+    <div class="feature" id="card-salah" onclick="showFeature('salah')">
+      <div class="feature-icon">🕌</div>
+      <div class="feature-label">Salah Tracker</div>
     </div>
-    <div class="hadith">
-      <div class="trans">"The best prayer after the obligatory prayers is the night prayer (Tahajjud)." <span class="source">— Sahih Muslim 1163</span></div>
+    <div class="feature" id="card-dhikr" onclick="showFeature('dhikr')">
+      <div class="feature-icon">📿</div>
+      <div class="feature-label">Dhikr Counter</div>
+    </div>
+    <div class="feature" id="card-tahajjud" onclick="showFeature('tahajjud')">
+      <div class="feature-icon">🌙</div>
+      <div class="feature-label">Tahajjud</div>
     </div>
   </div>
 
+  <!-- Email Form -->
+  <div class="form-wrap">
+    <div class="form-label">Be the first to know when we launch</div>
+    <form id="f" action="https://formspree.io/f/mojknapb" method="POST">
+      <div class="form-row">
+        <input type="email" name="email" placeholder="your@email.com" required/>
+        <button type="submit">NOTIFY ME</button>
+      </div>
+    </form>
+    <div class="success" id="s">JazakAllah Khair! We'll notify you at launch 🤍</div>
+  </div>
+
+  <div class="footer-arabic">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
+  <div class="footer-trans">Indeed, prayer has been decreed upon the believers — Surah An-Nisa 4:103</div>
 </div>
-
-<div class="form-wrap">
-  <div class="form-label">Be the first to know when we launch</div>
-  <form id="f" action="https://formspree.io/f/mojknapb" method="POST">
-    <div class="form-row">
-      <input type="email" name="email" placeholder="your@email.com" required/>
-      <button type="submit">NOTIFY ME</button>
-    </div>
-  </form>
-  <div class="success" id="s">JazakAllah Khair! We'll notify you at launch 🤍</div>
-</div>
-
-<div class="footer-ayah">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
-<div class="footer-trans">Indeed, prayer has been decreed upon the believers — Surah An-Nisa 4:103</div>
 
 <script>
-document.getElementById('f').addEventListener('submit',async function(e){
-e.preventDefault();
-const r=await fetch('https://formspree.io/f/mojknapb',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:this.email.value})});
-if(r.ok){document.getElementById('s').style.display='block';this.style.display='none';}
+const DEFAULT = `TaqwaSteps is an <strong>Islamic habit-tracking app</strong> designed to help you build a consistent connection with Allah. Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, and rise for <strong>Tahajjud</strong> — one step at a time, every single day.`;
+
+const data = {
+  salah: {
+    desc: `Never miss a prayer again. Get notified <strong>5 minutes before Azan</strong> to prepare yourself — put your phone down, make wudu, get ready.<br><br>At <strong>Iqamah time</strong>, all social media apps get <strong>blocked</strong>. Two options appear:<br><br>🚨 <strong>Emergency</strong> — 5 more minutes, then blocks again<br>✅ <strong>Already Prayed</strong> — apps permanently unlocked<br><br>Each completed Salah earns <strong>+0.2 streak</strong>. 5 prayers = 1.0 per day. 🔥`,
+    arabic: 'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا',
+    ayah: '"Indeed, prayer has been decreed upon the believers a decree of specified times." — Surah An-Nisa 4:103',
+    hadith: '"When you hear the Adhān, say what the Mu\'adhdhin says." <span class="source">— Sahih al-Bukhari 611, Muslim 383</span>'
+  },
+  dhikr: {
+    desc: `Build a daily habit of remembering Allah — morning, evening, and after every Salah.<br><br>🌅 <strong>Morning Adhkar</strong> reminder at Fajr time<br>🌆 <strong>Evening Adhkar</strong> reminder at Asr/Maghrib time<br><br>📿 <strong>15 min after Iqamah</strong> — notification to read:<br>• Tasbih e Fatima (33x SubhanAllah, 33x Alhamdulillah, 34x Allahu Akbar)<br>• Ayatul Kursi • Other Masnoon Adhkar<br><br>✅ Complete before next Azan → <strong>+0.2 streak</strong><br>❌ Don't complete → no streak`,
+    arabic: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
+    ayah: '"Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra\'d 13:28',
+    hadith: '"Whoever says SubhanAllah 33x, Alhamdulillah 33x, and Allahu Akbar 34x after every prayer — his sins will be forgiven even if they are as much as the foam of the sea." <span class="source">— Sahih Muslim 597</span>'
+  },
+  tahajjud: {
+    desc: `The most powerful feature — because you cannot escape Allah\'s call.<br><br>⏰ An <strong>infinite alarm</strong> goes off at Tahajjud time. It keeps ringing and <strong>cannot be dismissed</strong>.<br><br>✍️ To stop the alarm, you must write a heartfelt <strong>reflection or dua — minimum 100 characters</strong>. No shortcut. No skip.<br><br>🔒 Your reflection is saved <strong>privately</strong> — only you can see it. A personal diary between you and Allah. <span class="premium-tag">PREMIUM</span>`,
+    arabic: 'وَمِنَ اللَّيْلِ فَتَهَجَّدْ بِهِ نَافِلَةً لَّكَ عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا',
+    ayah: '"And during part of the night, pray Tahajjud — your Lord may raise you to a praised station." — Surah Al-Isra 17:79',
+    hadith: '"The best prayer after the obligatory prayers is the night prayer (Tahajjud)." <span class="source">— Sahih Muslim 1163</span>'
+  }
+};
+
+let current = null;
+
+function showFeature(type) {
+  if (current === type) {
+    // Tap same card again → reset to default
+    current = null;
+    document.getElementById('descText').innerHTML = DEFAULT;
+    document.getElementById('ayahBox').style.display = 'none';
+    document.getElementById('hadithBox').style.display = 'none';
+    document.querySelectorAll('.feature').forEach(f => f.classList.remove('active'));
+    return;
+  }
+  current = type;
+  const d = data[type];
+  document.getElementById('descText').innerHTML = d.desc;
+  document.getElementById('arabicText').textContent = d.arabic;
+  document.getElementById('ayahTrans').textContent = d.ayah;
+  document.getElementById('hadithText').innerHTML = d.hadith;
+  document.getElementById('ayahBox').style.display = 'block';
+  document.getElementById('hadithBox').style.display = 'block';
+  document.querySelectorAll('.feature').forEach(f => f.classList.remove('active'));
+  document.getElementById('card-' + type).classList.add('active');
+  // Scroll to description
+  document.getElementById('descBox').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// Stars
+const c = document.getElementById('stars');
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const sz = Math.random() * 2.5 + .5;
+  s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;--o:${(Math.random()*.5+.2).toFixed(2)};animation-delay:${(Math.random()*5).toFixed(1)}s`;
+  c.appendChild(s);
+}
+
+// Form
+document.getElementById('f').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const r = await fetch('https://formspree.io/f/mojknapb', {method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body:JSON.stringify({email:this.email.value})});
+  if (r.ok) { document.getElementById('s').style.display='block'; this.style.display='none'; }
 });
 </script>
 </body>
