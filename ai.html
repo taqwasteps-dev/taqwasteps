@@ -104,7 +104,7 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
       <div class="card-desc">Tell me your situation and I'll generate a heartfelt, personalized dua for you in Arabic with translation.</div>
       <input type="text" id="dua-input" placeholder="e.g. exam tomorrow, sick parent, feeling lost, need guidance..." maxlength="200"/>
       <br/><br/>
-      <button class="btn" onclick="generateDua()" id="dua-btn">GENERATE MY DUA</button>
+      <button class="btn" onclick="comingSoon()">GENERATE MY DUA</button>
     </div>
     <div class="loading" id="dua-loading"><span class="spinner"></span>Generating your dua...</div>
     <div class="response" id="dua-response">
@@ -121,7 +121,7 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
       <div class="card-desc">Ask any Islamic question and receive an answer grounded in the Quran and authentic Hadith.</div>
       <input type="text" id="quran-input" placeholder="e.g. What does Islam say about patience? How to deal with anxiety?" maxlength="200"/>
       <br/><br/>
-      <button class="btn" onclick="askQuran()" id="quran-btn">ASK THE COMPANION</button>
+      <button class="btn" onclick="comingSoon()">ASK THE COMPANION</button>
     </div>
     <div class="loading" id="quran-loading"><span class="spinner"></span>Searching for guidance...</div>
     <div class="response" id="quran-response">
@@ -148,7 +148,7 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
       </div>
       <input type="text" id="dhikr-input" placeholder="Or describe how you feel..." maxlength="150"/>
       <br/><br/>
-      <button class="btn" onclick="getDhikr()" id="dhikr-btn">SHOW ME DHIKR</button>
+      <button class="btn" onclick="comingSoon()">SHOW ME DHIKR</button>
     </div>
     <div class="loading" id="dhikr-loading"><span class="spinner"></span>Finding the perfect dhikr...</div>
     <div class="response" id="dhikr-response">
@@ -156,6 +156,12 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
       <div class="response-text" id="dhikr-text"></div>
       <div class="response-ref" id="dhikr-ref"></div>
     </div>
+  </div>
+
+  <div id="coming-soon-msg" style="display:none;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);border-radius:16px;padding:20px 24px;text-align:center;margin-bottom:20px;width:100%;max-width:560px;">
+    <div style="font-size:28px;margin-bottom:10px;">🌙</div>
+    <div style="font-family:'Cinzel',serif;color:#e8c96a;font-size:13px;letter-spacing:0.1em;margin-bottom:8px;">COMING SOON</div>
+    <div style="font-size:13px;color:rgba(245,240,232,0.7);line-height:1.7;">TaqwaSteps AI is currently in development.<br>Sign up at <a href="/" style="color:#c9a84c;">taqwasteps.in</a> to be notified when it launches insha'Allah! 🤍</div>
   </div>
 
   <div class="disclaimer">
@@ -168,6 +174,12 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
 </div>
 
 <script>
+// Coming Soon
+function comingSoon(){
+  document.getElementById('coming-soon-msg').style.display='block';
+  document.getElementById('coming-soon-msg').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
 // Stars
 const c=document.getElementById('stars');
 for(let i=0;i<100;i++){
@@ -197,7 +209,7 @@ function selectEmotion(el,emotion){
 }
 
 // API Call using Gemini
-const GEMINI_KEY = 'AIzaSyAgvDbR0vUItTEER0yLEOhtLD828XQemvE';
+const GEMINI_KEY = '';
 async function callAI(prompt){
   const systemPrompt = `You are TaqwaSteps AI — an Islamic spiritual companion. You provide guidance rooted in the Quran and authentic Hadith (Bukhari, Muslim, Tirmidhi, Abu Dawud).
 
@@ -306,4 +318,5 @@ document.getElementById('quran-input').addEventListener('keypress',e=>{if(e.key=
 document.getElementById('dhikr-input').addEventListener('keypress',e=>{if(e.key==='Enter')getDhikr()});
 </script>
 </body>
-</html>
+        </html>
+        
