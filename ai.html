@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TaqwaSteps AI – Islamic AI Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:100vh;padding:40px 20px 60px;overflow-x:hidden}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite;opacity:0}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.8)}50%{opacity:var(--o,.6);transform:scale(1.2)}}
+.glow{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.page{position:relative;z-index:1;max-width:600px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
+
+/* Header */
+.back{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:50px;padding:8px 18px;color:#e8c96a;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-decoration:none;margin-bottom:32px;animation:fadeIn 1s ease both}
+.header-icon{font-size:48px;animation:fadeDown 1s ease 0.1s both;margin-bottom:12px}
+.header-title{font-family:'Cinzel',serif;font-size:clamp(20px,5vw,28px);letter-spacing:.15em;color:#e8c96a;animation:fadeDown 1s ease 0.2s both;margin-bottom:8px;text-align:center}
+.header-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:rgba(245,240,232,.65);animation:fadeDown 1s ease 0.3s both;margin-bottom:12px;text-align:center}
+.divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0 auto 40px;animation:fadeIn 1s ease 0.4s both}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;margin-bottom:32px;animation:fadeUp 1s ease 0.5s both;flex-wrap:wrap;justify-content:center}
+.tab{padding:10px 18px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;cursor:pointer;transition:all .3s;border:1px solid rgba(201,168,76,.2);background:rgba(255,255,255,.03);color:rgba(245,240,232,.6)}
+.tab.active{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.6);color:#e8c96a}
+
+/* Panel */
+.panel{display:none;width:100%;animation:fadeIn .4s ease both}
+.panel.active{display:block}
+
+/* Card */
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:20px;padding:24px;margin-bottom:16px}
+.card-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;color:#e8c96a;margin-bottom:6px}
+.card-desc{font-size:13px;color:rgba(245,240,232,.6);line-height:1.7;margin-bottom:18px}
+
+/* Input */
+.input-wrap{position:relative;margin-bottom:12px}
+textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:14px 18px;font-size:14px;color:#f5f0e8;font-family:'Lato',sans-serif;resize:none;outline:none;line-height:1.7;transition:border-color .3s}
+textarea:focus{border-color:#c9a84c}
+textarea::placeholder{color:rgba(245,240,232,.3)}
+input[type=text]{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.25);border-radius:50px;padding:14px 20px;font-size:14px;color:#f5f0e8;font-family:'Lato',sans-serif;outline:none;transition:border-color .3s}
+input[type=text]:focus{border-color:#c9a84c}
+input[type=text]::placeholder{color:rgba(245,240,232,.3)}
+
+/* Button */
+.btn{width:100%;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a2e2e;border:none;padding:14px 24px;border-radius:50px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;cursor:pointer;font-weight:600;transition:all .3s;margin-top:4px}
+.btn:hover{opacity:.9;transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* Loading */
+.loading{display:none;text-align:center;padding:20px;color:rgba(245,240,232,.5);font-size:13px;font-style:italic}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(201,168,76,.3);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle}
+
+/* Response */
+.response{display:none;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:20px;margin-top:14px}
+.response-arabic{font-size:18px;color:rgba(201,168,76,.95);direction:rtl;line-height:1.9;margin-bottom:12px;text-align:right}
+.response-text{font-size:14px;color:rgba(245,240,232,.85);line-height:1.85}
+.response-text strong{color:#e8c96a;font-weight:400}
+.response-ref{margin-top:12px;font-size:12px;color:#c9a84c;font-family:'Cinzel',serif;letter-spacing:.08em}
+
+/* Emotion buttons */
+.emotions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.emotion{padding:7px 14px;border-radius:50px;border:1px solid rgba(201,168,76,.2);background:rgba(255,255,255,.03);color:rgba(245,240,232,.7);font-size:12px;cursor:pointer;transition:all .3s}
+.emotion.selected{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.5);color:#e8c96a}
+
+/* disclaimer */
+.disclaimer{font-size:11px;color:rgba(245,240,232,.3);text-align:center;margin-top:24px;line-height:1.7;font-style:italic}
+
+/* Footer */
+.footer-link{display:block;text-align:center;margin-top:32px;color:rgba(201,168,76,.6);font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="glow"></div>
+
+<div class="page">
+
+  <a href="/" class="back">← BACK TO HOME</a>
+
+  <div class="header-icon">🌙</div>
+  <div class="header-title">TAQWASTEPS AI</div>
+  <div class="header-sub">Your Islamic AI Companion — powered by intelligence, guided by faith</div>
+  <div class="divider"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('dua')">🤲 Dua Generator</div>
+    <div class="tab" onclick="switchTab('quran')">📖 Quran Companion</div>
+    <div class="tab" onclick="switchTab('dhikr')">📿 Dhikr Guide</div>
+  </div>
+
+  <!-- DUA GENERATOR -->
+  <div class="panel active" id="panel-dua">
+    <div class="card">
+      <div class="card-title">🤲 AI DUA GENERATOR</div>
+      <div class="card-desc">Tell me your situation and I'll generate a heartfelt, personalized dua for you in Arabic with translation.</div>
+      <input type="text" id="dua-input" placeholder="e.g. exam tomorrow, sick parent, feeling lost, need guidance..." maxlength="200"/>
+      <br/><br/>
+      <button class="btn" onclick="generateDua()" id="dua-btn">GENERATE MY DUA</button>
+    </div>
+    <div class="loading" id="dua-loading"><span class="spinner"></span>Generating your dua...</div>
+    <div class="response" id="dua-response">
+      <div class="response-arabic" id="dua-arabic"></div>
+      <div class="response-text" id="dua-text"></div>
+      <div class="response-ref" id="dua-ref"></div>
+    </div>
+  </div>
+
+  <!-- QURAN COMPANION -->
+  <div class="panel" id="panel-quran">
+    <div class="card">
+      <div class="card-title">📖 QURAN COMPANION</div>
+      <div class="card-desc">Ask any Islamic question and receive an answer grounded in the Quran and authentic Hadith.</div>
+      <input type="text" id="quran-input" placeholder="e.g. What does Islam say about patience? How to deal with anxiety?" maxlength="200"/>
+      <br/><br/>
+      <button class="btn" onclick="askQuran()" id="quran-btn">ASK THE COMPANION</button>
+    </div>
+    <div class="loading" id="quran-loading"><span class="spinner"></span>Searching for guidance...</div>
+    <div class="response" id="quran-response">
+      <div class="response-arabic" id="quran-arabic"></div>
+      <div class="response-text" id="quran-text"></div>
+      <div class="response-ref" id="quran-ref"></div>
+    </div>
+  </div>
+
+  <!-- DHIKR GUIDE -->
+  <div class="panel" id="panel-dhikr">
+    <div class="card">
+      <div class="card-title">📿 DHIKR SUGGESTIONS</div>
+      <div class="card-desc">How are you feeling right now? I'll suggest the best dhikr for your current state of heart.</div>
+      <div class="emotions">
+        <div class="emotion" onclick="selectEmotion(this,'anxious 😟')">Anxious 😟</div>
+        <div class="emotion" onclick="selectEmotion(this,'grateful 🤍')">Grateful 🤍</div>
+        <div class="emotion" onclick="selectEmotion(this,'sad 😔')">Sad 😔</div>
+        <div class="emotion" onclick="selectEmotion(this,'hopeful 🌟')">Hopeful 🌟</div>
+        <div class="emotion" onclick="selectEmotion(this,'sinful/guilty 😞')">Guilty 😞</div>
+        <div class="emotion" onclick="selectEmotion(this,'happy 😊')">Happy 😊</div>
+        <div class="emotion" onclick="selectEmotion(this,'lost/confused 🌀')">Lost 🌀</div>
+        <div class="emotion" onclick="selectEmotion(this,'in pain 💔')">In Pain 💔</div>
+      </div>
+      <input type="text" id="dhikr-input" placeholder="Or describe how you feel..." maxlength="150"/>
+      <br/><br/>
+      <button class="btn" onclick="getDhikr()" id="dhikr-btn">SHOW ME DHIKR</button>
+    </div>
+    <div class="loading" id="dhikr-loading"><span class="spinner"></span>Finding the perfect dhikr...</div>
+    <div class="response" id="dhikr-response">
+      <div class="response-arabic" id="dhikr-arabic"></div>
+      <div class="response-text" id="dhikr-text"></div>
+      <div class="response-ref" id="dhikr-ref"></div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ⚠️ This AI is a tool for inspiration only. Always verify religious guidance with qualified Islamic scholars.<br>
+    Powered by AI · Built with ❤️ by TaqwaSteps
+  </div>
+
+  <a href="/" class="footer-link">← BACK TO TAQWASTEPS.IN</a>
+
+</div>
+
+<script>
+// Stars
+const c=document.getElementById('stars');
+for(let i=0;i<100;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=Math.random()*2+.5;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;--o:${(Math.random()*.4+.2).toFixed(2)};animation-delay:${(Math.random()*5).toFixed(1)}s`;
+  c.appendChild(s);
+}
+
+// Tabs
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',['dua','quran','dhikr'][i]===tab);
+  });
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+// Emotion selector
+let selectedEmotion='';
+function selectEmotion(el,emotion){
+  document.querySelectorAll('.emotion').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedEmotion=emotion;
+  document.getElementById('dhikr-input').value='';
+}
+
+// API Call
+async function callAI(prompt){
+  const response = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system:`You are TaqwaSteps AI — an Islamic spiritual companion. You provide guidance rooted in the Quran and authentic Hadith (Bukhari, Muslim, Tirmidhi, Abu Dawud). 
+
+IMPORTANT RULES:
+- Always include relevant Arabic text with diacritics
+- Always provide accurate English translation
+- Always cite authentic sources (Surah:Ayah or Hadith reference)
+- Be compassionate, warm, spiritually uplifting
+- Keep responses concise but meaningful
+- Never fabricate hadiths or ayahs
+- Format response as JSON: {"arabic": "...", "text": "...", "ref": "..."}
+- arabic field: the dua/dhikr/ayah in Arabic
+- text field: translation + explanation (use ** for bold)
+- ref field: source reference`,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const data = await response.json();
+  const text = data.content[0].text;
+  try{
+    const clean = text.replace(/```json|```/g,'').trim();
+    return JSON.parse(clean);
+  }catch(e){
+    return {arabic:'',text:text,ref:''};
+  }
+}
+
+function showResponse(prefix, data){
+  document.getElementById(prefix+'-loading').style.display='none';
+  const resp = document.getElementById(prefix+'-response');
+  resp.style.display='block';
+  document.getElementById(prefix+'-arabic').textContent = data.arabic || '';
+  document.getElementById(prefix+'-arabic').style.display = data.arabic ? 'block' : 'none';
+  document.getElementById(prefix+'-text').innerHTML = (data.text||'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  document.getElementById(prefix+'-ref').textContent = data.ref || '';
+  document.getElementById(prefix+'-ref').style.display = data.ref ? 'block' : 'none';
+}
+
+// DUA GENERATOR
+async function generateDua(){
+  const input = document.getElementById('dua-input').value.trim();
+  if(!input){alert('Please describe your situation first!');return;}
+  const btn = document.getElementById('dua-btn');
+  btn.disabled=true;
+  document.getElementById('dua-response').style.display='none';
+  document.getElementById('dua-loading').style.display='block';
+  try{
+    const data = await callAI(`Generate a beautiful, authentic Islamic dua for someone who is: "${input}". Include the Arabic dua with full diacritics, English translation, and the source if it's from Quran/Hadith or note if it's a general supplication.`);
+    showResponse('dua',data);
+  }catch(e){
+    document.getElementById('dua-loading').style.display='none';
+    alert('Something went wrong. Please try again!');
+  }
+  btn.disabled=false;
+}
+
+// QURAN COMPANION
+async function askQuran(){
+  const input = document.getElementById('quran-input').value.trim();
+  if(!input){alert('Please type your question first!');return;}
+  const btn = document.getElementById('quran-btn');
+  btn.disabled=true;
+  document.getElementById('quran-response').style.display='none';
+  document.getElementById('quran-loading').style.display='block';
+  try{
+    const data = await callAI(`Answer this Islamic question with Quranic ayah and/or authentic Hadith: "${input}". Provide the Arabic text, translation, and a warm explanation.`);
+    showResponse('quran',data);
+  }catch(e){
+    document.getElementById('quran-loading').style.display='none';
+    alert('Something went wrong. Please try again!');
+  }
+  btn.disabled=false;
+}
+
+// DHIKR GUIDE
+async function getDhikr(){
+  const input = document.getElementById('dhikr-input').value.trim() || selectedEmotion;
+  if(!input){alert('Please select an emotion or describe how you feel!');return;}
+  const btn = document.getElementById('dhikr-btn');
+  btn.disabled=true;
+  document.getElementById('dhikr-response').style.display='none';
+  document.getElementById('dhikr-loading').style.display='block';
+  try{
+    const data = await callAI(`Suggest the best Islamic dhikr/remembrance for someone who is feeling: "${input}". Include the Arabic dhikr with full diacritics, transliteration, translation, how many times to recite, and the Hadith reference for its benefits.`);
+    showResponse('dhikr',data);
+  }catch(e){
+    document.getElementById('dhikr-loading').style.display='none';
+    alert('Something went wrong. Please try again!');
+  }
+  btn.disabled=false;
+}
+
+// Enter key support
+document.getElementById('dua-input').addEventListener('keypress',e=>{if(e.key==='Enter')generateDua()});
+document.getElementById('quran-input').addEventListener('keypress',e=>{if(e.key==='Enter')askQuran()});
+document.getElementById('dhikr-input').addEventListener('keypress',e=>{if(e.key==='Enter')getDhikr()});
+</script>
+</body>
+</html>
