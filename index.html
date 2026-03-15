@@ -1,25 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>TaqwaSteps</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TaqwaSteps – Coming Soon</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
 <style>
-body{
-background:#0b2f36;
-color:white;
-text-align:center;
-font-family:sans-serif;
-padding-top:120px;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+.crescent{font-size:70px;filter:drop-shadow(0 0 20px rgba(201,168,76,0.8))}
+.name{font-family:'Cinzel',serif;font-size:36px;letter-spacing:0.2em;color:#e8c96a;margin:16px 0 8px}
+.tag{font-size:15px;color:rgba(245,240,232,0.7);margin-bottom:40px}
+.badge{border:1px solid rgba(201,168,76,0.4);border-radius:40px;padding:6px 22px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.25em;color:#c9a84c;margin-bottom:32px}
+.desc{max-width:500px;font-size:15px;line-height:1.8;color:rgba(245,240,232,0.8);margin-bottom:40px}
+.desc strong{color:#e8c96a}
+.form-wrap{width:100%;max-width:420px;margin-bottom:48px}
+.form-label{font-size:16px;color:rgba(245,240,232,0.7);margin-bottom:14px}
+.form-row{display:flex;border:1px solid rgba(201,168,76,0.35);border-radius:50px;overflow:hidden;background:rgba(255,255,255,0.05)}
+.form-row input{flex:1;background:transparent;border:none;outline:none;padding:14px 22px;font-size:14px;color:#f5f0e8}
+.form-row input::placeholder{color:rgba(245,240,232,0.35)}
+.form-row button{background:#c9a84c;color:#0d3d3d;border:none;padding:14px 22px;font-family:'Cinzel',serif;font-size:12px;cursor:pointer}
+.success{display:none;margin-top:14px;color:#e8c96a;font-size:15px}
+.ayah{color:rgba(201,168,76,0.6);font-size:14px;margin-top:8px}
 </style>
 </head>
-
 <body>
-
-<h1>TaqwaSteps</h1>
-<p>Walk With Faith - Each Step Is a Step Toward Allah</p>  
-<p>Islamic Habit Tracking App</p>
-<p>Coming Soon InshaAllah</p>
-
+<div class="crescent">☽</div>
+<div class="name">TAQWASTEPS</div>
+<div class="tag">Walk With Faith · Each Step Is a Step Toward Allah</div>
+<div class="badge">COMING SOON</div>
+<p class="desc">TaqwaSteps is an <strong>Islamic habit-tracking app</strong> to help you build a consistent connection with Allah. Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, and rise for <strong>Tahajjud</strong> — one step at a time.</p>
+<div class="form-wrap">
+<div class="form-label">Be the first to know when we launch</div>
+<form id="f" action="https://formspree.io/f/mojknapb" method="POST">
+<div class="form-row">
+<input type="email" name="email" placeholder="your@email.com" required/>
+<button type="submit">NOTIFY ME</button>
+</div>
+</form>
+<div class="success" id="s">JazakAllah Khair! We'll notify you at launch 🤍</div>
+</div>
+<div class="ayah">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
+<div style="font-size:11px;color:rgba(245,240,232,0.4);margin-top:8px">Indeed, prayer has been decreed upon the believers — Surah An-Nisa 4:103</div>
+<script>
+document.getElementById('f').addEventListener('submit',async function(e){
+e.preventDefault();
+const r=await fetch('https://formspree.io/f/mojknapb',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:this.email.value})});
+if(r.ok){document.getElementById('s').style.display='block';this.style.display='none';}
+});
+</script>
 </body>
 </html>
