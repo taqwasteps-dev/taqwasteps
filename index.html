@@ -1,393 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TaqwaSteps – Coming Soon</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --teal: #0d3d3d;
-      --teal-mid: #155555;
-      --teal-light: #1e7070;
-      --gold: #c9a84c;
-      --gold-light: #e8c96a;
-      --cream: #f5f0e8;
-      --cream-dark: #ede6d6;
-      --text-dark: #1a1a1a;
-    }
-
-    html, body {
-      height: 100%;
-      font-family: 'Lato', sans-serif;
-      background: var(--teal);
-      color: var(--cream);
-      overflow-x: hidden;
-    }
-
-    /* Starfield background */
-    .stars {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      animation: twinkle var(--d, 3s) ease-in-out infinite;
-      opacity: 0;
-    }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0; transform: scale(0.8); }
-      50% { opacity: var(--o, 0.6); transform: scale(1.2); }
-    }
-
-    /* Radial glow behind crescent */
-    .glow {
-      position: fixed;
-      top: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(ellipse at center, rgba(201,168,76,0.18) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Main layout */
-    .page {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px 60px;
-      text-align: center;
-    }
-
-    /* Crescent + logo */
-    .logo-wrap {
-      margin-bottom: 32px;
-      animation: fadeDown 1s ease both;
-    }
-    .crescent {
-      font-size: 64px;
-      line-height: 1;
-      filter: drop-shadow(0 0 18px rgba(201,168,76,0.7));
-      animation: pulse 4s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { filter: drop-shadow(0 0 18px rgba(201,168,76,0.7)); }
-      50% { filter: drop-shadow(0 0 32px rgba(201,168,76,1)); }
-    }
-
-    .app-name {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(28px, 6vw, 52px);
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      color: var(--gold-light);
-      margin-top: 12px;
-      animation: fadeDown 1s ease 0.2s both;
-    }
-
-    .tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: clamp(15px, 3vw, 20px);
-      font-weight: 300;
-      color: rgba(245,240,232,0.75);
-      letter-spacing: 0.06em;
-      margin-top: 8px;
-      animation: fadeDown 1s ease 0.35s both;
-    }
-
-    /* Divider */
-    .divider {
-      width: 120px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      margin: 32px auto;
-      animation: fadeIn 1s ease 0.5s both;
-    }
-
-    /* Coming soon badge */
-    .badge {
-      display: inline-block;
-      border: 1px solid rgba(201,168,76,0.4);
-      border-radius: 40px;
-      padding: 6px 22px;
-      font-family: 'Cinzel', serif;
-      font-size: 11px;
-      letter-spacing: 0.25em;
-      color: var(--gold);
-      margin-bottom: 28px;
-      animation: fadeIn 1s ease 0.6s both;
-    }
-
-    /* Description */
-    .description {
-      max-width: 520px;
-      font-size: clamp(14px, 2.5vw, 16px);
-      font-weight: 300;
-      line-height: 1.85;
-      color: rgba(245,240,232,0.8);
-      margin-bottom: 40px;
-      animation: fadeIn 1s ease 0.75s both;
-    }
-    .description strong {
-      color: var(--gold-light);
-      font-weight: 400;
-    }
-
-    /* Features row */
-    .features {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 48px;
-      animation: fadeIn 1s ease 0.9s both;
-    }
-    .feature {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 14px;
-      padding: 18px 22px;
-      width: 140px;
-      transition: transform 0.3s ease, border-color 0.3s ease;
-    }
-    .feature:hover {
-      transform: translateY(-4px);
-      border-color: rgba(201,168,76,0.5);
-    }
-    .feature-icon { font-size: 28px; margin-bottom: 8px; }
-    .feature-label {
-      font-family: 'Cinzel', serif;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      color: var(--gold);
-    }
-
-    /* Email form */
-    .form-wrap {
-      width: 100%;
-      max-width: 420px;
-      animation: fadeUp 1s ease 1.1s both;
-    }
-    .form-label {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-style: italic;
-      color: rgba(245,240,232,0.7);
-      margin-bottom: 16px;
-    }
-    .form-row {
-      display: flex;
-      gap: 0;
-      border: 1px solid rgba(201,168,76,0.35);
-      border-radius: 50px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.05);
-      transition: border-color 0.3s ease;
-    }
-    .form-row:focus-within {
-      border-color: var(--gold);
-      box-shadow: 0 0 20px rgba(201,168,76,0.2);
-    }
-    .form-row input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      padding: 14px 22px;
-      font-family: 'Lato', sans-serif;
-      font-size: 14px;
-      color: var(--cream);
-    }
-    .form-row input::placeholder { color: rgba(245,240,232,0.35); }
-    .form-row button {
-      background: var(--gold);
-      color: var(--teal);
-      border: none;
-      padding: 14px 24px;
-      font-family: 'Cinzel', serif;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      white-space: nowrap;
-    }
-    .form-row button:hover { background: var(--gold-light); }
-
-    .success-msg {
-      display: none;
-      margin-top: 14px;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      color: var(--gold-light);
-      font-size: 16px;
-    }
-
-    /* Arabic ayah footer */
-    .ayah {
-      margin-top: 56px;
-      animation: fadeIn 1s ease 1.3s both;
-    }
-    .ayah-arabic {
-      font-size: clamp(18px, 4vw, 26px);
-      color: rgba(201,168,76,0.6);
-      font-family: 'Cormorant Garamond', serif;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
-    }
-    .ayah-translation {
-      font-size: 12px;
-      font-weight: 300;
-      letter-spacing: 0.08em;
-      color: rgba(245,240,232,0.4);
-    }
-
-    /* Animations */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .features-full { width:100%; max-width:560px; margin-bottom:48px; }
-    .feat-block { margin-bottom:8px; animation: fadeIn 1s ease both; }
-    .feat-header { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
-    .feat-icon { font-size:36px; }
-    .feat-title { font-family:'Cinzel',serif; font-size:18px; color:#e8c96a; letter-spacing:0.08em; }
-    .feat-desc { font-size:14px; line-height:1.9; color:rgba(245,240,232,0.8); margin-bottom:16px; }
-    .feat-desc strong { color:#e8c96a; }
-    .feat-quote { background:rgba(201,168,76,0.08); border-left:3px solid #c9a84c; border-radius:0 10px 10px 0; padding:14px 16px; margin-bottom:12px; }
-    .feat-arabic { font-size:18px; color:rgba(201,168,76,0.9); margin-bottom:8px; line-height:1.8; text-align:right; direction:rtl; }
-    .feat-trans { font-size:13px; color:rgba(245,240,232,0.7); line-height:1.7; font-style:italic; }
-    .feat-hadith { background:rgba(255,255,255,0.04); border-radius:10px; padding:14px 16px; margin-bottom:8px; }
-    .feat-source { color:#c9a84c; font-size:12px; font-style:normal; }
-    .premium-badge { background:#c9a84c; color:#0d3d3d; font-size:9px; padding:3px 8px; border-radius:20px; vertical-align:middle; font-family:'Lato',sans-serif; letter-spacing:0.1em; }
-    .divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent); margin:32px 0; }
-
-    @media (max-width: 480px) {
-      .features { gap: 14px; }
-      .feature { width: 120px; padding: 14px 16px; }
-      .form-row button { padding: 14px 16px; font-size: 11px; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TaqwaSteps – Coming Soon</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px}
+.crescent{font-size:70px;margin-top:20px;filter:drop-shadow(0 0 20px rgba(201,168,76,0.8))}
+.name{font-family:'Cinzel',serif;font-size:32px;letter-spacing:0.2em;color:#e8c96a;margin:16px 0 8px}
+.tag{font-size:14px;color:rgba(245,240,232,0.7);margin-bottom:32px;font-style:italic}
+.badge{border:1px solid rgba(201,168,76,0.4);border-radius:40px;padding:6px 22px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.25em;color:#c9a84c;margin-bottom:40px;display:inline-block}
+.wrap{width:100%;max-width:560px}
+.feat{margin-bottom:40px;text-align:left}
+.feat-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.feat-icon{font-size:32px}
+.feat-title{font-family:'Cinzel',serif;font-size:17px;color:#e8c96a;letter-spacing:0.08em}
+.premium{background:#c9a84c;color:#0d3d3d;font-size:9px;padding:3px 8px;border-radius:20px;font-family:'Lato',sans-serif;letter-spacing:0.1em;vertical-align:middle}
+.feat-desc{font-size:14px;line-height:1.9;color:rgba(245,240,232,0.8);margin-bottom:14px}
+.feat-desc strong{color:#e8c96a}
+.ayah{background:rgba(201,168,76,0.08);border-left:3px solid #c9a84c;border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:10px}
+.arabic{font-size:17px;color:rgba(201,168,76,0.9);margin-bottom:8px;line-height:1.8;text-align:right;direction:rtl}
+.trans{font-size:13px;color:rgba(245,240,232,0.7);line-height:1.7;font-style:italic}
+.hadith{background:rgba(255,255,255,0.04);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.source{color:#c9a84c;font-size:12px;font-style:normal}
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);margin:8px 0 40px}
+.form-wrap{width:100%;max-width:420px;margin:20px 0 40px}
+.form-label{font-size:15px;color:rgba(245,240,232,0.7);margin-bottom:14px;font-style:italic}
+.form-row{display:flex;border:1px solid rgba(201,168,76,0.35);border-radius:50px;overflow:hidden;background:rgba(255,255,255,0.05)}
+.form-row input{flex:1;background:transparent;border:none;outline:none;padding:14px 18px;font-size:14px;color:#f5f0e8}
+.form-row input::placeholder{color:rgba(245,240,232,0.35)}
+.form-row button{background:#c9a84c;color:#0d3d3d;border:none;padding:14px 20px;font-family:'Cinzel',serif;font-size:11px;cursor:pointer;letter-spacing:0.05em}
+.success{display:none;margin-top:14px;color:#e8c96a;font-size:14px}
+.footer-ayah{color:rgba(201,168,76,0.6);font-size:16px;margin-bottom:8px;direction:rtl}
+.footer-trans{font-size:11px;color:rgba(245,240,232,0.4)}
+</style>
 </head>
 <body>
 
-<!-- Stars -->
-<div class="stars" id="stars"></div>
-<div class="glow"></div>
+<div class="crescent">☽</div>
+<div class="name">TAQWASTEPS</div>
+<div class="tag">Walk With Faith · Each Step Is a Step Toward Allah</div>
+<div class="badge">COMING SOON</div>
 
-<div class="page">
+<div class="wrap">
 
-  <div class="logo-wrap">
-    <img src="logo.png" alt="TaqwaSteps" style="width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(201,168,76,0.5));animation:pulse 4s ease-in-out infinite;" />
-    <div class="tagline">Walk With Faith · Each Step Is a Step Toward Allah</div>
+  <!-- Salah -->
+  <div class="feat">
+    <div class="feat-head"><span class="feat-icon">🕌</span><span class="feat-title">Salah Tracker</span></div>
+    <p class="feat-desc">Never miss a prayer again. Get notified <strong>5 minutes before Azan</strong> to prepare yourself. At Iqamah time, all social media gets <strong>blocked</strong> — choose Emergency (5 more mins) or Already Prayed (permanently unlocked). Each completed Salah earns <strong>+0.2 streak</strong>.</p>
+    <div class="ayah">
+      <div class="arabic">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
+      <div class="trans">"Indeed, prayer has been decreed upon the believers a decree of specified times." — Surah An-Nisa 4:103</div>
+    </div>
+    <div class="hadith">
+      <div class="trans">"When you hear the Adhān, say what the Mu'adhdhin says." <span class="source">— Sahih al-Bukhari 611, Muslim 383</span></div>
+    </div>
   </div>
 
   <div class="divider"></div>
 
-  <div class="badge">COMING SOON</div>
-
-  <p class="description">
-    TaqwaSteps is an <strong>Islamic habit-tracking app</strong> designed to help you build a consistent connection with Allah. Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, and rise for <strong>Tahajjud</strong> — one step at a time, every single day.
-  </p>
-
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon">🕌</div>
-      <div class="feature-label">Salah Tracker</div>
+  <!-- Dhikr -->
+  <div class="feat">
+    <div class="feat-head"><span class="feat-icon">📿</span><span class="feat-title">Dhikr Counter</span></div>
+    <p class="feat-desc">Build a daily habit of remembering Allah. Get reminders for <strong>Morning & Evening Adhkar</strong>. 15 minutes after every Salah, get notified to read <strong>Tasbih e Fatima, Ayatul Kursi</strong> and Masnoon adhkar. Complete before next Azan to earn <strong>+0.2 streak</strong>.</p>
+    <div class="ayah">
+      <div class="arabic">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+      <div class="trans">"Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra'd 13:28</div>
     </div>
-    <div class="feature">
-      <div class="feature-icon">📿</div>
-      <div class="feature-label">Dhikr Counter</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🌙</div>
-      <div class="feature-label">Tahajjud</div>
-    </div>
-  </div>      <h2 id="modal-title" style="font-family:'Cinzel',serif;color:#e8c96a;text-align:center;margin-bottom:20px;font-size:20px;letter-spacing:0.1em;"></h2>
-      <div id="modal-body" style="color:rgba(245,240,232,0.85);font-size:14px;line-height:1.9;"></div>
+    <div class="hadith">
+      <div class="trans">"Whoever says SubhanAllah 33x, Alhamdulillah 33x, and Allahu Akbar 34x after every prayer — his sins will be forgiven even if they are as much as the foam of the sea." <span class="source">— Sahih Muslim 597</span></div>
     </div>
   </div>
 
-  <div class="form-wrap">
-    <div class="form-label">Be the first to know when we launch</div>
-    <div class="form-row">
-      <input type="email" id="emailInput" placeholder="your@email.com" />
-      <button onclick="handleSubmit()">NOTIFY ME</button>
-    </div>
-    <div class="success-msg" id="successMsg">
-      JazakAllah Khair! We'll notify you at launch 🤍
-    </div>
-  </div>
+  <div class="divider"></div>
 
-  <div class="ayah">
-    <div class="ayah-arabic">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
-    <div class="ayah-translation">Indeed, prayer has been decreed upon the believers a decree of specified times — Surah An-Nisa 4:103</div>
+  <!-- Tahajjud -->
+  <div class="feat">
+    <div class="feat-head"><span class="feat-icon">🌙</span><span class="feat-title">Tahajjud <span class="premium">PREMIUM</span></span></div>
+    <p class="feat-desc">The most powerful feature. An <strong>infinite alarm</strong> goes off at Tahajjud time — it cannot be dismissed until you write a heartfelt <strong>reflection or dua (100+ characters)</strong>. Your reflection is saved privately — a personal diary between you and Allah only. 🤲</p>
+    <div class="ayah">
+      <div class="arabic">وَمِنَ اللَّيْلِ فَتَهَجَّدْ بِهِ نَافِلَةً لَّكَ عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا</div>
+      <div class="trans">"And during part of the night, pray Tahajjud — your Lord may raise you to a praised station." — Surah Al-Isra 17:79</div>
+    </div>
+    <div class="hadith">
+      <div class="trans">"The best prayer after the obligatory prayers is the night prayer (Tahajjud)." <span class="source">— Sahih Muslim 1163</span></div>
+    </div>
   </div>
 
 </div>
 
+<div class="form-wrap">
+  <div class="form-label">Be the first to know when we launch</div>
+  <form id="f" action="https://formspree.io/f/mojknapb" method="POST">
+    <div class="form-row">
+      <input type="email" name="email" placeholder="your@email.com" required/>
+      <button type="submit">NOTIFY ME</button>
+    </div>
+  </form>
+  <div class="success" id="s">JazakAllah Khair! We'll notify you at launch 🤍</div>
+</div>
+
+<div class="footer-ayah">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
+<div class="footer-trans">Indeed, prayer has been decreed upon the believers — Surah An-Nisa 4:103</div>
+
 <script>
-  // Generate stars
-  const container = document.getElementById('stars');
-  for (let i = 0; i < 120; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    const size = Math.random() * 2.5 + 0.5;
-    star.style.cssText = `
-      width: ${size}px;
-      height: ${size}px;
-      top: ${Math.random() * 100}%;
-      left: ${Math.random() * 100}%;
-      --d: ${(Math.random() * 4 + 2).toFixed(1)}s;
-      --o: ${(Math.random() * 0.5 + 0.2).toFixed(2)};
-      animation-delay: ${(Math.random() * 5).toFixed(1)}s;
-    `;
-    container.appendChild(star);
-  }
-
-  // Email submit via Formspree
-  const form = document.getElementById('waitlistForm');
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('emailInput').value;
-    const success = document.getElementById('successMsg');
-    if (!email || !email.includes('@')) return;
-    
-    const res = await fetch('https://formspree.io/f/mojknapb', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-
-    if (res.ok) {
-      success.style.display = 'block';
-      document.getElementById('emailInput').value = '';
-      form.style.display = 'none';
-    }
-  });
+document.getElementById('f').addEventListener('submit',async function(e){
+e.preventDefault();
+const r=await fetch('https://formspree.io/f/mojknapb',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:this.email.value})});
+if(r.ok){document.getElementById('s').style.display='block';this.style.display='none';}
+});
 </script>
-
 </body>
 </html>
