@@ -15,6 +15,9 @@ body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 .page{position:relative;z-index:1;width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center}
 .logo{width:180px;height:180px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(201,168,76,.5));animation:pulse 4s ease-in-out infinite;margin-bottom:8px}
 @keyframes pulse{0%,100%{filter:drop-shadow(0 0 18px rgba(201,168,76,.6))}50%{filter:drop-shadow(0 0 32px rgba(201,168,76,1))}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(245,240,232,.75);margin-bottom:28px}
 .divider-gold{width:100px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0 auto 24px}
 .badge{border:1px solid rgba(201,168,76,.4);border-radius:40px;padding:6px 22px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.25em;color:#c9a84c;margin-bottom:28px;display:inline-block}
@@ -56,13 +59,13 @@ body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 <div class="glow"></div>
 
 <div class="page">
-  <img src="logo.png" alt="TaqwaSteps" class="logo"/>
-  <div class="tag">Walk With Faith · Each Step Is a Step Toward Allah</div>
-  <div class="divider-gold"></div>
-  <div class="badge">COMING SOON</div>
+  <img src="logo.png" alt="TaqwaSteps" class="logo" style="animation:fadeDown 1s ease both;"/>
+  <div class="tag" style="animation:fadeDown 1s ease 0.2s both;">Walk With Faith · Each Step Is a Step Toward Allah</div>
+  <div class="divider-gold" style="animation:fadeIn 1s ease 0.35s both;"></div>
+  <div class="badge" style="animation:fadeIn 1s ease 0.5s both;">COMING SOON</div>
 
   <!-- Description Box -->
-  <div class="desc-box" id="descBox">
+  <div class="desc-box" style="animation:fadeIn 1s ease 0.65s both;" id="descBox">
     <div class="desc-text" id="descText">TaqwaSteps is an <strong>Islamic habit-tracking app</strong> designed to help you build a consistent connection with Allah. Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, and rise for <strong>Tahajjud</strong> — one step at a time, every single day.</div>
     <div class="ayah" id="ayahBox">
       <div class="arabic" id="arabicText"></div>
@@ -74,7 +77,7 @@ body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
   </div>
 
   <!-- Feature Cards -->
-  <div class="features">
+  <div class="features" style="animation:fadeUp 1s ease 0.8s both;">
     <div class="feature" id="card-salah" onclick="showFeature('salah')">
       <div class="feature-icon">🕌</div>
       <div class="feature-label">Salah Tracker</div>
@@ -90,7 +93,7 @@ body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
   </div>
 
   <!-- Email Form -->
-  <div class="form-wrap">
+  <div class="form-wrap" style="animation:fadeUp 1s ease 1s both;">
     <div class="form-label">Be the first to know when we launch</div>
     <form id="f" action="https://formspree.io/f/mojknapb" method="POST">
       <div class="form-row">
@@ -101,8 +104,8 @@ body{background:#0d3d3d;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
     <div class="success" id="s">JazakAllah Khair! We'll notify you at launch 🤍</div>
   </div>
 
-  <div class="footer-arabic">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</div>
-  <div class="footer-trans">Indeed, prayer has been decreed upon the believers — Surah An-Nisa 4:103</div>
+  <div class="footer-arabic" style="animation:fadeIn 1s ease 1.2s both;">وَالَّذِينَ جَاهَدُوا فِينَا لَنَهْدِيَنَّهُمْ سُبُلَنَا</div>
+  <div class="footer-trans" style="animation:fadeIn 1s ease 1.3s both;">"And those who strive for Us — We will surely guide them to Our paths." — Surah Al-Ankabut 29:69</div>
 </div>
 
 <script>
@@ -173,4 +176,5 @@ document.getElementById('f').addEventListener('submit', async function(e) {
 });
 </script>
 </body>
-</html>
+  </html>
+  
