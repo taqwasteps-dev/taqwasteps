@@ -100,6 +100,11 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
   <div class="divider-gold"></div>
   <div class="badge">COMING SOON</div>
 
+  <!-- AI Button -->
+  <a href="/ai.html" style="animation:fadeIn 1s ease 0.55s both;display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.06));border:1px solid rgba(201,168,76,.35);border-radius:50px;padding:12px 24px;text-decoration:none;color:#e8c96a;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;margin-bottom:28px;transition:all .3s;">
+    TRY TAQWASTEPS AI — FREE
+  </a>
+
   <!-- Description -->
   <div class="desc-box" id="descBox">
     <div class="desc-text" id="descText">TaqwaSteps is an <strong>Islamic habit-tracking app</strong> designed to help you build a consistent connection with Allah. Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, and rise for <strong>Tahajjud</strong> — one step at a time, every single day.</div>
@@ -173,13 +178,13 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
     <span style="color:rgba(245,240,232,.2);font-size:12px;">·</span>
     <a href="/terms.html" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;letter-spacing:0.08em;">Terms of Service</a>
     <span style="color:rgba(245,240,232,.2);font-size:12px;">·</span>
-    <a href="mailto:taqwasteps@gmail.com" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;letter-spacing:0.08em;">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#fc889d8d8b9d8f88998c8fbc9b919d9590d29f9391" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;letter-spacing:0.08em;">Contact</a>
   </div>
   <div style="margin-top:12px;font-size:11px;color:rgba(245,240,232,.2);">© 2026 TaqwaSteps. All rights reserved.</div>
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const DEFAULT = `TaqwaSteps is an <strong>Islamic habit-tracking app</strong> designed to help you build a consistent connection with Allah. Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, and rise for <strong>Tahajjud</strong> — one step at a time, every single day.`;
 
 const data = {
@@ -239,9 +244,4 @@ for(let i=0;i<130;i++){
 // Form
 document.getElementById('f').addEventListener('submit',async function(e){
   e.preventDefault();
-  const r=await fetch('https://formspree.io/f/mojknapb',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:this.email.value})});
-  if(r.ok){document.getElementById('s').style.display='block';this.style.display='none';}
-});
-</script>
-</body>
-</html>
+  const r=await fetch('https://formspree.io/f/mojknapb',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringif
