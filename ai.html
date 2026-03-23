@@ -22,7 +22,7 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 .header-title{font-family:'Cinzel',serif;font-size:clamp(20px,5vw,28px);letter-spacing:.15em;color:#e8c96a;animation:fadeDown 1s ease 0.2s both;margin-bottom:8px;text-align:center}
 .header-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:rgba(245,240,232,.65);animation:fadeDown 1s ease 0.3s both;margin-bottom:12px;text-align:center}
 .divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0 auto 40px;animation:fadeIn 1s ease 0.4s both}
-.tabs{display:flex;gap:8px;margin-bottom:32px;animation:fadeUp 1s ease 0.5s both;flex-wrap:wrap;justify-content:center;width:100%}
+.tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;justify-content:center;width:100%}
 .tab{padding:10px 18px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;cursor:pointer;transition:all .3s;border:1px solid rgba(201,168,76,.2);background:rgba(255,255,255,.03);color:rgba(245,240,232,.6)}
 .tab.active{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.6);color:#e8c96a}
 .tab:hover:not(.active){background:rgba(201,168,76,.07);color:rgba(245,240,232,.85)}
@@ -31,9 +31,9 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 .card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:20px;padding:24px;margin-bottom:16px}
 .card-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;color:#e8c96a;margin-bottom:6px}
 .card-desc{font-size:13px;color:rgba(245,240,232,.6);line-height:1.7;margin-bottom:18px}
-input[type=text]{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.25);border-radius:50px;padding:14px 20px;font-size:14px;color:#f5f0e8;font-family:'Lato',sans-serif;outline:none;transition:border-color .3s}
-input[type=text]:focus{border-color:#c9a84c}
-input[type=text]::placeholder{color:rgba(245,240,232,.3)}
+.main-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.25);border-radius:50px;padding:14px 20px;font-size:14px;color:#f5f0e8;font-family:'Lato',sans-serif;outline:none;transition:border-color .3s}
+.main-input:focus{border-color:#c9a84c}
+.main-input::placeholder{color:rgba(245,240,232,.3)}
 .btn{width:100%;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a2e2e;border:none;padding:14px 24px;border-radius:50px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;cursor:pointer;font-weight:600;transition:all .3s;margin-top:12px}
 .btn:hover{opacity:.9;transform:translateY(-1px)}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
@@ -80,7 +80,7 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
     <div class="card">
       <div class="card-title">🤲 AI DUA GENERATOR</div>
       <div class="card-desc">Tell me your situation and I'll generate a heartfelt, personalized dua in Arabic with translation.</div>
-      <input type="text" id="dua-input" placeholder="e.g. exam tomorrow, sick parent, feeling lost..." maxlength="200"/>
+      <input type="text" class="main-input" id="dua-input" placeholder="e.g. exam tomorrow, sick parent, feeling lost..." maxlength="200"/>
       <button class="btn" id="dua-btn" onclick="generateDua()">✨ GENERATE MY DUA</button>
     </div>
     <div class="loading" id="dua-loading"><span class="spinner"></span>Generating your dua...</div>
@@ -99,7 +99,7 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
     <div class="card">
       <div class="card-title">📖 QURAN COMPANION</div>
       <div class="card-desc">Ask any Islamic question and receive an answer grounded in the Quran and authentic Hadith.</div>
-      <input type="text" id="quran-input" placeholder="e.g. What does Islam say about patience?" maxlength="200"/>
+      <input type="text" class="main-input" id="quran-input" placeholder="e.g. What does Islam say about patience?" maxlength="200"/>
       <button class="btn" id="quran-btn" onclick="askQuran()">🔍 ASK THE COMPANION</button>
     </div>
     <div class="loading" id="quran-loading"><span class="spinner"></span>Searching for guidance...</div>
@@ -128,7 +128,7 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
         <div class="emotion" onclick="pickEmotion(this,'lost and confused')">Lost 🌀</div>
         <div class="emotion" onclick="pickEmotion(this,'heartbroken')">In Pain 💔</div>
       </div>
-      <input type="text" id="dhikr-input" placeholder="Or describe how you feel..." maxlength="150"/>
+      <input type="text" class="main-input" id="dhikr-input" placeholder="Or describe how you feel..." maxlength="150"/>
       <button class="btn" id="dhikr-btn" onclick="getDhikr()">📿 SHOW ME DHIKR</button>
     </div>
     <div class="loading" id="dhikr-loading"><span class="spinner"></span>Finding the perfect dhikr...</div>
@@ -163,17 +163,15 @@ input[type=text]::placeholder{color:rgba(245,240,232,.3)}
   }
 })();
 
-/* CONFIG — not visible to users */
-var _k = 'AIzaSyC8RL0Y245PY9WUVEJ0Wt5gPXhjsoaowpg';
-
-/* STATE */
-var chosenEmotion = '';
+/* CONFIG */
+var K='AIzaSyC8RL0Y245PY9WUVEJ0Wt5gPXhjsoaowpg';
+var chosenEmotion='';
 
 /* TABS */
 function switchTab(tab){
   var names=['dua','quran','dhikr'];
   document.querySelectorAll('.tab').forEach(function(t,i){
-    t.classList.toggle('active', names[i]===tab);
+    t.classList.toggle('active',names[i]===tab);
   });
   document.querySelectorAll('.panel').forEach(function(p){
     p.classList.remove('active');
@@ -183,141 +181,117 @@ function switchTab(tab){
 
 /* EMOTION */
 function pickEmotion(el,emotion){
-  document.querySelectorAll('.emotion').forEach(function(e){ e.classList.remove('selected'); });
+  document.querySelectorAll('.emotion').forEach(function(e){e.classList.remove('selected');});
   el.classList.add('selected');
-  chosenEmotion = emotion;
-  document.getElementById('dhikr-input').value = '';
+  chosenEmotion=emotion;
+  document.getElementById('dhikr-input').value='';
 }
 
 /* HELPERS */
-function show(id){ document.getElementById(id).style.display='block'; }
-function hide(id){ document.getElementById(id).style.display='none'; }
+function show(id){document.getElementById(id).style.display='block';}
+function hide(id){document.getElementById(id).style.display='none';}
 
-function showError(prefix, msg){
+function showError(prefix,msg){
   hide(prefix+'-loading');
-  var el = document.getElementById(prefix+'-error');
-  el.innerHTML = '⚠️ ' + msg;
-  el.style.display = 'block';
+  var el=document.getElementById(prefix+'-error');
+  el.innerHTML='⚠️ '+msg;
+  el.style.display='block';
 }
 
-function renderResponse(prefix, data){
+function renderResponse(prefix,data){
   hide(prefix+'-loading');
-  document.getElementById(prefix+'-error').style.display = 'none';
-
-  var ar = document.getElementById(prefix+'-arabic');
-  if(data.arabic && data.arabic.trim()){
-    ar.textContent = data.arabic;
-    ar.style.display = 'block';
-  } else {
-    ar.style.display = 'none';
-  }
-
-  var tx = document.getElementById(prefix+'-text');
-  var safe = (data.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  safe = safe.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
-  safe = safe.replace(/\n/g,'<br>');
-  tx.innerHTML = safe;
-
-  var rf = document.getElementById(prefix+'-ref');
-  if(data.ref && data.ref.trim()){
-    rf.textContent = '📚 ' + data.ref;
-    rf.style.display = 'block';
-  } else {
-    rf.style.display = 'none';
-  }
-
+  document.getElementById(prefix+'-error').style.display='none';
+  var ar=document.getElementById(prefix+'-arabic');
+  if(data.arabic&&data.arabic.trim()){ar.textContent=data.arabic;ar.style.display='block';}
+  else{ar.style.display='none';}
+  var tx=document.getElementById(prefix+'-text');
+  var safe=(data.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  safe=safe.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
+  safe=safe.replace(/\n/g,'<br>');
+  tx.innerHTML=safe;
+  var rf=document.getElementById(prefix+'-ref');
+  if(data.ref&&data.ref.trim()){rf.textContent='📚 '+data.ref;rf.style.display='block';}
+  else{rf.style.display='none';}
   show(prefix+'-response');
   document.getElementById(prefix+'-response').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 /* GEMINI CALL */
-function callGemini(prompt, prefix, btn){
-  var sys = 'You are TaqwaSteps AI — a compassionate Islamic spiritual companion. RULES: (1) Always include real Arabic text with full diacritics. (2) Provide accurate English translation. (3) Cite only real verified Quran or Hadith sources. (4) Be warm and uplifting. (5) NEVER fabricate hadiths or ayahs. (6) Respond ONLY with a raw valid JSON object — no markdown, no backticks, no text before or after. JSON keys: "arabic" (Arabic with diacritics), "text" (transliteration if dhikr + translation + explanation, use **word** for emphasis), "ref" (source reference).';
-
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+_k, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      contents:[{parts:[{text: sys+'\n\nUSER REQUEST:\n'+prompt}]}],
-      generationConfig:{temperature:0.7, maxOutputTokens:900}
+function callGemini(prompt,prefix,btn){
+  var sys='You are TaqwaSteps AI — a compassionate Islamic spiritual companion. RULES: Always include real Arabic text with full diacritics. Provide accurate English translation. Cite only real verified Quran or Hadith sources. Be warm and uplifting. NEVER fabricate hadiths or ayahs. Respond ONLY with a raw valid JSON object — no markdown, no backticks, no text before or after. JSON keys: "arabic" (Arabic with diacritics), "text" (transliteration if dhikr + translation + explanation, use **word** for emphasis), "ref" (source reference).';
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+K,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{parts:[{text:sys+'\n\nREQUEST: '+prompt}]}],
+      generationConfig:{temperature:0.7,maxOutputTokens:900}
     })
   })
-  .then(function(res){
-    return res.json().then(function(d){ return {ok:res.ok, status:res.status, d:d}; });
-  })
+  .then(function(res){return res.json().then(function(d){return{ok:res.ok,status:res.status,d:d};});})
   .then(function(r){
-    btn.disabled = false;
+    btn.disabled=false;
     if(!r.ok){
-      var msg = (r.d&&r.d.error&&r.d.error.message)||('HTTP '+r.status);
-      showError(prefix, 'Something went wrong: '+msg);
+      var msg=(r.d&&r.d.error&&r.d.error.message)||('HTTP '+r.status);
+      showError(prefix,'Error: '+msg);
       return;
     }
-    var candidates = r.d.candidates;
-    if(!candidates||!candidates[0]){
-      showError(prefix,'No response returned. Please try again.');
-      return;
-    }
-    var raw = candidates[0].content.parts[0].text || '';
-    var clean = raw.replace(/```json/gi,'').replace(/```/gi,'').trim();
-    var match = clean.match(/\{[\s\S]*\}/);
-    if(!match){
-      renderResponse(prefix,{arabic:'',text:clean,ref:''});
-      return;
-    }
-    try {
-      renderResponse(prefix, JSON.parse(match[0]));
-    } catch(e) {
-      renderResponse(prefix,{arabic:'',text:clean,ref:''});
-    }
+    var candidates=r.d.candidates;
+    if(!candidates||!candidates[0]){showError(prefix,'No response. Please try again.');return;}
+    var raw=candidates[0].content.parts[0].text||'';
+    var clean=raw.replace(/```json/gi,'').replace(/```/gi,'').trim();
+    var match=clean.match(/\{[\s\S]*\}/);
+    if(!match){renderResponse(prefix,{arabic:'',text:clean,ref:''});return;}
+    try{renderResponse(prefix,JSON.parse(match[0]));}
+    catch(e){renderResponse(prefix,{arabic:'',text:clean,ref:''});}
   })
   .catch(function(err){
-    btn.disabled = false;
-    showError(prefix,'Network error. Please check your connection and try again.');
+    btn.disabled=false;
+    showError(prefix,'Network error: '+err.message);
   });
 }
 
 /* DUA */
 function generateDua(){
-  var input = document.getElementById('dua-input').value.trim();
-  if(!input){ alert('Please describe your situation first!'); return; }
-  var btn = document.getElementById('dua-btn');
-  btn.disabled = true;
-  hide('dua-response'); hide('dua-error'); show('dua-loading');
-  callGemini('Generate a beautiful authentic Islamic dua for someone who is: "'+input+'". Include Arabic dua with full diacritics, English translation, warm explanation (2-3 sentences), and Quran/Hadith source or note General Supplication if composed.','dua',btn);
+  var input=document.getElementById('dua-input').value.trim();
+  if(!input){alert('Please describe your situation first!');return;}
+  var btn=document.getElementById('dua-btn');
+  btn.disabled=true;
+  hide('dua-response');hide('dua-error');show('dua-loading');
+  callGemini('Generate a beautiful authentic Islamic dua for someone who is: "'+input+'". Arabic with full diacritics, English translation, warm explanation 2-3 sentences, Quran/Hadith source or General Supplication.','dua',btn);
 }
 
 /* QURAN */
 function askQuran(){
-  var input = document.getElementById('quran-input').value.trim();
-  if(!input){ alert('Please type your question first!'); return; }
-  var btn = document.getElementById('quran-btn');
-  btn.disabled = true;
-  hide('quran-response'); hide('quran-error'); show('quran-loading');
-  callGemini('Answer this Islamic question with Quranic ayah and/or authentic Hadith: "'+input+'". Include Arabic text with diacritics, English translation, warm explanation (3-4 sentences), and exact source reference.','quran',btn);
+  var input=document.getElementById('quran-input').value.trim();
+  if(!input){alert('Please type your question first!');return;}
+  var btn=document.getElementById('quran-btn');
+  btn.disabled=true;
+  hide('quran-response');hide('quran-error');show('quran-loading');
+  callGemini('Answer this Islamic question with Quranic ayah and/or authentic Hadith: "'+input+'". Arabic with diacritics, English translation, warm explanation 3-4 sentences, exact source reference.','quran',btn);
 }
 
 /* DHIKR */
 function getDhikr(){
-  var typed = document.getElementById('dhikr-input').value.trim();
-  var feeling = typed || chosenEmotion;
-  if(!feeling){ alert('Please select an emotion or describe how you feel!'); return; }
-  var btn = document.getElementById('dhikr-btn');
-  btn.disabled = true;
-  hide('dhikr-response'); hide('dhikr-error'); show('dhikr-loading');
-  callGemini('Suggest the best Islamic dhikr for someone feeling: "'+feeling+'". Include Arabic dhikr with full diacritics, transliteration, English translation, how many times to recite, Hadith reference with its benefit, brief warm encouragement.','dhikr',btn);
+  var typed=document.getElementById('dhikr-input').value.trim();
+  var feeling=typed||chosenEmotion;
+  if(!feeling){alert('Please select an emotion or describe how you feel!');return;}
+  var btn=document.getElementById('dhikr-btn');
+  btn.disabled=true;
+  hide('dhikr-response');hide('dhikr-error');show('dhikr-loading');
+  callGemini('Suggest the best Islamic dhikr for someone feeling: "'+feeling+'". Arabic with full diacritics, transliteration, English translation, how many times to recite, Hadith reference and its benefit, brief warm encouragement.','dhikr',btn);
 }
 
 /* COPY */
-function copyText(prefix, btn){
-  var arabic = document.getElementById(prefix+'-arabic').textContent||'';
-  var text = document.getElementById(prefix+'-text').innerText||'';
-  var ref = document.getElementById(prefix+'-ref').textContent||'';
-  var full = [arabic,text,ref].filter(function(s){return s.trim();}).join('\n\n');
+function copyText(prefix,btn){
+  var arabic=document.getElementById(prefix+'-arabic').textContent||'';
+  var text=document.getElementById(prefix+'-text').innerText||'';
+  var ref=document.getElementById(prefix+'-ref').textContent||'';
+  var full=[arabic,text,ref].filter(function(s){return s.trim();}).join('\n\n');
   navigator.clipboard.writeText(full).then(function(){
-    var orig = btn.textContent;
-    btn.textContent = '✅ COPIED!';
-    setTimeout(function(){ btn.textContent=orig; }, 2000);
-  }).catch(function(){ alert('Please select the text and copy manually.'); });
+    var orig=btn.textContent;
+    btn.textContent='✅ COPIED!';
+    setTimeout(function(){btn.textContent=orig;},2000);
+  }).catch(function(){alert('Please select and copy manually.');});
 }
 
 /* ENTER KEY */
@@ -326,4 +300,5 @@ document.getElementById('quran-input').addEventListener('keypress',function(e){i
 document.getElementById('dhikr-input').addEventListener('keypress',function(e){if(e.key==='Enter')getDhikr();});
 </script>
 </body>
-</html>
+  </html>
+  
