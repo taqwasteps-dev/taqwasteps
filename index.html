@@ -11,51 +11,90 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 .stars{position:fixed;inset:0;pointer-events:none;z-index:0}
 .star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite;opacity:0}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(.8)}50%{opacity:var(--o,.6);transform:scale(1.2)}}
-.glow{position:fixed;top:-150px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(201,168,76,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
+.glow{position:fixed;top:-150px;left:50%;transform:translateX(-50%);width:600px;height:600px;max-width:100vw;background:radial-gradient(ellipse,rgba(201,168,76,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pulse{0%,100%{filter:drop-shadow(0 0 20px rgba(201,168,76,.6))}50%{filter:drop-shadow(0 0 40px rgba(201,168,76,1))}}
+@keyframes descFlash{0%{opacity:.3;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
 .page{position:relative;z-index:1;width:100%;max-width:580px;display:flex;flex-direction:column;align-items:center}
-.logo{width:150px;height:150px;object-fit:cover;border-radius:50%;border:2px solid rgba(201,168,76,0.4);animation:pulse 4s ease-in-out infinite,fadeDown 1s ease both;box-shadow:0 0 40px rgba(201,168,76,0.2);margin-bottom:16px}
+.logo{width:130px;height:130px;object-fit:cover;border-radius:50%;border:2px solid rgba(201,168,76,0.4);animation:pulse 4s ease-in-out infinite,fadeDown 1s ease both;box-shadow:0 0 40px rgba(201,168,76,0.2);margin-bottom:16px}
 .app-name{font-family:'Cinzel',serif;font-size:clamp(26px,6vw,42px);letter-spacing:0.2em;color:#e8c96a;animation:fadeDown 1s ease 0.15s both;margin-bottom:8px}
 .tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(245,240,232,.7);animation:fadeDown 1s ease 0.25s both;margin-bottom:20px}
 .divider-gold{width:80px;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:0 auto 20px;animation:fadeIn 1s ease 0.35s both}
 .badge{border:1px solid rgba(201,168,76,.4);border-radius:40px;padding:7px 24px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.28em;color:#c9a84c;margin-bottom:16px;display:inline-block;animation:fadeIn 1s ease 0.45s both}
-.ai-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.06));border:1px solid rgba(201,168,76,.35);border-radius:50px;padding:12px 24px;text-decoration:none;color:#e8c96a;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;margin-bottom:28px;animation:fadeIn 1s ease 0.5s both}
-.desc-box{min-height:120px;margin-bottom:32px;max-width:520px;animation:fadeIn 1s ease 0.55s both;transition:all .4s ease;width:100%}
+.ai-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.06));border:1px solid rgba(201,168,76,.35);border-radius:50px;padding:12px 24px;text-decoration:none;color:#e8c96a;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;margin-bottom:14px;animation:fadeIn 1s ease 0.5s both}
+.blocker-line{font-size:13px;color:rgba(245,240,232,.75);background:rgba(255,80,80,.07);border:1px solid rgba(255,100,100,.18);border-radius:50px;padding:9px 20px;margin-bottom:18px;letter-spacing:.02em;display:none}
+.desc-box{min-height:32px;margin-bottom:50px;max-width:260px;animation:fadeIn 1s ease 0.55s both;transition:all .4s ease;width:100%}
+.desc-box.flash{animation:descFlash .45s ease both}
 .desc-text{font-size:15px;line-height:1.95;color:rgba(245,240,232,.85)}
 .desc-text strong{color:#e8c96a;font-weight:400}
 .ayah-box{background:rgba(201,168,76,.07);border-left:3px solid #c9a84c;border-radius:0 12px 12px 0;padding:14px 16px;margin:14px 0;text-align:right;display:none}
 .arabic{font-size:17px;color:rgba(201,168,76,.95);margin-bottom:8px;line-height:1.9;direction:rtl}
 .trans{font-size:13px;color:rgba(245,240,232,.7);line-height:1.75;font-style:italic;text-align:left}
 .hadith-box{background:rgba(255,255,255,.04);border-radius:12px;padding:14px 16px;margin-top:10px;display:none}
-.source{color:#c9a84c;font-size:12px;font-style:normal}
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:480px;margin-bottom:36px;animation:fadeUp 1s ease 0.7s both}
-.feature{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.18);border-radius:16px;padding:18px 10px;cursor:pointer;transition:all .3s}
-.feature:hover,.feature.active{border-color:rgba(201,168,76,.7);background:rgba(201,168,76,.1);transform:translateY(-4px)}
-.feature-icon{font-size:28px;margin-bottom:10px}
-.feature-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:#c9a84c;line-height:1.5}
-.tap-hint{font-size:10px;color:rgba(245,240,232,.35);margin-top:5px;font-style:italic}
-.form-wrap{width:100%;max-width:420px;margin-bottom:32px;animation:fadeUp 1s ease 0.85s both}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:480px;margin-bottom:36px;animation:fadeUp 1s ease 0.7s both}
+.feature{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.18);border-radius:16px;padding:16px 8px 12px;cursor:pointer;transition:all .3s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;aspect-ratio:1}
+.feature:hover,.feature.active{border-color:rgba(201,168,76,.7);background:rgba(201,168,76,.08);transform:translateY(-4px);box-shadow:0 6px 20px rgba(201,168,76,.12)}
+.feature-icon{font-size:26px;margin-bottom:8px;line-height:1}
+.feature-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:#c9a84c;line-height:1.4;margin-bottom:5px}
+.tap-hint{font-size:8.5px;color:rgba(245,240,232,.28);font-style:italic}
+.feature.active .tap-hint{color:rgba(201,168,76,.55)}
+.form-wrap{width:100%;max-width:420px;margin-bottom:24px;animation:fadeUp 1s ease 0.85s both}
+.scarcity-line{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:#e8c96a;margin-bottom:10px;opacity:.9}
 .form-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(245,240,232,.7);margin-bottom:14px}
 .form-row{display:flex;border:1px solid rgba(201,168,76,.3);border-radius:50px;overflow:hidden;background:rgba(255,255,255,.04)}
 .form-row:focus-within{border-color:#c9a84c;box-shadow:0 0 24px rgba(201,168,76,.15)}
-.form-row input{flex:1;background:transparent;border:none;outline:none;padding:14px 20px;font-size:14px;color:#f5f0e8}
+.form-row input{flex:1;background:transparent;border:none;outline:none;padding:14px 20px;font-size:14px;color:#f5f0e8;min-width:0}
 .form-row input::placeholder{color:rgba(245,240,232,.3)}
-.form-row button{background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a2e2e;border:none;padding:14px 22px;font-family:'Cinzel',serif;font-size:11px;cursor:pointer;letter-spacing:.08em;font-weight:600}
+.form-row button{background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a2e2e;border:none;padding:14px 20px;font-family:'Cinzel',serif;font-size:11px;cursor:pointer;letter-spacing:.08em;font-weight:600;white-space:nowrap}
 .success{display:none;margin-top:12px;color:#e8c96a;font-size:14px}
 .counter-wrap{animation:fadeUp 1s ease 1s both;margin-bottom:28px;width:100%;max-width:380px}
 .counter-box{background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.25);border-radius:20px;padding:20px 32px}
+.counter-heading{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:rgba(201,168,76,.6);margin-bottom:8px}
 .counter-num{font-family:'Cinzel',serif;font-size:48px;color:#e8c96a;letter-spacing:0.05em;line-height:1}
 .counter-label{font-size:11px;color:rgba(245,240,232,.55);letter-spacing:.2em;margin-top:6px}
-.social-wrap{display:flex;gap:12px;margin-bottom:44px;animation:fadeUp 1s ease 1.1s both}
+.social-wrap{display:flex;gap:12px;margin-bottom:44px;animation:fadeUp 1s ease 1.1s both;flex-wrap:wrap;justify-content:center}
 .social-btn{display:flex;align-items:center;gap:8px;border-radius:50px;padding:12px 22px;text-decoration:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;transition:all .3s;border:1px solid}
 .btn-ig{background:rgba(255,255,255,.05);border-color:rgba(201,168,76,.25);color:#e8c96a}
 .btn-wa{background:rgba(37,211,102,.08);border-color:rgba(37,211,102,.3);color:#25D366}
 .footer-arabic{font-size:19px;color:rgba(201,168,76,.65);margin-bottom:10px;direction:rtl;animation:fadeIn 1s ease 1.3s both}
 .footer-trans{font-size:12px;color:rgba(245,240,232,.38);line-height:1.6;animation:fadeIn 1s ease 1.4s both;max-width:340px}
 .premium-tag{background:#c9a84c;color:#0a2e2e;font-size:9px;padding:3px 8px;border-radius:20px;font-family:'Lato',sans-serif;letter-spacing:.1em;vertical-align:middle}
+
+/* ── MOBILE ── */
+@media(max-width:480px){
+  body{padding:36px 16px 48px}
+  .logo{width:100px;height:100px}
+  .app-name{letter-spacing:.14em}
+  .tag{font-size:14px;padding:0 8px}
+  .ai-btn{font-size:10px;padding:11px 18px;letter-spacing:.08em;flex-wrap:wrap;justify-content:center}
+  .blocker-line{font-size:12px;padding:8px 16px}
+  .desc-text{font-size:14px;line-height:1.85}
+  .ayah-box{border-left:none;border-top:3px solid #c9a84c;border-radius:12px;text-align:center;padding:14px 12px}
+  .arabic{font-size:15px}
+  .trans{font-size:12px;text-align:center}
+  .features{grid-template-columns:repeat(2,1fr);max-width:100%;gap:10px}
+  .feature{padding:7px 4px 5px}
+  .feature-icon{font-size:22px}
+  .feature-label{font-size:8.5px}
+  .tap-hint{font-size:8px}
+  .form-row{flex-direction:column;border-radius:16px}
+  .form-row input{padding:13px 18px;border-bottom:1px solid rgba(201,168,76,.2);border-radius:0;width:100%}
+  .form-row button{padding:13px 18px;font-size:11px;border-radius:0 0 16px 16px;width:100%}
+  .counter-box{padding:18px 20px}
+  .counter-num{font-size:40px}
+  .social-wrap{flex-direction:column;align-items:center;gap:10px;width:100%;max-width:280px}
+  .social-btn{width:100%;justify-content:center}
+  .footer-arabic{font-size:16px}
+  .footer-trans{font-size:11px;padding:0 8px}
+}
+@media(max-width:360px){
+  .logo{width:84px;height:84px}
+  .counter-num{font-size:34px}
+  .badge{font-size:9px;letter-spacing:.2em;padding:6px 18px}
+  .ai-btn{font-size:9px;padding:10px 14px}
+}
 </style>
 </head>
 <body>
@@ -68,10 +107,11 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
   <div class="tag">Walk With Faith · Each Step Is a Step Toward Allah</div>
   <div class="divider-gold"></div>
   <div class="badge">COMING SOON</div>
-  <a href="/ai.html" class="ai-btn">TRY TAQWASTEPS AI — FREE</a>
+  <a href="/ai.html" class="ai-btn">✨ TRY TAQWASTEPS AI ASSISTANT — FREE</a>
+  <div class="blocker-line" id="blockerLine">🚫 Distractions blocked during Salah — so nothing comes between you and Allah</div>
 
   <div class="desc-box" id="descBox">
-    <div class="desc-text" id="descText">TaqwaSteps — <strong>Never miss Salah again. Build discipline, consistency, and a real connection with Allah. </strong> Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, rise for <strong>Tahajjud</strong>, and connect with the <strong>Quran</strong> — one step at a time, every single day.</div>
+    <div class="desc-text" id="descText">TaqwaSteps — <strong>Never miss Salah again. Build discipline, consistency, and a real connection with Allah.</strong> Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, rise for <strong>Tahajjud</strong>, and connect with the <strong>Quran</strong> — one step at a time, every single day.</div>
     <div class="ayah-box" id="ayahBox">
       <div class="arabic" id="arabicText"></div>
       <div class="trans" id="ayahTrans"></div>
@@ -97,10 +137,16 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
       <div class="feature-label">Tahajjud</div>
       <div class="tap-hint">tap to explore</div>
     </div>
+    <div class="feature" id="card-quran" onclick="showFeature('quran')">
+      <div class="feature-icon">📖</div>
+      <div class="feature-label">Quran Reader</div>
+      <div class="tap-hint">tap to explore</div>
+    </div>
   </div>
 
   <div class="form-wrap">
-    <div class="form-label">Be the first to know when we launch</div>
+    <div class="scarcity-line">⚡ Limited early access — only selected users get the first version</div>
+    <div class="form-label">Join the waitlist now</div>
     <form id="f" action="https://formspree.io/f/mojknapb" method="POST">
       <div class="form-row">
         <input type="email" name="email" placeholder="your@email.com" required/>
@@ -132,7 +178,7 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
   <div class="footer-arabic">وَالَّذِينَ جَاهَدُوا فِينَا لَنَهْدِيَنَّهُمْ سُبُلَنَا</div>
   <div class="footer-trans">"And those who strive for Us — We will surely guide them to Our paths." — Surah Al-Ankabut 29:69</div>
 
-  <div style="margin-top:32px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+  <div style="margin-top:32px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
     <a href="/privacy.html" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;letter-spacing:0.08em;">Privacy Policy</a>
     <span style="color:rgba(245,240,232,.2);font-size:12px;">·</span>
     <a href="/terms.html" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;letter-spacing:0.08em;">Terms of Service</a>
@@ -147,7 +193,7 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 <script>
 var current = null;
 
-var DEFAULT = 'TaqwaSteps — <strong>Never miss Salah again. Build discipline, consistency, and a real connection with Allah. </strong> Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, rise for <strong>Tahajjud</strong>, and Connectonnect with the <strong>Quran</strong> — one step at a time, every single day.</div>';
+var DEFAULT = 'TaqwaSteps — <strong>Never miss Salah again. Build discipline, consistency, and a real connection with Allah.</strong> Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, rise for <strong>Tahajjud</strong>, and connect with the <strong>Quran</strong> — one step at a time, every single day.';
 
 var data = {
   salah:{
@@ -163,62 +209,34 @@ var data = {
     hadith:'"Whoever says SubhanAllah 33x, Alhamdulillah 33x, and Allahu Akbar 34x after every prayer — his sins will be forgiven even if they are as much as the foam of the sea." — Sahih Muslim 597'
   },
   tahajjud:{
-    desc:'The most powerful feature — because you cannot escape Allah\'s call.<br><br>⏰ An <strong>infinite alarm</strong> goes off at Tahajjud time. It cannot be dismissed.<br><br>✍️ To stop it, write a heartfelt <strong>reflection or dua — minimum 100 characters</strong>.<br><br>🔒 Saved <strong>privately</strong> — only between you and Allah. <span class="premium-tag">PREMIUM</span>',
+    desc:'Wake up for the most beloved time — the last third of the night.<br><br>⏰ A <strong>persistent reminder</strong> goes off at Tahajjud time, gently waking you for Allah\'s call.<br><br>✍️ To stop it, respond with a heartfelt <strong>reflection or dua — minimum 100 characters</strong>. It keeps reminding you until you do.<br><br>🔒 Saved <strong>privately</strong> — only between you and Allah. <span class="premium-tag">PREMIUM</span>',
     arabic:'وَمِنَ اللَّيْلِ فَتَهَجَّدْ بِهِ نَافِلَةً لَّكَ عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا',
     ayah:'"And during part of the night, pray Tahajjud — your Lord may raise you to a praised station." — Surah Al-Isra 17:79',
     hadith:'"The best prayer after the obligatory prayers is the night prayer (Tahajjud)." — Sahih Muslim 1163'
+  },
+  quran:{
+    desc:'Your daily companion with the Book of Allah.<br><br>📖 Full <strong>Quran</strong> with Arabic text, transliteration & translation<br><br>✨ <strong>Ayah of the Day</strong> every morning to begin your day with guidance<br><br>🔍 Search any <strong>Surah, Ayah or topic</strong> instantly<br><br>📌 Bookmark your favourite verses and track your <strong>daily reading streak</strong>',
+    arabic:'إِنَّ هَـٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ',
+    ayah:'"Indeed, this Quran guides to that which is most suitable." — Surah Al-Isra 17:9',
+    hadith:'"The best of you are those who learn the Quran and teach it." — Sahih al-Bukhari 5027'
   }
 };
 
 function showFeature(type) {
+  var blocker = document.getElementById('blockerLine');
+  var box = document.getElementById('descBox');
   if (current === type) {
     current = null;
     document.getElementById('descText').innerHTML = DEFAULT;
     document.getElementById('ayahBox').style.display = 'none';
     document.getElementById('hadithBox').style.display = 'none';
-    var cards = document.querySelectorAll('.feature');
-    for (var i = 0; i < cards.length; i++) cards[i].classList.remove('active');
+    blocker.style.display = 'none';
+    document.querySelectorAll('.feature').forEach(function(c){ c.classList.remove('active'); });
+    box.classList.remove('flash'); void box.offsetWidth; box.classList.add('flash');
     return;
   }
   current = type;
   var d = data[type];
   document.getElementById('descText').innerHTML = d.desc;
   document.getElementById('arabicText').textContent = d.arabic;
-  document.getElementById('ayahTrans').textContent = d.ayah;
-  document.getElementById('hadithText').innerHTML = d.hadith;
-  document.getElementById('ayahBox').style.display = 'block';
-  document.getElementById('hadithBox').style.display = 'block';
-  var cards = document.querySelectorAll('.feature');
-  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('active');
-  document.getElementById('card-' + type).classList.add('active');
-  document.getElementById('descBox').scrollIntoView({behavior:'smooth', block:'center'});
-}
-
-// Stars
-var c = document.getElementById('stars');
-for (var i = 0; i < 130; i++) {
-  var s = document.createElement('div');
-  s.className = 'star';
-  var sz = Math.random() * 2.5 + 0.5;
-  s.style.cssText = 'width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;--d:'+(Math.random()*4+2).toFixed(1)+'s;--o:'+(Math.random()*.5+.2).toFixed(2)+';animation-delay:'+(Math.random()*5).toFixed(1)+'s';
-  c.appendChild(s);
-}
-
-// Form
-document.getElementById('f').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var email = this.email.value;
-  fetch('https://formspree.io/f/mojknapb', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-    body: JSON.stringify({email: email})
-  }).then(function(r) {
-    if (r.ok) {
-      document.getElementById('s').style.display = 'block';
-      document.getElementById('f').style.display = 'none';
-    }
-  });
-});
-</script>
-</body>
-</html>
+  document.getElementById('ayahTrans').textContent = d.
