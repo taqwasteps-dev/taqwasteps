@@ -32,8 +32,9 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 .trans{font-size:13px;color:rgba(245,240,232,.7);line-height:1.75;font-style:italic;text-align:left}
 .hadith-box{background:rgba(255,255,255,.04);border-radius:12px;padding:14px 16px;margin-top:10px;display:none}
 .features{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:480px;margin-bottom:36px;animation:fadeUp 1s ease 0.7s both}
-.feature{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.18);border-radius:16px;padding:14px 8px 10px;cursor:pointer;transition:all .3s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;-webkit-tap-highlight-color:rgba(201,168,76,.2)}
-.feature:hover,.feature.active{border-color:rgba(201,168,76,.7);background:rgba(201,168,76,.08);transform:translateY(-4px);box-shadow:0 6px 20px rgba(201,168,76,.12)}
+.feature{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.18);border-radius:16px;padding:14px 8px 10px;cursor:pointer;transition:all .3s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;-webkit-tap-highlight-color:rgba(201,168,76,.25);user-select:none}
+.feature:active{transform:scale(.96);background:rgba(201,168,76,.1)}
+.feature.active{border-color:rgba(201,168,76,.7);background:rgba(201,168,76,.08);transform:translateY(-4px);box-shadow:0 6px 20px rgba(201,168,76,.12)}
 .feature-icon{font-size:26px;margin-bottom:8px;line-height:1;pointer-events:none}
 .feature-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:#c9a84c;line-height:1.4;margin-bottom:5px;pointer-events:none}
 .tap-hint{font-size:8.5px;color:rgba(245,240,232,.28);font-style:italic;pointer-events:none}
@@ -64,9 +65,6 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
   .logo{width:100px;height:100px}
   .tag{font-size:14px}
   .features{grid-template-columns:repeat(2,1fr)}
-  .feature{padding:14px 8px 10px}
-  .feature-icon{font-size:22px}
-  .feature-label{font-size:8.5px}
   .form-row{flex-direction:column;border-radius:16px}
   .form-row input{padding:13px 18px;border-bottom:1px solid rgba(201,168,76,.2);border-radius:0}
   .form-row button{padding:13px 18px;border-radius:0 0 16px 16px;width:100%}
@@ -78,7 +76,7 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
 </style>
 </head>
 <body>
-<div class="stars" id="stars"></div>
+<div class="stars" id="starsEl"></div>
 <div class="glow"></div>
 <div class="page">
   <img src="logo.png" alt="TaqwaSteps" class="logo"/>
@@ -136,72 +134,105 @@ body{background:#0a2e2e;color:#f5f0e8;font-family:'Lato',sans-serif;min-height:1
     <span style="color:rgba(245,240,232,.2);font-size:12px;">·</span>
     <a href="/webapp.html" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;">Web App</a>
     <span style="color:rgba(245,240,232,.2);font-size:12px;">·</span>
-    <a href="/cdn-cgi/l/email-protection#0e7a6f7f796f7d7a6b7e7d4e69636f6762206d6163" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;">Contact</a>
+    <a href="mailto:taqwasteps@gmail.com" style="font-size:12px;color:rgba(245,240,232,.4);text-decoration:none;">Contact</a>
   </div>
   <div style="margin-top:12px;font-size:11px;color:rgba(245,240,232,.2);">© 2026 TaqwaSteps. All rights reserved.</div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-(function() {
-  var current = null;
-  var DEFAULT = 'TaqwaSteps — <strong>Never miss Salah again. Build discipline, consistency, and a real connection with Allah.</strong> Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, rise for <strong>Tahajjud</strong>, and connect with the <strong>Quran</strong> — one step at a time, every single day.';
-  var data = {
-    salah:{desc:'Never miss a prayer again. Get notified <strong>5 minutes before Azan</strong> to prepare yourself.<br><br>At <strong>Iqamah time</strong>, all social media apps get <strong>blocked</strong>:<br><br>🚨 <strong>Emergency</strong> — 5 more minutes, then blocks again<br>✅ <strong>Already Prayed</strong> — apps permanently unlocked<br><br>Each completed Salah earns <strong>+0.2 streak</strong>. 5 prayers = 1.0 per day 🔥',arabic:'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا',ayah:'"Indeed, prayer has been decreed upon the believers a decree of specified times." — Surah An-Nisa 4:103',hadith:'"When you hear the Adhān, say what the Mu\'adhdhin says." — Sahih al-Bukhari 611'},
-    dhikr:{desc:'Build a daily habit of remembering Allah — morning, evening, and after every Salah.<br><br>🌅 <strong>Morning Adhkar</strong> reminder at Fajr time<br>🌆 <strong>Evening Adhkar</strong> reminder at Maghrib time<br><br>📿 <strong>15 min after Iqamah</strong>:<br>• Tasbih e Fatima<br>• Ayatul Kursi<br>• Other Masnoon Adhkar<br><br>✅ Complete before next Azan → <strong>+0.2 streak</strong>',arabic:'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',ayah:'"Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra\'d 13:28',hadith:'"Whoever says SubhanAllah 33x, Alhamdulillah 33x, Allahu Akbar 34x after every prayer — his sins will be forgiven." — Sahih Muslim 597'},
-    tahajjud:{desc:'Wake up for the most beloved time — the last third of the night.<br><br>⏰ A <strong>persistent reminder</strong> goes off at Tahajjud time, gently waking you.<br><br>✍️ To stop it, respond with a heartfelt <strong>reflection or dua — minimum 100 characters</strong>.<br><br>🔒 Saved <strong>privately</strong> — only between you and Allah. <span class="premium-tag">PREMIUM</span>',arabic:'وَمِنَ اللَّيْلِ فَتَهَجَّدْ بِهِ نَافِلَةً لَّكَ',ayah:'"And during part of the night, pray Tahajjud — your Lord may raise you to a praised station." — Surah Al-Isra 17:79',hadith:'"The best prayer after obligatory prayers is the night prayer." — Sahih Muslim 1163'},
-    quran:{desc:'Your daily companion with the Book of Allah.<br><br>📖 Full <strong>Quran</strong> with Arabic text, transliteration & translation<br><br>✨ <strong>Ayah of the Day</strong> every morning to begin your day with guidance<br><br>🔍 Search any <strong>Surah, Ayah or topic</strong> instantly<br><br>📌 Bookmark your favourite verses and track your <strong>daily reading streak</strong>',arabic:'إِنَّ هَـٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ',ayah:'"Indeed, this Quran guides to that which is most suitable." — Surah Al-Isra 17:9',hadith:'"The best of you are those who learn the Quran and teach it." — Sahih al-Bukhari 5027'}
-  };
+<script>
+var _cur = null;
+var _data = {
+  salah:{
+    desc:'Never miss a prayer again. Get notified <strong>5 minutes before Azan</strong> to prepare yourself.<br><br>At <strong>Iqamah time</strong>, all social media apps get <strong>blocked</strong>:<br><br>🚨 <strong>Emergency</strong> — 5 more minutes, then blocks again<br>✅ <strong>Already Prayed</strong> — apps permanently unlocked<br><br>Each completed Salah earns <strong>+0.2 streak</strong>. 5 prayers = 1.0 per day 🔥',
+    arabic:'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا',
+    ayah:'"Indeed, prayer has been decreed upon the believers a decree of specified times." — Surah An-Nisa 4:103',
+    hadith:'"When you hear the Adhān, say what the Mu\'adhdhin says." — Sahih al-Bukhari 611'
+  },
+  dhikr:{
+    desc:'Build a daily habit of remembering Allah — morning, evening, and after every Salah.<br><br>🌅 <strong>Morning Adhkar</strong> reminder at Fajr time<br>🌆 <strong>Evening Adhkar</strong> reminder at Maghrib time<br><br>📿 <strong>15 min after Iqamah</strong>:<br>• Tasbih e Fatima · Ayatul Kursi · Masnoon Adhkar<br><br>✅ Complete before next Azan → <strong>+0.2 streak</strong>',
+    arabic:'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
+    ayah:'"Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra\'d 13:28',
+    hadith:'"Whoever says SubhanAllah 33x, Alhamdulillah 33x, Allahu Akbar 34x after every prayer — his sins will be forgiven." — Sahih Muslim 597'
+  },
+  tahajjud:{
+    desc:'Wake up for the most beloved time — the last third of the night.<br><br>⏰ A <strong>persistent reminder</strong> goes off at Tahajjud time, gently waking you.<br><br>✍️ To stop it, respond with a heartfelt <strong>reflection or dua — minimum 100 characters</strong>.<br><br>🔒 Saved <strong>privately</strong> — only between you and Allah. <span class="premium-tag">PREMIUM</span>',
+    arabic:'وَمِنَ اللَّيْلِ فَتَهَجَّدْ بِهِ نَافِلَةً لَّكَ',
+    ayah:'"And during part of the night, pray Tahajjud — your Lord may raise you to a praised station." — Surah Al-Isra 17:79',
+    hadith:'"The best prayer after obligatory prayers is the night prayer." — Sahih Muslim 1163'
+  },
+  quran:{
+    desc:'Your daily companion with the Book of Allah.<br><br>📖 Full <strong>Quran</strong> with Arabic text, transliteration and translation<br><br>✨ <strong>Ayah of the Day</strong> every morning to begin your day with guidance<br><br>🔍 Search any <strong>Surah, Ayah or topic</strong> instantly<br><br>📌 Bookmark your favourite verses and track your <strong>daily reading streak</strong>',
+    arabic:'إِنَّ هَـٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ',
+    ayah:'"Indeed, this Quran guides to that which is most suitable." — Surah Al-Isra 17:9',
+    hadith:'"The best of you are those who learn the Quran and teach it." — Sahih al-Bukhari 5027'
+  }
+};
 
-  function showFeature(type) {
-    var blocker = document.getElementById('blockerLine');
-    var box = document.getElementById('descBox');
-    var cards = document.querySelectorAll('.feature');
-    var i;
-    if (current === type) {
-      current = null;
-      box.style.opacity = '0';
-      setTimeout(function() {
-        document.getElementById('descText').innerHTML = DEFAULT;
-        document.getElementById('ayahBox').style.display = 'none';
-        document.getElementById('hadithBox').style.display = 'none';
-        blocker.style.display = 'none';
-        box.style.opacity = '1';
-      }, 200);
-      for (i = 0; i < cards.length; i++) cards[i].classList.remove('active');
-      return;
-    }
-    current = type;
-    var d = data[type];
+var _DEFAULT = 'TaqwaSteps — <strong>Never miss Salah again. Build discipline, consistency, and a real connection with Allah.</strong> Track your <strong>Salah</strong>, count your <strong>Dhikr</strong>, rise for <strong>Tahajjud</strong>, and connect with the <strong>Quran</strong> — one step at a time, every single day.';
+
+function _show(type) {
+  var box   = document.getElementById('descBox');
+  var blocker = document.getElementById('blockerLine');
+  var cards = document.querySelectorAll('.feature');
+  var i;
+
+  if (_cur === type) {
+    _cur = null;
     box.style.opacity = '0';
     setTimeout(function() {
-      document.getElementById('descText').innerHTML = d.desc;
-      document.getElementById('arabicText').textContent = d.arabic;
-      document.getElementById('ayahTrans').textContent = d.ayah;
-      document.getElementById('hadithText').innerHTML = d.hadith;
-      document.getElementById('ayahBox').style.display = 'block';
-      document.getElementById('hadithBox').style.display = 'block';
-      blocker.style.display = type === 'salah' ? 'block' : 'none';
+      document.getElementById('descText').innerHTML = _DEFAULT;
+      document.getElementById('ayahBox').style.display = 'none';
+      document.getElementById('hadithBox').style.display = 'none';
+      blocker.style.display = 'none';
       box.style.opacity = '1';
-    }, 200);
+    }, 180);
     for (i = 0; i < cards.length; i++) cards[i].classList.remove('active');
-    document.getElementById('card-' + type).classList.add('active');
-    setTimeout(function() { box.scrollIntoView({behavior:'smooth', block:'center'}); }, 250);
+    return;
   }
 
-  function init() {
-    var types = ['salah','dhikr','tahajjud','quran'];
-    for (var j = 0; j < types.length; j++) {
-      (function(t) {
-        var el = document.getElementById('card-' + t);
-        if (el) {
-          el.addEventListener('click', function(e) { e.preventDefault(); showFeature(t); });
-          el.addEventListener('touchend', function(e) { e.preventDefault(); showFeature(t); });
-        }
-      })(types[j]);
-    }
+  _cur = type;
+  var d = _data[type];
+  box.style.opacity = '0';
+  setTimeout(function() {
+    document.getElementById('descText').innerHTML = d.desc;
+    document.getElementById('arabicText').textContent = d.arabic;
+    document.getElementById('ayahTrans').textContent = d.ayah;
+    document.getElementById('hadithText').innerHTML = d.hadith;
+    document.getElementById('ayahBox').style.display = 'block';
+    document.getElementById('hadithBox').style.display = 'block';
+    blocker.style.display = (type === 'salah') ? 'block' : 'none';
+    box.style.opacity = '1';
+  }, 180);
 
-    // Stars
-    var sc = document.getElementById('stars');
-    for (var si = 0; si < 130; si++) {
-      var st = document.createElement('div');
-      st.classN
+  for (i = 0; i < cards.length; i++) cards[i].classList.remove('active');
+  document.getElementById('card-' + type).classList.add('active');
+
+  setTimeout(function() {
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 260);
+}
+
+function _setup() {
+  var types = ['salah', 'dhikr', 'tahajjud', 'quran'];
+  for (var j = 0; j < types.length; j++) {
+    (function(t) {
+      var el = document.getElementById('card-' + t);
+      if (!el) return;
+      el.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        _show(t);
+      });
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        _show(t);
+      });
+    })(types[j]);
+  }
+
+  /* Stars */
+  var sc = document.getElementById('starsEl');
+  for (var si = 0; si < 100; si++) {
+    var st = document.createElement('div');
+    st.className = 'star';
+    var sz = Math.random() * 2.5 + 0.5;
+    st.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;top:' + Math.random() * 100 + '%;left:' + Math.random() * 100 + '%;-
