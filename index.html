@@ -229,10 +229,22 @@ function _setup() {
     })(types[j]);
   }
 
-  /* Stars */
-  var sc = document.getElementById('starsEl');
-  for (var si = 0; si < 100; si++) {
-    var st = document.createElement('div');
-    st.className = 'star';
-    var sz = Math.random() * 2.5 + 0.5;
-    st.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;top:' + Math.random() * 100 + '%;left:' + Math.random() * 100 + '%;-
+  <script>
+/* Stars */
+var sc = document.getElementById('starsEl');
+for (var si = 0; si < 100; si++) {
+  var st = document.createElement('div');
+  st.className = 'star';
+  var sz = Math.random() * 2.5 + 0.5;
+
+  st.style.width = sz + 'px';
+  st.style.height = sz + 'px';
+  st.style.top = Math.random() * 100 + '%';
+  st.style.left = Math.random() * 100 + '%';
+  st.style.setProperty('--d', (Math.random()*4+2).toFixed(1) + 's');
+  st.style.setProperty('--o', (Math.random()*.5+.2).toFixed(2));
+  st.style.animationDelay = (Math.random()*5).toFixed(1) + 's';
+
+  sc.appendChild(st);
+}
+</script>
