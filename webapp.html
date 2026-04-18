@@ -1,0 +1,3073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TaqwaSteps — Walk With Faith</title>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+  --gold:#c9a84c;--gold-light:#e8c96a;
+  --teal-deep:#061a1a;--teal-mid:#0a2e2e;
+  --cream:#f5f0e8;--cream-dim:rgba(245,240,232,.65);
+  --cream-muted:rgba(245,240,232,.35);--bg:#061a1a;
+}
+body{background:var(--bg);font-family:'Lato',sans-serif;color:var(--cream);overflow-x:hidden;min-height:100vh}
+button{cursor:pointer;border:none;font-family:'Lato',sans-serif}
+input,textarea{font-family:'Lato',sans-serif;outline:none}
+a{text-decoration:none;color:inherit}
+
+/* STARS */
+.stars-fixed{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%;opacity:0;animation:twinkle var(--d,3s) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.8)}50%{opacity:var(--o,.5);transform:scale(1.2)}}
+.glow-fixed{position:fixed;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(201,168,76,.09),transparent 65%);pointer-events:none;z-index:0;max-width:100vw}
+
+/* SCREEN SYSTEM */
+.screen{display:none;position:relative;z-index:1;min-height:100vh;width:100%}
+.screen.active{display:flex}
+
+/* LOADING */
+#s-loading{flex-direction:column;align-items:center;justify-content:center;background:var(--bg);position:fixed;inset:0;z-index:999;transition:opacity .6s}
+.load-logo{width:88px;height:88px;border-radius:50%;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 40px rgba(201,168,76,.2);animation:loadPulse 2s ease-in-out infinite;margin-bottom:18px;object-fit:cover}
+.load-name{font-family:'Cinzel',serif;font-size:18px;letter-spacing:.24em;color:var(--gold-light)}
+.load-dots{display:flex;gap:7px;margin-top:18px}
+.load-dots span{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:dotB 1.2s ease-in-out infinite}
+.load-dots span:nth-child(2){animation-delay:.2s}
+.load-dots span:nth-child(3){animation-delay:.4s}
+@keyframes loadPulse{0%,100%{opacity:.6;transform:scale(.95)}50%{opacity:1;transform:scale(1.05)}}
+@keyframes dotB{0%,80%,100%{transform:scale(0);opacity:.3}40%{transform:scale(1);opacity:1}}
+
+/* AUTH */
+#s-auth{flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;background:linear-gradient(160deg,#04100f,#072020,#04100f)}
+.auth-wrap{width:100%;max-width:400px}
+.auth-logo-area{text-align:center;margin-bottom:28px}
+.auth-logo-img{width:76px;height:76px;border-radius:50%;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 32px rgba(201,168,76,.18);margin-bottom:12px;object-fit:cover;animation:loadPulse 4s ease-in-out infinite}
+.auth-app-name{font-family:'Cinzel',serif;font-size:20px;letter-spacing:.22em;color:var(--gold-light)}
+.auth-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--cream-muted);margin-top:5px}
+.auth-card{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:24px;padding:32px 28px;position:relative}
+.auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent)}
+.auth-tabs{display:flex;background:rgba(255,255,255,.04);border-radius:50px;padding:4px;margin-bottom:24px}
+.atab{flex:1;padding:9px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--cream-muted);background:none;border:none;transition:all .3s}
+.atab.active{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);font-weight:700}
+.aform{display:flex;flex-direction:column;gap:13px}
+.afield label{display:block;font-size:9px;letter-spacing:.14em;color:var(--cream-muted);margin-bottom:5px;font-family:'Cinzel',serif}
+.afield input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:13px 16px;font-size:13px;color:var(--cream);transition:border-color .3s}
+.afield input:focus{border-color:rgba(201,168,76,.5);background:rgba(255,255,255,.07)}
+.afield input::placeholder{color:rgba(245,240,232,.2);font-style:italic}
+.remember-row{display:flex;align-items:center;gap:9px}
+.remember-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer}
+.remember-row label{font-size:12px;color:var(--cream-muted);cursor:pointer}
+.abtn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);border:none;padding:14px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;font-weight:700;transition:opacity .3s,transform .2s;box-shadow:0 6px 22px rgba(201,168,76,.2);margin-top:2px}
+.abtn:hover{opacity:.9;transform:translateY(-1px)}
+.abtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.adivider{display:flex;align-items:center;gap:12px;margin:2px 0}
+.adivider span{font-size:10px;color:rgba(245,240,232,.2)}
+.adivider::before,.adivider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.agoogle{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(245,240,232,.7);padding:12px;border-radius:50px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s}
+.agoogle:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.08)}
+.auth-footer-txt{font-size:12px;color:rgba(245,240,232,.3);margin-top:16px;text-align:center}
+.auth-footer-txt span{color:var(--gold);cursor:pointer}
+.auth-err{font-size:12px;color:#ff9090;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.2);border-radius:10px;padding:10px 14px;display:none;margin-bottom:4px;text-align:center}
+.auth-err.show{display:block}
+.auth-success{font-size:12px;color:#90ffb0;background:rgba(50,200,100,.08);border:1px solid rgba(50,200,100,.2);border-radius:10px;padding:10px 14px;display:none;margin-bottom:4px;text-align:center}
+.auth-success.show{display:block}
+
+/* HOME APP */
+#s-home{flex-direction:column;background:linear-gradient(160deg,#04100f,#072020,#04100f)}
+.app-topnav{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:rgba(6,26,26,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.08);position:sticky;top:0;z-index:50}
+.topnav-left{display:flex;align-items:center;gap:10px}
+.topnav-logo{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(201,168,76,.3);object-fit:cover}
+.topnav-name{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.18em;color:var(--gold-light)}
+.topnav-right{display:flex;align-items:center;gap:10px}
+.topnav-user{font-size:10px;color:var(--cream-muted);font-family:'Cinzel',serif}
+.signout-btn{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:var(--cream-muted);padding:6px 12px;border-radius:50px;font-size:10px;font-family:'Cinzel',serif;letter-spacing:.08em;transition:all .3s}
+.signout-btn:hover{border-color:var(--gold);color:var(--gold-light)}
+.app-body{padding:20px 16px 100px;max-width:480px;margin:0 auto;width:100%}
+
+/* GREETING */
+.greeting-block{margin-bottom:18px}
+.greet-lbl{font-size:10px;color:var(--cream-muted);letter-spacing:.12em;margin-bottom:3px}
+.greet-name{font-family:'Cinzel',serif;font-size:22px;color:var(--gold-light);letter-spacing:.1em}
+.greet-date{font-size:11px;color:rgba(201,168,76,.5);margin-top:4px;font-family:'Cormorant Garamond',serif;font-style:italic}
+
+/* 4-STREAK ROW */
+.streaks-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.streak-pill{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:10px 6px;text-align:center;transition:border-color .3s}
+.streak-pill.active{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.07)}
+.sp-icon{font-size:18px;display:block;margin-bottom:4px}
+.sp-num{font-family:'Cinzel',serif;font-size:18px;color:var(--gold-light);line-height:1}
+.sp-lbl{font-size:7px;color:var(--cream-muted);letter-spacing:.08em;margin-top:3px}
+
+/* SECTION HEADER */
+.sec-hd{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.18em;color:var(--gold);margin-bottom:10px;margin-top:4px}
+
+/* BASE CARD */
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:18px;padding:16px;margin-bottom:14px;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.15),transparent);border-radius:18px 18px 0 0}
+.card.done-card{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.06)}
+
+/* SALAH CARD */
+.prayers-row{display:flex;justify-content:space-between;gap:6px;margin-bottom:14px}
+.p-item{flex:1;text-align:center}
+.p-name{font-size:7px;color:var(--cream-muted);letter-spacing:.05em;margin-bottom:5px;font-family:'Cinzel',serif}
+.p-dot{width:30px;height:30px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;transition:all .25s;border:1.5px solid;-webkit-tap-highlight-color:rgba(201,168,76,.2)}
+.p-dot.done{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold-light)}
+.p-dot.pending{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:rgba(245,240,232,.2)}
+.p-dot:active{transform:scale(.9)}
+.p-arabic{font-size:8px;color:rgba(201,168,76,.35);direction:rtl;margin-top:3px}
+.prog-bar-bg{width:100%;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;transition:width .5s ease}
+.prog-meta{display:flex;justify-content:space-between;margin-top:6px}
+.prog-txt{font-size:10px;color:var(--cream-muted)}
+.prog-count{font-size:10px;color:var(--gold);font-family:'Cinzel',serif}
+
+/* DHIKR PROMPT */
+.dhikr-prompt{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:13px 16px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:12px}
+.dhikr-prompt.show{display:flex}
+.dp-left{flex:1}
+.dp-title{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-light);letter-spacing:.1em;margin-bottom:3px}
+.dp-sub{font-size:11px;color:var(--cream-muted)}
+.dp-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);padding:9px 16px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;font-weight:700;white-space:nowrap;flex-shrink:0}
+
+/* NEXT PRAYER */
+.next-card{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:18px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.next-icon{font-size:28px}
+.next-info{flex:1}
+.next-lbl{font-size:9px;color:var(--cream-muted);letter-spacing:.1em}
+.next-pname{font-family:'Cinzel',serif;font-size:16px;color:var(--gold-light);margin:3px 0}
+.next-ptime{font-size:12px;color:var(--cream-dim)}
+.next-pill{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.1em;color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:50px;padding:4px 11px;white-space:nowrap}
+
+/* QURAN CARD */
+.quran-card{margin-bottom:14px}
+.qcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.qcard-label{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-light);letter-spacing:.1em}
+.qcard-streak{font-size:11px;color:var(--cream-muted)}
+.qcard-streak span{color:var(--gold);font-family:'Cinzel',serif}
+.qcard-prog-wrap{margin-bottom:12px}
+.qcard-prog-bg{width:100%;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.qcard-prog-fill{height:100%;background:linear-gradient(90deg,#4a9eff,#7bc4ff);border-radius:3px;transition:width .4s ease}
+.qcard-meta{display:flex;justify-content:space-between;margin-top:6px}
+.qcard-pages{font-size:11px;color:var(--cream-muted)}
+.qcard-goal{font-size:11px;color:rgba(100,180,255,.8);font-family:'Cinzel',serif}
+.qcard-btns{display:flex;gap:8px;align-items:center}
+.qcard-add{background:linear-gradient(135deg,rgba(74,158,255,.2),rgba(74,158,255,.1));border:1px solid rgba(74,158,255,.3);color:rgba(150,200,255,.9);padding:9px 18px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;transition:all .3s;flex:1}
+.qcard-add:active{transform:scale(.97)}
+.qcard-goal-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--cream-muted);padding:9px 14px;border-radius:50px;font-size:11px;transition:all .3s}
+.qcard-done-badge{display:none;font-size:12px;color:#90ffb0;font-family:'Cinzel',serif;letter-spacing:.08em;text-align:center;padding:6px}
+.qgoal-preset{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:var(--cream-muted);padding:8px 14px;border-radius:50px;font-size:12px;transition:all .3s}
+.qgoal-preset:active,.qgoal-preset.selected{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold-light)}
+.past-date-btn{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);color:var(--cream-muted);padding:7px 12px;border-radius:10px;font-size:11px;font-family:'Cinzel',serif;letter-spacing:.06em;transition:all .3s;cursor:pointer}
+.past-date-btn.active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold-light)}
+.past-p-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;transition:all .25s;border:1.5px solid;flex-direction:column;gap:1px}
+.past-p-dot.done{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold-light)}
+.past-p-dot.pending{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:rgba(245,240,232,.2)}
+.past-p-name{font-size:6px;color:var(--cream-muted);letter-spacing:.04em;margin-top:4px;font-family:'Cinzel',serif}
+
+/* COLLAPSIBLE ROUTINE */
+.routine-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.1);border-radius:14px;margin-bottom:8px;transition:all .3s;-webkit-tap-highlight-color:rgba(201,168,76,.1)}
+.routine-toggle:active{background:rgba(201,168,76,.06)}
+.rt-left{display:flex;align-items:center;gap:10px}
+.rt-icon{font-size:18px}
+.rt-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--gold-light)}
+.rt-status{font-size:10px;color:var(--cream-muted);margin-top:2px}
+.rt-arrow{font-size:16px;color:rgba(201,168,76,.4);transition:transform .3s}
+.rt-arrow.open{transform:rotate(90deg)}
+.routine-body{display:none;background:rgba(255,255,255,.02);border:1px solid rgba(201,168,76,.08);border-top:none;border-radius:0 0 14px 14px;padding:14px 16px;margin-top:-8px;margin-bottom:8px}
+.routine-body.open{display:block}
+
+/* CHECKLIST ITEM */
+.check-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;-webkit-tap-highlight-color:rgba(201,168,76,.1)}
+.check-item:last-child{border-bottom:none}
+.check-item.checked .ci-label{color:rgba(245,240,232,.4);text-decoration:line-through}
+.ci-box{width:22px;height:22px;border-radius:6px;border:1.5px solid rgba(201,168,76,.3);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s}
+.check-item.checked .ci-box{background:rgba(201,168,76,.2);border-color:var(--gold)}
+.ci-check{font-size:12px;color:var(--gold);display:none}
+.check-item.checked .ci-check{display:block}
+.ci-label{font-size:13px;color:var(--cream-dim);flex:1;transition:color .3s}
+.ci-arabic{font-size:12px;color:rgba(201,168,76,.5);direction:rtl}
+.routine-complete-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);padding:12px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;font-weight:700;margin-top:12px;transition:opacity .3s}
+.routine-complete-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* FRIDAY BANNER */
+.friday-banner{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:none}
+.friday-banner.show{display:block}
+.fb-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.12em;color:var(--gold-light);margin-bottom:8px}
+.fb-sub{font-size:12px;color:var(--cream-muted);margin-bottom:10px}
+
+/* DHIKR COUNTER CARD */
+.dhikr-counter-card{margin-bottom:14px}
+.dc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.dc-label{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-light);letter-spacing:.1em}
+.dc-streak{font-size:11px;color:var(--cream-muted)}
+.dc-streak span{color:var(--gold);font-family:'Cinzel',serif}
+.dc-current{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:14px;text-align:center;margin-bottom:10px}
+.dc-arabic{font-size:20px;color:rgba(201,168,76,.9);direction:rtl;line-height:1.9;margin-bottom:4px}
+.dc-trans{font-size:11px;color:var(--cream-muted);font-style:italic;margin-bottom:12px}
+.dc-num{font-family:'Cinzel',serif;font-size:44px;color:var(--gold-light);line-height:1;margin-bottom:4px}
+.dc-of{font-size:11px;color:var(--cream-muted);margin-bottom:12px}
+.dc-tap{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));font-size:28px;color:var(--teal-deep);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 6px 24px rgba(201,168,76,.3);transition:transform .1s,box-shadow .1s;-webkit-tap-highlight-color:transparent}
+.dc-tap:active{transform:scale(.92);box-shadow:0 3px 12px rgba(201,168,76,.2)}
+.dc-bar-bg{width:100%;height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.dc-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;transition:width .3s}
+.dc-list{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.dc-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.1);border-radius:10px;padding:9px 12px;cursor:pointer;transition:all .3s;-webkit-tap-highlight-color:rgba(201,168,76,.1)}
+.dc-item.dc-active{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.08)}
+.dc-item-name{font-size:12px;color:var(--cream-dim)}
+.dc-item-prog{font-family:'Cinzel',serif;font-size:11px;color:var(--gold)}
+.dc-item.done-dhikr .dc-item-name{color:rgba(245,240,232,.4)}
+.dc-item.done-dhikr .dc-item-prog{color:rgba(100,200,100,.7)}
+.dc-complete-all{width:100%;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold-light);padding:11px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;transition:all .3s}
+.dc-complete-all:active{background:rgba(201,168,76,.2)}
+
+/* AYAH CARD */
+.ayah-card{background:linear-gradient(135deg,rgba(201,168,76,.07),rgba(201,168,76,.03));border:1px solid rgba(201,168,76,.18);border-radius:18px;padding:18px;margin-bottom:14px;text-align:center}
+.ayah-badge{font-size:9px;letter-spacing:.18em;color:var(--gold);font-family:'Cinzel',serif;margin-bottom:10px}
+.ayah-arabic-txt{font-size:18px;color:rgba(201,168,76,.9);direction:rtl;line-height:2;margin-bottom:10px}
+.ayah-trans-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--cream-dim);line-height:1.7;margin-bottom:6px}
+.ayah-ref-txt{font-size:10px;color:var(--gold);font-family:'Cinzel',serif}
+
+/* BOTTOM NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(4,16,16,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(201,168,76,.1);padding:10px 0 16px;display:flex;justify-content:space-around;z-index:50}
+.bnav{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 12px;transition:all .2s;-webkit-tap-highlight-color:rgba(201,168,76,.1)}
+.bnav-ic{font-size:20px}
+.bnav-lbl{font-size:8px;color:rgba(245,240,232,.35);letter-spacing:.08em;font-family:'Cinzel',serif}
+.bnav.active .bnav-lbl{color:var(--gold)}
+.bnav.active .bnav-ic{filter:drop-shadow(0 0 5px rgba(201,168,76,.6))}
+
+/* TOAST */
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(10,46,46,.97);border:1px solid rgba(201,168,76,.3);color:var(--gold-light);padding:10px 22px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+
+/* PROFILE */
+#s-profile{flex-direction:column;background:linear-gradient(180deg,#061a1a,#0a2e2e)}
+.sub-topbar{display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(6,26,26,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.08);position:sticky;top:0;z-index:50}
+.sub-back{font-size:22px;color:var(--gold);cursor:pointer}
+.sub-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.12em;color:var(--gold-light)}
+.profile-body{padding:24px 18px 100px;max-width:420px;margin:0 auto;width:100%}
+.profile-avatar-wrap{text-align:center;margin-bottom:24px}
+.profile-avatar{width:84px;height:84px;border-radius:50%;border:2px solid rgba(201,168,76,.35);box-shadow:0 0 28px rgba(201,168,76,.15);margin-bottom:12px;object-fit:cover}
+.profile-name-big{font-family:'Cinzel',serif;font-size:19px;color:var(--gold-light)}
+.profile-email{font-size:12px;color:var(--cream-muted);margin-top:4px}
+.profile-joined{font-size:11px;color:rgba(201,168,76,.45);margin-top:3px;font-style:italic;font-family:'Cormorant Garamond',serif}
+.profile-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.pstat{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:12px;padding:12px 8px;text-align:center}
+.pstat-num{font-family:'Cinzel',serif;font-size:20px;color:var(--gold-light)}
+.pstat-lbl{font-size:8px;color:var(--cream-muted);letter-spacing:.08em;margin-top:3px}
+.profile-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.1);border-radius:14px;padding:13px 15px;margin-bottom:8px;cursor:pointer;transition:all .3s}
+.profile-item:active{background:rgba(201,168,76,.06)}
+.profile-item-left{display:flex;align-items:center;gap:11px}
+.profile-item-icon{font-size:19px}
+.profile-item-label{font-size:13px;color:var(--cream-dim)}
+.profile-item-arrow{font-size:16px;color:rgba(201,168,76,.35)}
+.signout-big{width:100%;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.2);color:rgba(255,150,150,.8);padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;transition:all .3s;margin-top:6px}
+
+/* SALAH HISTORY */
+.sh-day{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.1);border-radius:14px;padding:12px 14px;margin-bottom:10px;transition:border-color .3s}
+.sh-day.sh-complete{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.06)}
+.sh-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sh-day-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--gold-light)}
+.sh-day-count{font-size:10px;color:var(--cream-muted)}
+.sh-day-count.sh-done-all{color:#90ffb0}
+.sh-prayers{display:flex;justify-content:space-between;gap:6px}
+.sh-prayer{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;-webkit-tap-highlight-color:rgba(201,168,76,.15)}
+.sh-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:1.5px solid;transition:all .2s}
+.sh-dot.sh-done{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold-light)}
+.sh-dot.sh-pending{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:rgba(245,240,232,.2)}
+.sh-dot:active{transform:scale(.88)}
+.sh-pname{font-size:7px;color:var(--cream-muted);letter-spacing:.05em;font-family:'Cinzel',serif}
+.sh-mark-all{width:100%;margin-top:10px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:rgba(201,168,76,.7);padding:8px;border-radius:50px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;transition:all .3s;cursor:pointer}
+.sh-mark-all:active{background:rgba(201,168,76,.18)}
+.sh-tahajjud-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)}
+.sh-tahajjud-lbl{font-size:10px;color:var(--cream-muted);font-family:'Cinzel',serif;letter-spacing:.08em}
+.sh-tahajjud-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--cream-muted);padding:5px 14px;border-radius:50px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;transition:all .3s;cursor:pointer}
+.sh-tahajjud-btn.sh-t-done{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold-light)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:400px){
+  .streaks-row{gap:5px}
+  .sp-num{font-size:16px}
+  .sp-icon{font-size:15px}
+  .profile-stats{grid-template-columns:repeat(2,1fr)}
+  .dc-num{font-size:36px}
+  .dc-tap{width:60px;height:60px;font-size:24px}
+}
+
+/* ══ SALAH SCREEN ══ */
+#s-salah{flex-direction:column;background:linear-gradient(160deg,#04100f,#072020,#04100f)}
+.salah-body{padding:16px 16px 100px;max-width:480px;margin:0 auto;width:100%}
+
+/* LOC BAR */
+.loc-bar{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.loc-city{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.08em;color:var(--gold-light)}
+.loc-date-txt{font-size:10px;color:var(--cream-muted);margin-top:2px}
+.loc-hijri-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;color:rgba(201,168,76,.45);margin-top:1px}
+.loc-refresh{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:6px 11px;font-size:9px;font-family:'Cinzel',serif;letter-spacing:.08em;color:var(--gold);cursor:pointer;transition:all .3s}
+.loc-refresh:active{background:rgba(201,168,76,.2)}
+
+/* MADHAB TOGGLE */
+.madhab-bar{display:flex;background:rgba(255,255,255,.04);border-radius:50px;padding:3px;margin-bottom:14px;border:1px solid rgba(201,168,76,.1)}
+.mtab{flex:1;padding:8px;border-radius:50px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--cream-muted);background:none;border:none;cursor:pointer;transition:all .3s}
+.mtab.active{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);font-weight:700}
+
+/* NEXT PRAYER BANNER */
+.snext-card{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.22);border-radius:18px;padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.snext-left .snext-lbl{font-size:8px;letter-spacing:.14em;font-family:'Cinzel',serif;color:var(--cream-muted);margin-bottom:3px}
+.snext-left .snext-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold-light);letter-spacing:.08em}
+.snext-left .snext-time{font-family:'Cinzel',serif;font-size:26px;color:var(--cream);letter-spacing:.04em;line-height:1.1}
+.snext-left .snext-cd{font-size:10px;color:var(--cream-muted);margin-top:2px}
+.snext-icon{font-size:34px;opacity:.7}
+
+/* SALAH TRACK STRIP */
+.track-strip{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:16px;padding:14px 16px;margin-bottom:14px}
+.track-strip-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.track-strip-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.14em;color:var(--gold)}
+.track-strip-count{font-size:10px;color:var(--cream-muted)}
+.track-dots{display:flex;justify-content:space-between;gap:6px;margin-bottom:10px}
+.tdot-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tdot{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;border:1.5px solid;cursor:pointer;transition:all .25s;touch-action:manipulation}
+.tdot.done{background:rgba(201,168,76,.18);border-color:var(--gold);color:var(--gold-light)}
+.tdot.qaza{background:rgba(180,30,30,.15);border-color:rgba(220,60,60,.5);color:rgba(255,120,120,.9)}
+.tdot.pending{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:rgba(245,240,232,.2)}
+.tdot:active{transform:scale(.88)}
+.tdot-name{font-size:7px;color:var(--cream-muted);letter-spacing:.06em;font-family:'Cinzel',serif}
+.track-prog-bg{width:100%;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.track-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;transition:width .5s}
+
+/* SECTION DIVIDER */
+.s-sec-hd{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.s-sec-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,76,.25),transparent)}
+.s-sec-txt{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.16em;color:var(--gold)}
+.s-sec-ico{font-size:13px}
+
+/* PRAYER TIME CARDS */
+.ptc{background:rgba(255,255,255,.025);border:1px solid rgba(201,168,76,.1);border-radius:14px;overflow:hidden;margin-bottom:7px;transition:all .3s}
+.ptc.now-card{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.28)}
+.ptc.qaza-card{background:rgba(139,0,0,.05);border-color:rgba(180,50,50,.14)}
+.ptc.special-card{background:rgba(80,160,80,.04);border-color:rgba(100,200,100,.12)}
+.ptc-inner{padding:11px 15px;display:flex;align-items:center;justify-content:space-between}
+.ptc-left{display:flex;align-items:center;gap:11px}
+.ptc-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(201,168,76,.08);flex-shrink:0}
+.ptc-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:var(--cream)}
+.ptc-sub{font-size:10px;color:var(--cream-muted);margin-top:2px;font-family:'Cormorant Garamond',serif;font-style:italic}
+.ptc-time{font-family:'Cinzel',serif;font-size:15px;color:var(--gold-light);letter-spacing:.03em}
+.ptc-now-badge{font-size:8px;letter-spacing:.1em;font-family:'Cinzel',serif;background:rgba(201,168,76,.18);color:var(--gold);padding:2px 7px;border-radius:50px;margin-top:3px;display:inline-block}
+
+/* DUAL MADHAB CARD */
+.dual-ptc{background:rgba(255,255,255,.025);border:1px solid rgba(201,168,76,.1);border-radius:14px;overflow:hidden;margin-bottom:7px}
+.dual-ptc.qaza-card{background:rgba(139,0,0,.05);border-color:rgba(180,50,50,.14)}
+.dual-ptc-hdr{padding:10px 15px 0;display:flex;align-items:center;gap:10px}
+.dual-ptc-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(201,168,76,.08);flex-shrink:0}
+.dual-ptc-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:var(--cream)}
+.dual-ptc-sub{font-size:10px;color:var(--cream-muted);margin-top:2px;font-family:'Cormorant Garamond',serif;font-style:italic}
+.dual-ptc-row{display:flex;padding:9px 15px 12px;gap:8px}
+.dual-cell{flex:1;background:rgba(255,255,255,.03);border-radius:9px;padding:7px 9px;text-align:center}
+.dual-cell-lbl{font-size:8px;letter-spacing:.1em;font-family:'Cinzel',serif;margin-bottom:3px}
+.dual-cell-lbl.hanafi{color:#8aabff}
+.dual-cell-lbl.shafi{color:#80dfa0}
+.dual-cell-time{font-family:'Cinzel',serif;font-size:13px;color:var(--gold-light)}
+
+/* CITY INPUT */
+.city-form{background:rgba(255,255,255,.025);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:none}
+.city-form.show{display:block}
+.city-form input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.18);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--cream);margin-bottom:10px}
+.city-form-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);border:none;border-radius:50px;padding:11px 24px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;font-weight:700;cursor:pointer;width:100%}
+
+/* LOADING SPIN */
+.pt-loading{text-align:center;padding:40px 0}
+.pt-spin{width:36px;height:36px;border:2px solid rgba(201,168,76,.2);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pt-load-txt{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--cream-muted);font-size:13px}
+.pt-err-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);border:none;border-radius:50px;padding:10px 22px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;font-weight:700;cursor:pointer;margin-top:12px}
+
+/* SALAH NOTE */
+.salah-note{background:rgba(255,255,255,.02);border:1px solid rgba(201,168,76,.07);border-radius:12px;padding:12px 15px;margin-top:14px}
+.salah-note-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:var(--cream-muted);line-height:1.7;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="stars-fixed" id="starsEl"></div>
+<div class="glow-fixed"></div>
+<div class="toast" id="toastEl"></div>
+
+<!-- LOADING -->
+<div class="screen active" id="s-loading">
+  <img class="load-logo" id="loadLogo" src="" alt="TaqwaSteps"/>
+  <div class="load-name">TAQWASTEPS</div>
+  <div class="load-dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- AUTH -->
+<div class="screen" id="s-auth">
+  <div class="auth-wrap">
+    <div class="auth-logo-area">
+      <img class="auth-logo-img" id="authLogoImg" src="" alt="TaqwaSteps"/>
+      <div class="auth-app-name">TAQWASTEPS</div>
+      <div class="auth-tagline">Walk With Faith · Each Step Toward Allah</div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="atab active" id="tab-in">SIGN IN</button>
+        <button class="atab" id="tab-up">SIGN UP</button>
+      </div>
+      <div class="auth-err" id="authErr"></div>
+      <div class="auth-success" id="authOk"></div>
+      <div id="panel-in">
+        <div class="aform">
+          <div class="afield"><label>EMAIL</label><input type="email" id="si-email" placeholder="your@email.com"/></div>
+          <div class="afield"><label>PASSWORD</label>
+            <div style="position:relative">
+              <input type="password" id="si-pass" placeholder="Your password" style="width:100%;padding-right:44px"/>
+              <span id="siPassEye" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;letter-spacing:.04em;opacity:.45;user-select:none">Show</span>
+            </div>
+          </div>
+          <button class="abtn" id="siBtn">SIGN IN · BISMILLAH</button>
+          <div class="adivider"><span>or</span></div>
+          <button class="agoogle" id="googleBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continue with Google
+          </button>
+        </div>
+        <div class="auth-footer-txt">No account? <span id="goSignup">Create one free</span></div>
+      </div>
+      <div id="panel-up" style="display:none">
+        <div class="aform">
+          <div class="afield"><label>YOUR NAME</label><input type="text" id="su-name" placeholder="e.g. Abdullah"/></div>
+          <div class="afield"><label>EMAIL</label><input type="email" id="su-email" placeholder="your@email.com"/></div>
+          <div class="afield"><label>PASSWORD</label>
+            <div style="position:relative">
+              <input type="password" id="su-pass" placeholder="Min. 8 characters" style="width:100%;padding-right:44px"/>
+              <span id="suPassEye" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;letter-spacing:.04em;opacity:.45;user-select:none">Show</span>
+            </div>
+          </div>
+          <div class="afield">
+            <label>DATE OF BIRTH</label>
+            <input type="date" id="su-dob" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:13px 16px;font-size:13px;color:var(--cream);width:100%;color-scheme:dark"/>
+            <div style="font-size:10px;color:rgba(245,240,232,.25);margin-top:5px;font-style:italic">Your Salah & Tahajjud history starts from age 7</div>
+          </div>
+          <button class="abtn" id="suBtn">CREATE ACCOUNT · BISMILLAH</button>
+          <div class="adivider"><span>or</span></div>
+          <button class="agoogle" id="googleBtn2">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continue with Google
+          </button>
+        </div>
+        <div class="auth-footer-txt">Have account? <span id="goSignin">Sign in</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOB OVERLAY — for new Google sign-in users -->
+<div id="dobOverlay" style="display:none;position:fixed;inset:0;z-index:9997;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:linear-gradient(160deg,#061a1a,#0a2e2e);border:1px solid rgba(201,168,76,.3);border-radius:24px;padding:32px 24px;max-width:360px;width:100%;text-align:center">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:.14em;color:var(--gold-light);margin-bottom:8px">ONE MORE STEP</div>
+    <div style="font-size:13px;color:rgba(245,240,232,.55);margin-bottom:20px;font-family:'Cormorant Garamond',serif;font-style:italic;line-height:1.6">Please enter your date of birth so we can track your Salah history from age 7 — as the Prophet ﷺ commanded.</div>
+    <div class="auth-err" id="dobErr" style="margin-bottom:12px"></div>
+    <div class="afield" style="margin-bottom:20px;text-align:left">
+      <label>DATE OF BIRTH</label>
+      <input type="date" id="dobInput" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:13px 16px;font-size:13px;color:var(--cream);width:100%;color-scheme:dark"/>
+      <div style="font-size:10px;color:rgba(245,240,232,.25);margin-top:5px;font-style:italic">Your Salah history starts from age 7</div>
+    </div>
+    <button class="abtn" id="dobSaveBtn">CONTINUE · BISMILLAH</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="s-home">
+  <div class="app-topnav">
+    <div class="topnav-left">
+      <img class="topnav-logo" id="topnavLogo" src="" alt=""/>
+      <span class="topnav-name">TAQWASTEPS</span>
+    </div>
+    <div class="topnav-right">
+      <span class="topnav-user" id="topnavUser"></span>
+      <button class="signout-btn" id="signoutBtn">SIGN OUT</button>
+    </div>
+  </div>
+
+  <div class="app-body">
+
+    <!-- Greeting -->
+    <div class="greeting-block">
+      <div class="greet-lbl">ASSALAMUALAIKUM</div>
+      <div class="greet-name" id="greetName">Welcome 🌙</div>
+      <div class="greet-date" id="greetDate"></div>
+    </div>
+
+    <!-- 4 Streaks -->
+    <div class="streaks-row">
+      <div class="streak-pill" id="sp-salah">
+        <span class="sp-icon">🕌</span>
+        <div class="sp-num" id="streak-salah">0</div>
+        <div class="sp-lbl">SALAH</div>
+      </div>
+      <div class="streak-pill" id="sp-dhikr">
+        <span class="sp-icon">📿</span>
+        <div class="sp-num" id="streak-dhikr">0</div>
+        <div class="sp-lbl">DHIKR</div>
+      </div>
+      <div class="streak-pill" id="sp-quran">
+        <span class="sp-icon">📖</span>
+        <div class="sp-num" id="streak-quran">0</div>
+        <div class="sp-lbl">QURAN</div>
+      </div>
+      <div class="streak-pill" id="sp-tahajjud">
+        <span class="sp-icon">🌙</span>
+        <div class="sp-num" id="streak-tahajjud">0</div>
+        <div class="sp-lbl">TAHAJJUD</div>
+      </div>
+    </div>
+
+    <!-- Friday Banner -->
+    <div class="friday-banner" id="fridayBanner">
+      <div class="fb-title">🕌 JUMU'AH MUBARAK — FRIDAY SPECIAL</div>
+      <div class="fb-sub">Read Surah Al-Kahf today — the Prophet ﷺ said it is light from one Friday to the next.</div>
+    </div>
+
+    <!-- Thursday Maghrib Banner -->
+    <div class="friday-banner" id="thursdayBanner" style="border-color:rgba(100,180,255,.3);background:linear-gradient(135deg,rgba(100,180,255,.07),rgba(100,180,255,.03))">
+      <div class="fb-title" style="color:rgba(150,210,255,.9)">🌙 TOMORROW IS FRIDAY</div>
+      <div class="fb-sub">Tonight after Maghrib: start reading <strong style="color:#e8c96a">Surah Al-Kahf</strong>.<br>Tomorrow Fajr: recite <strong style="color:#e8c96a">Surah As-Sajdah</strong> &amp; <strong style="color:#e8c96a">Surah Al-Insan</strong>.</div>
+    </div>
+
+    <!-- Friday Fajr Banner -->
+    <div class="friday-banner" id="fridayFajrBanner" style="border-color:rgba(201,168,76,.4)">
+      <div class="fb-title">✨ FRIDAY FAJR — SUNNAH SURAHS</div>
+      <div class="fb-sub">Recite <strong style="color:#e8c96a">Surah As-Sajdah (32)</strong> &amp; <strong style="color:#e8c96a">Surah Al-Insan (76)</strong> in today's Fajr — as the Prophet ﷺ used to do every Friday.</div>
+    </div>
+
+    <!-- Dhikr Prompt (after salah) -->
+    <div class="dhikr-prompt" id="dhikrPrompt">
+      <div class="dp-left">
+        <div class="dp-title">📿 TIME FOR DHIKR</div>
+        <div class="dp-sub">You just prayed — now remember Allah</div>
+      </div>
+      <button class="dp-btn" id="dhikrPromptBtn">START</button>
+    </div>
+
+    <!-- Salah Tracker -->
+    <div class="sec-hd">TODAY'S SALAH</div>
+    <div class="card" id="salahCard">
+      <div class="prayers-row" id="prayersRow"></div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="salahProgFill" style="width:0%"></div></div>
+      <div class="prog-meta">
+        <span class="prog-txt">DAILY PROGRESS</span>
+        <span class="prog-count" id="salahProgCount">0 / 5</span>
+      </div>
+    </div>
+
+    <!-- Next Prayer -->
+    <div class="sec-hd">NEXT PRAYER</div>
+    <div class="next-card">
+      <div class="next-icon">🕌</div>
+      <div class="next-info">
+        <div class="next-lbl">COMING UP</div>
+        <div class="next-pname" id="nextPName">—</div>
+        <div class="next-ptime" id="nextPTime">—</div>
+      </div>
+      <div class="next-pill" id="nextPill">READY</div>
+    </div>
+
+    <!-- Quran Card -->
+    <div class="sec-hd">TODAY'S QURAN 📖</div>
+    <div class="card quran-card" id="quranCard">
+      <!-- Goal setup (shown if no goal set yet) -->
+      <div id="quranSetup">
+        <div style="text-align:center;padding:6px 0 14px">
+          <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;color:var(--gold-light);margin-bottom:6px">SET YOUR DAILY QURAN GOAL</div>
+          <div style="font-size:12px;color:var(--cream-muted);margin-bottom:16px;font-family:'Cormorant Garamond',serif;font-style:italic">How many pages will you read each day?<br><span style="font-size:11px;color:rgba(201,168,76,.5)">Quran has 604 pages. Even 1 page counts!</span></div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
+            <button class="qgoal-preset" data-val="1">1 page</button>
+            <button class="qgoal-preset" data-val="2">2 pages</button>
+            <button class="qgoal-preset" data-val="5">5 pages</button>
+            <button class="qgoal-preset" data-val="10">10 pages</button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;justify-content:center">
+            <input type="number" id="quranCustomGoal" min="1" max="604" placeholder="1–604 pages" style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--cream);width:120px;text-align:center"/>
+            <button id="quranSetGoalBtn" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);padding:9px 18px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;font-weight:700">START</button>
+          </div>
+          <div style="font-size:10px;color:rgba(245,240,232,.25);margin-top:8px;font-style:italic">The Quran has 604 pages. You can always change this later.</div>
+        </div>
+      </div>
+      <!-- Tracker (shown after goal set) -->
+      <div id="quranTracker" style="display:none">
+        <div class="qcard-top">
+          <span class="qcard-label">DAILY READING</span>
+          <span class="qcard-streak">Streak: <span id="qStreakNum">0</span> 🔥</span>
+        </div>
+        <div class="qcard-prog-wrap">
+          <div class="qcard-prog-bg"><div class="qcard-prog-fill" id="quranProgFill" style="width:0%"></div></div>
+          <div class="qcard-meta">
+            <span class="qcard-pages"><span id="quranPages">0</span> pages read</span>
+            <span class="qcard-goal">Goal: <span id="quranGoal">1</span></span>
+          </div>
+        </div>
+        <div class="qcard-btns">
+          <button class="qcard-add" id="quranAddBtn">+ 1 PAGE</button>
+          <button class="qcard-goal-btn" id="quranGoalBtn">CHANGE GOAL</button>
+        </div>
+        <div class="qcard-done-badge" id="quranDoneBadge">✅ ALHAMDULILLAH — DAILY GOAL COMPLETE!</div>
+      </div>
+    </div>
+
+    <!-- Dhikr Counter -->
+    <div class="sec-hd">DHIKR COUNTER 📿</div>
+    <div class="card dhikr-counter-card">
+      <div class="dc-top">
+        <span class="dc-label">TASBIH</span>
+        <span class="dc-streak">Streak: <span id="dStreakNum">0</span> 🔥</span>
+      </div>
+      <div class="dc-current">
+        <div class="dc-arabic" id="dcArabic">سُبْحَانَ اللَّهِ</div>
+        <div class="dc-trans" id="dcTrans">SubhanAllah — Glory be to Allah</div>
+        <div class="dc-num" id="dcCount">0</div>
+        <div class="dc-of" id="dcOf">of 33</div>
+        <button class="dc-tap" id="dcTapBtn">+</button>
+        <div class="dc-bar-bg"><div class="dc-bar-fill" id="dcBarFill" style="width:0%"></div></div>
+      </div>
+      <div class="dc-list" id="dcList"></div>
+      <button class="dc-complete-all" id="dcCompleteAll">✓ MARK ALL DHIKR COMPLETE</button>
+      <!-- Add Custom Dhikr -->
+      <div style="margin-top:10px;border-top:1px solid rgba(255,255,255,.06);padding-top:12px">
+        <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.14em;color:var(--gold);margin-bottom:10px">+ ADD CUSTOM DHIKR</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <input type="text" id="customDhikrEn" placeholder="Name in English (e.g. La ilaha illallah)" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--cream);width:100%"/>
+          <input type="text" id="customDhikrAr" placeholder="Arabic (optional) لا إله إلا الله" dir="rtl" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 13px;font-size:14px;color:rgba(201,168,76,.9);width:100%;text-align:right"/>
+          <div style="display:flex;gap:8px">
+            <input type="number" id="customDhikrCount" placeholder="Count (e.g. 100)" min="1" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 13px;font-size:13px;color:var(--cream);flex:1"/>
+            <button id="addCustomDhikrBtn" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);padding:10px 18px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;font-weight:700;white-space:nowrap">ADD</button>
+          </div>
+        </div>
+      </div>
+      <!-- Add custom dhikr -->
+      <div id="customDhikrForm" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06)">
+        <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--gold);margin-bottom:10px">ADD CUSTOM DHIKR</div>
+        <input type="text" id="cdEnglish" placeholder="Name in English (e.g. Durood Ibrahim)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--cream);margin-bottom:8px"/>
+        <input type="text" id="cdArabic" placeholder="Arabic (optional)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:11px 14px;font-size:15px;color:rgba(201,168,76,.9);direction:rtl;margin-bottom:8px"/>
+        <input type="number" id="cdTarget" placeholder="Count target (e.g. 33)" min="1" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--cream);margin-bottom:10px"/>
+        <div style="display:flex;gap:8px">
+          <button id="cdSaveBtn" style="flex:1;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--teal-deep);padding:11px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;font-weight:700">ADD DHIKR</button>
+          <button id="cdCancelBtn" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--cream-muted);padding:11px 16px;border-radius:50px;font-size:12px">CANCEL</button>
+        </div>
+      </div>
+      <button id="addCustomDhikrBtn" style="width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);color:rgba(201,168,76,.6);padding:10px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;margin-top:8px;transition:all .3s">+ ADD YOUR OWN DHIKR</button>
+    </div>
+
+    <!-- Morning Routine -->
+    <div class="sec-hd">ROUTINES</div>
+    <div class="routine-toggle" id="morningToggle">
+      <div class="rt-left">
+        <span class="rt-icon">🌅</span>
+        <div>
+          <div class="rt-title">MORNING ROUTINE</div>
+          <div class="rt-status" id="morningStatus">After Fajr</div>
+        </div>
+      </div>
+      <span class="rt-arrow" id="morningArrow">›</span>
+    </div>
+    <div class="routine-body" id="morningBody">
+      <div class="check-item" data-routine="morning" data-key="kursi">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Ayat al-Kursi</span>
+        <span class="ci-arabic">آيَةُ الْكُرْسِيِّ</span>
+      </div>
+      <div class="check-item" data-routine="morning" data-key="ikhlas">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Surah Ikhlas × 3</span>
+        <span class="ci-arabic">الْإِخْلَاص</span>
+      </div>
+      <div class="check-item" data-routine="morning" data-key="falaq">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Surah Falaq × 3</span>
+        <span class="ci-arabic">الْفَلَق</span>
+      </div>
+      <div class="check-item" data-routine="morning" data-key="nas">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Surah Nas × 3</span>
+        <span class="ci-arabic">النَّاس</span>
+      </div>
+      <div class="check-item" data-routine="morning" data-key="quran-m">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Read Quran ✨</span>
+        <span class="ci-arabic"></span>
+      </div>
+      <button class="routine-complete-btn" id="morningCompleteBtn" disabled>MARK MORNING COMPLETE</button>
+    </div>
+
+    <!-- Night Routine -->
+    <div class="routine-toggle" id="nightToggle">
+      <div class="rt-left">
+        <span class="rt-icon">🌙</span>
+        <div>
+          <div class="rt-title">NIGHT ROUTINE</div>
+          <div class="rt-status" id="nightStatus">Before sleep</div>
+        </div>
+      </div>
+      <span class="rt-arrow" id="nightArrow">›</span>
+    </div>
+    <div class="routine-body" id="nightBody">
+      <div class="check-item" data-routine="night" data-key="kursi-n">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Ayat al-Kursi</span>
+        <span class="ci-arabic">آيَةُ الْكُرْسِيِّ</span>
+      </div>
+      <div class="check-item" data-routine="night" data-key="baqarah">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Last 2 Ayahs of Al-Baqarah</span>
+        <span class="ci-arabic">الْبَقَرَة</span>
+      </div>
+      <div class="check-item" data-routine="night" data-key="mulk">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Surah Al-Mulk</span>
+        <span class="ci-arabic">الْمُلْك</span>
+      </div>
+      <div class="check-item" data-routine="night" data-key="quls">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">3 Quls (Ikhlas, Falaq, Nas)</span>
+        <span class="ci-arabic">الْإِخْلَاص</span>
+      </div>
+      <button class="routine-complete-btn" id="nightCompleteBtn" disabled>MARK NIGHT COMPLETE</button>
+    </div>
+
+    <!-- Friday Kahf -->
+    <div class="routine-toggle" id="kahfToggle" style="display:none">
+      <div class="rt-left">
+        <span class="rt-icon">🕌</span>
+        <div>
+          <div class="rt-title">SURAH AL-KAHF</div>
+          <div class="rt-status">Friday special</div>
+        </div>
+      </div>
+      <span class="rt-arrow" id="kahfArrow">›</span>
+    </div>
+    <div class="routine-body" id="kahfBody">
+      <div class="check-item" data-routine="kahf" data-key="kahf-read">
+        <div class="ci-box"><span class="ci-check">✓</span></div>
+        <span class="ci-label">Read Surah Al-Kahf</span>
+        <span class="ci-arabic">الْكَهْف</span>
+      </div>
+      <div style="padding:10px 0 4px;font-size:11px;color:rgba(245,240,232,.4);font-style:italic;font-family:'Cormorant Garamond',serif">
+        "Whoever reads Surah Al-Kahf on Friday, it will be a light for him between two Fridays." — Sahih
+      </div>
+      <button class="routine-complete-btn" id="kahfCompleteBtn" disabled>MARK KAHF COMPLETE</button>
+    </div>
+
+    <!-- Past Dates -->
+    <div class="sec-hd">PAST PRAYERS</div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--gold-light);letter-spacing:.1em;margin-bottom:6px">MARK MISSED PRAYERS</div>
+      <div style="font-size:12px;color:var(--cream-muted);margin-bottom:12px" id="pastDatesSubLabel">Select a date to log your prayers</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="pastDateBtns"></div>
+      <div id="pastDatePanel" style="display:none">
+        <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.12em;color:var(--gold);margin-bottom:10px" id="pastDateLabel"></div>
+        <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:10px" id="pastPrayerRow"></div>
+        <div style="font-size:11px;color:var(--cream-muted);margin-top:4px" id="pastPrayerCount">0 / 5 marked</div>
+      </div>
+    </div>
+
+    <!-- Ayah of Day -->
+    <div class="sec-hd">AYAH OF THE DAY</div>
+    <div class="ayah-card">
+      <div class="ayah-badge">✨ DAILY REFLECTION</div>
+      <div class="ayah-arabic-txt" id="ayahArabic"></div>
+      <div class="ayah-trans-txt" id="ayahTrans"></div>
+      <div class="ayah-ref-txt" id="ayahRef"></div>
+    </div>
+
+    <!-- Tahajjud Card (Home) -->
+    <div class="sec-hd">TAHAJJUD 🌙</div>
+    <div class="card" id="tahajjudHomeCard">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--gold-light);margin-bottom:4px">DID YOU PRAY TAHAJJUD?</div>
+          <div style="font-size:11px;color:var(--cream-muted);font-family:'Cormorant Garamond',serif;font-style:italic">The last third of the night — closest to Allah</div>
+        </div>
+        <div style="font-size:28px">🌙</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button id="homeYes" style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--cream-dim);padding:10px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;transition:all .3s">YES ✓</button>
+        <button id="homeNo" style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--cream-dim);padding:10px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;transition:all .3s">NOT TODAY</button>
+      </div>
+      <button id="tahajjudAlarmBtn" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);color:var(--cream-muted);padding:10px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;transition:all .3s">
+        📿 SET TAHAJJUD ALARM — COMING SOON
+      </button>
+      <div id="tahajjudHomeDone" style="display:none;text-align:center;padding:8px;font-family:'Cinzel',serif;font-size:11px;color:#90ffb0;letter-spacing:.08em">🌙 TAHAJJUD LOGGED — STREAK: <span id="homeStreakTahajjud">0</span></div>
+    </div>
+
+  </div><!-- end app-body -->
+
+  <div class="bot-nav">
+    <div class="bnav active" id="bn-home"><div class="bnav-ic">🏠</div><div class="bnav-lbl">HOME</div></div>
+    <div class="bnav" id="bn-salah"><div class="bnav-ic">🕌</div><div class="bnav-lbl">SALAH</div></div>
+    <div class="bnav" id="bn-profile"><div class="bnav-ic">👤</div><div class="bnav-lbl">PROFILE</div></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="s-profile">
+  <div class="sub-topbar">
+    <span class="sub-back" id="profileBack">←</span>
+    <span class="sub-title">PROFILE</span>
+  </div>
+  <div class="profile-body">
+    <div class="profile-avatar-wrap">
+      <img class="profile-avatar" id="profileAvatar" src="" alt=""/>
+      <div class="profile-name-big" id="profileName">—</div>
+      <div class="profile-email" id="profileEmail">—</div>
+      <div class="profile-joined" id="profileJoined">Member since today</div>
+    </div>
+    <div class="profile-stats">
+      <div class="pstat"><div class="pstat-num" id="pSalah">0</div><div class="pstat-lbl">SALAH 🕌</div></div>
+      <div class="pstat"><div class="pstat-num" id="pDhikr">0</div><div class="pstat-lbl">DHIKR 📿</div></div>
+      <div class="pstat"><div class="pstat-num" id="pQuran">0</div><div class="pstat-lbl">QURAN ✨</div></div>
+      <div class="pstat"><div class="pstat-num" id="pTahajjud">0</div><div class="pstat-lbl">TAHAJJUD 🌙</div></div>
+    </div>
+    <div class="sec-hd">SETTINGS</div>
+    <div class="profile-item" id="pNotif">
+      <div class="profile-item-left"><span class="profile-item-icon">📿</span><span class="profile-item-label">Prayer Notifications</span></div>
+      <span class="profile-item-arrow">›</span>
+    </div>
+    <div class="profile-item" id="pBlocker">
+      <div class="profile-item-left"><span class="profile-item-icon">📿</span><span class="profile-item-label">App Blocker (Iqamah)</span></div>
+      <span class="profile-item-arrow">›</span>
+    </div>
+
+    <!-- Reset Streaks -->
+    <div class="sec-hd" style="margin-top:14px">RESET STREAKS</div>
+    <div style="font-size:12px;color:var(--cream-muted);margin-bottom:12px;font-family:'Cormorant Garamond',serif;font-style:italic;line-height:1.6">Reset Quran or Dhikr streaks if you want to test the system and start fresh.</div>
+    <div style="display:flex;gap:10px;margin-bottom:8px">
+      <button id="resetQuranStreakBtn" style="flex:1;background:rgba(74,158,255,.07);border:1px solid rgba(74,158,255,.2);color:rgba(150,200,255,.8);padding:12px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;transition:all .3s">📖 RESET QURAN STREAK</button>
+      <button id="resetDhikrStreakBtn" style="flex:1;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);color:rgba(201,168,76,.8);padding:12px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;transition:all .3s">📿 RESET DHIKR STREAK</button>
+    </div>
+    <div class="profile-item" id="pSalahHistory">
+      <div class="profile-item-left"><span class="profile-item-icon">🕌</span><span class="profile-item-label">Salah & Tahajjud from Age of 7</span></div>
+      <span class="profile-item-arrow">›</span>
+    </div>
+    <div class="profile-item" id="pTahajjudSet">
+      <div class="profile-item-left"><span class="profile-item-icon">🌙</span><span class="profile-item-label">Tahajjud Tonight</span></div>
+      <div id="tahajjudToggleWrap" style="display:flex;gap:7px">
+        <button id="tahajjudYes" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--cream-dim);padding:6px 14px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;transition:all .3s">YES</button>
+        <button id="tahajjudNo" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--cream-dim);padding:6px 14px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;transition:all .3s">NO</button>
+      </div>
+    </div>
+
+    <!-- Past Tahajjud Section -->
+    <div class="sec-hd" style="margin-top:14px">PAST TAHAJJUD</div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:12px;color:var(--cream-muted);margin-bottom:12px;font-family:'Cormorant Garamond',serif;font-style:italic">Mark nights you prayed Tahajjud — from your DOB</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="pastTahajjudBtns"></div>
+    </div>
+    <button class="signout-big" id="profileSignout">🚪 SIGN OUT</button>
+    <button id="deleteAccountBtn" style="width:100%;background:rgba(255,30,30,.06);border:1px solid rgba(255,30,30,.2);color:rgba(255,100,100,.7);padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;transition:all .3s;margin-top:8px">⚠️ DELETE ACCOUNT</button>
+  </div>
+  <div class="bot-nav">
+    <div class="bnav" id="bn-home2"><div class="bnav-ic">🏠</div><div class="bnav-lbl">HOME</div></div>
+    <div class="bnav" id="bn-salah2"><div class="bnav-ic">🕌</div><div class="bnav-lbl">SALAH</div></div>
+    <div class="bnav active" id="bn-profile2"><div class="bnav-ic">👤</div><div class="bnav-lbl">PROFILE</div></div>
+  </div>
+</div>
+
+<!-- SALAH SCREEN -->
+<div class="screen" id="s-salah">
+  <div class="app-topnav">
+    <div class="topnav-left">
+      <img class="topnav-logo" src="logo.png" alt=""/>
+      <span class="topnav-name">TAQWASTEPS</span>
+    </div>
+    <div class="topnav-right">
+      <span class="topnav-user" id="salahTopnavUser"></span>
+    </div>
+  </div>
+  <div class="salah-body">
+
+    <!-- LOCATION BAR -->
+    <div class="loc-bar">
+      <div>
+        <div class="loc-city" id="salahLocCity">📍 Detecting location...</div>
+        <div class="loc-date-txt" id="salahLocDate">—</div>
+        <div class="loc-hijri-txt" id="salahLocHijri">—</div>
+      </div>
+      <button class="loc-refresh" onclick="initSalahTimes()">↻ REFRESH</button>
+    </div>
+
+    <!-- CITY INPUT FALLBACK -->
+    <div class="city-form" id="cityForm">
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--gold);margin-bottom:10px">ENTER YOUR CITY</div>
+      <input type="text" id="cityInput" placeholder="e.g. Bangalore, IN"/>
+      <button class="city-form-btn" onclick="fetchByCity()">GET PRAYER TIMES</button>
+    </div>
+
+    <!-- MADHAB TOGGLE -->
+    <div class="madhab-bar">
+      <button class="mtab active" id="mt-both" onclick="setMadhab('both')">BOTH</button>
+      <button class="mtab" id="mt-hanafi" onclick="setMadhab('hanafi')">HANAFI</button>
+      <button class="mtab" id="mt-shafi" onclick="setMadhab('shafi')">SHAFI</button>
+    </div>
+
+    <!-- NEXT PRAYER -->
+    <div class="snext-card">
+      <div class="snext-left">
+        <div class="snext-lbl">NEXT PRAYER</div>
+        <div class="snext-name" id="snextName">—</div>
+        <div class="snext-time" id="snextTime">—:—</div>
+        <div class="snext-cd" id="snextCd">Fetching...</div>
+      </div>
+      <div class="snext-icon" id="snextIco">🕌</div>
+    </div>
+
+    <!-- TODAY TRACKING -->
+    <div class="track-strip">
+      <div class="track-strip-hd">
+        <div class="track-strip-title">TODAY'S SALAH</div>
+        <div class="track-strip-count" id="salahTrackCount">0/5 prayed</div>
+      </div>
+      <div class="track-dots" id="salahTrackDots"></div>
+      <div class="track-prog-bg"><div class="track-prog-fill" id="salahTrackFill" style="width:0%"></div></div>
+    </div>
+
+    <!-- PRAYER TIMES CONTENT -->
+    <div id="salahTimesContent">
+      <div class="pt-loading">
+        <div class="pt-spin"></div>
+        <div class="pt-load-txt">Fetching prayer times...</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="bot-nav">
+    <div class="bnav" id="bn-home3"><div class="bnav-ic">🏠</div><div class="bnav-lbl">HOME</div></div>
+    <div class="bnav active" id="bn-salah3"><div class="bnav-ic">🕌</div><div class="bnav-lbl">SALAH</div></div>
+    <div class="bnav" id="bn-profile3"><div class="bnav-ic">👤</div><div class="bnav-lbl">PROFILE</div></div>
+  </div>
+</div>
+
+<!-- SALAH HISTORY PANEL -->
+<div id="s-salah-history" style="display:none;position:fixed;inset:0;z-index:500;background:linear-gradient(160deg,#04100f,#072020,#04100f);flex-direction:column;overflow:hidden">
+  <div class="sub-topbar">
+    <span class="sub-back" id="salahHistoryBack" style="cursor:pointer">←</span>
+    <span class="sub-title">SALAH & TAHAJJUD · FROM AGE 7</span>
+  </div>
+  <div id="salahHistoryNoDob" style="display:none;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:32px 24px;text-align:center">
+    <div style="font-size:36px">✨</div>
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;color:var(--gold-light)">NO DATE OF BIRTH SET</div>
+    <div style="font-size:13px;color:var(--cream-muted);font-family:'Cormorant Garamond',serif;font-style:italic;line-height:1.7">Please add your date of birth during sign-up. Your Salah history will be tracked from age 7 — as the Prophet ﷺ commanded.</div>
+  </div>
+  <div id="salahHistoryBody" style="flex:1;overflow-y:auto;padding:16px 16px 100px">
+    <!-- Hadith of 7 years banner -->
+    <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center">
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.16em;color:var(--gold);margin-bottom:10px">THE PROPHET ﷺ SAID</div>
+      <div style="font-size:16px;color:rgba(201,168,76,.9);direction:rtl;line-height:2;margin-bottom:8px">مُرُوا أَوْلَادَكُمْ بِالصَّلَاةِ وَهُمْ أَبْنَاءُ سَبْعِ سِنِينَ</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(245,240,232,.6);line-height:1.7;margin-bottom:6px">"Command your children to pray when they are seven years old."</div>
+      <div style="font-size:9px;color:rgba(201,168,76,.5);font-family:'Cinzel',serif;letter-spacing:.1em">ABU DAWUD · 495</div>
+      <div style="font-size:11px;color:rgba(245,240,232,.4);margin-top:10px;font-style:italic;font-family:'Cormorant Garamond',serif" id="historyStartInfo"></div>
+    </div>
+    <div style="font-size:12px;color:var(--cream-muted);margin-bottom:16px;font-family:'Cormorant Garamond',serif;font-style:italic;text-align:center" id="salahHistorySubtitle"></div>
+    <div id="salahHistoryList"></div>
+  </div>
+</div>
+
+<!-- DELETE ACCOUNT MODAL — STEP 1: credentials -->
+<div id="deleteModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#0d1e1e;border:1px solid rgba(255,80,80,.25);border-radius:24px;padding:28px 24px;max-width:380px;width:100%">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;color:rgba(255,120,120,.85);margin-bottom:8px">⚠️ DELETE ACCOUNT</div>
+    <div style="font-size:13px;color:rgba(245,240,232,.5);margin-bottom:20px;line-height:1.65;font-family:'Cormorant Garamond',serif;font-style:italic">Confirm your identity to continue.</div>
+    <div id="deleteErr" style="font-size:12px;color:#ff9090;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.2);border-radius:10px;padding:10px 14px;display:none;margin-bottom:14px;text-align:center"></div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.3);margin-bottom:5px;font-family:'Cinzel',serif">YOUR EMAIL</div>
+      <input type="email" id="deleteEmail" placeholder="your@email.com" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,80,80,.15);border-radius:12px;padding:12px 15px;font-size:13px;color:#f5f0e8;outline:none"/>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:9px;letter-spacing:.14em;color:rgba(245,240,232,.3);margin-bottom:5px;font-family:'Cinzel',serif">YOUR PASSWORD</div>
+      <div style="position:relative">
+        <input type="password" id="deletePass" placeholder="Enter your password" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,80,80,.15);border-radius:12px;padding:12px 44px 12px 15px;font-size:13px;color:#f5f0e8;outline:none"/>
+        <span id="delPassEye" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:11px;font-family:'Lato',sans-serif;letter-spacing:.04em;user-select:none;opacity:.5">Show</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button id="deleteCancelBtn" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(245,240,232,.6);padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em">CANCEL</button>
+      <button id="deleteConfirmBtn" style="flex:1;background:rgba(255,30,30,.12);border:1px solid rgba(255,80,80,.35);color:rgba(255,120,120,.9);padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em">CONFIRM</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL — STEP 2: sad farewell -->
+<div id="deleteSadModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#0d1e1e;border:1px solid rgba(201,168,76,.15);border-radius:24px;padding:32px 24px;max-width:380px;width:100%;text-align:center">
+    <div style="font-size:48px;margin-bottom:14px">🤍</div>
+    <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:.12em;color:#e8c96a;margin-bottom:12px">WE WILL MISS YOU</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:rgba(245,240,232,.6);line-height:1.8;margin-bottom:10px">
+      Every step you took toward Allah was recorded — by Him, not just by us. May He keep you consistent, wherever you are.
+    </div>
+    <div style="font-size:13px;color:rgba(201,168,76,.5);margin-bottom:24px;font-style:italic">— The TaqwaSteps Team 🌙</div>
+    <div style="display:flex;gap:10px">
+      <button id="deleteSadCancelBtn" style="flex:1;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.06));border:1px solid rgba(201,168,76,.3);color:#e8c96a;padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em">STAY 🌙</button>
+      <button id="deletePermanentBtn" style="flex:1;background:rgba(255,30,30,.1);border:1px solid rgba(255,80,80,.3);color:rgba(255,120,120,.85);padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em">DELETE PERMANENTLY</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL — STEP 3: final notice -->
+<div id="deleteFinalModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#0d1e1e;border:1px solid rgba(255,80,80,.2);border-radius:24px;padding:32px 24px;max-width:380px;width:100%;text-align:center">
+    <div style="font-size:40px;margin-bottom:14px">❣️️</div>
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;color:rgba(255,120,120,.85);margin-bottom:12px">ACCOUNT WILL BE DELETED</div>
+    <div style="font-size:13px;color:rgba(245,240,232,.55);line-height:1.7;margin-bottom:24px;font-family:'Cormorant Garamond',serif;font-style:italic">
+      Your account and all data will be permanently removed within <strong style="color:#e8c96a">5–7 working days</strong>.<br><br>Tap <strong style="color:#e8c96a">YES, DELETE NOW</strong> to proceed immediately.
+    </div>
+    <div style="display:flex;gap:10px">
+      <button id="deleteFinalCancelBtn" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(245,240,232,.6);padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em">CANCEL</button>
+      <button id="deleteFinalYesBtn" style="flex:1;background:rgba(255,30,30,.15);border:1px solid rgba(255,80,80,.4);color:rgba(255,120,120,.9);padding:13px;border-radius:50px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em">YES, DELETE NOW</button>
+    </div>
+  </div>
+</div>
+
+<!-- ALLAH IS WATCHING POPUP -->
+<div id="allahWatchingModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:linear-gradient(160deg,#061a1a,#0a2e2e);border:1px solid rgba(201,168,76,.3);border-radius:24px;padding:32px 24px;max-width:360px;width:100%;text-align:center">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;color:var(--gold-light);margin-bottom:20px">ALLAH IS WATCHING</div>
+    <div style="background:rgba(201,168,76,.06);border-left:3px solid rgba(201,168,76,.4);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:20px;text-align:right">
+      <div id="awArabic" style="font-size:18px;color:rgba(201,168,76,.9);direction:rtl;line-height:1.9;margin-bottom:6px"></div>
+      <div id="awTrans" style="font-size:12px;color:rgba(245,240,232,.6);font-style:italic;text-align:left;line-height:1.6"></div>
+      <div id="awRef" style="font-size:9px;color:rgba(201,168,76,.5);letter-spacing:.1em;text-align:left;font-family:'Cinzel',serif;margin-top:5px"></div>
+    </div>
+    <div style="font-size:12px;color:rgba(245,240,232,.38);margin-bottom:22px;line-height:1.65">Only mark prayers you have truly read. Every honest step is witnessed and rewarded by Allah.</div>
+    <button id="allahWatchingOkBtn" style="width:100%;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.08));border:1px solid rgba(201,168,76,.4);color:var(--gold-light);padding:14px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.14em">
+      I UNDERSTAND · BISMILLAH
+    </button>
+  </div>
+</div>
+
+<!-- HADITH 7 YEARS MODAL -->
+<div id="hadith7Modal" style="display:none;position:fixed;inset:0;z-index:9997;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:linear-gradient(160deg,#061a1a,#0a2e2e);border:1px solid rgba(201,168,76,.3);border-radius:24px;padding:32px 24px;max-width:360px;width:100%;text-align:center">
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.18em;color:var(--gold);margin-bottom:16px">THE PROPHET ﷺ SAID</div>
+    <div style="background:rgba(201,168,76,.06);border-left:3px solid rgba(201,168,76,.5);border-radius:0 14px 14px 0;padding:16px;margin-bottom:16px;text-align:right">
+      <div style="font-size:18px;color:rgba(201,168,76,.9);direction:rtl;line-height:2;margin-bottom:8px">مُرُوا أَوْلَادَكُمْ بِالصَّلَاةِ وَهُمْ أَبْنَاءُ سَبْعِ سِنِينَ</div>
+      <div style="font-size:13px;color:rgba(245,240,232,.65);font-style:italic;text-align:left;line-height:1.7">"Command your children to pray when they are seven years old."</div>
+      <div style="font-size:9px;color:rgba(201,168,76,.55);text-align:left;font-family:'Cinzel',serif;letter-spacing:.1em;margin-top:6px">ABU DAWUD · 495</div>
+    </div>
+    <div id="hadith7Info" style="font-size:13px;color:rgba(245,240,232,.5);margin-bottom:22px;line-height:1.7;font-family:'Cormorant Garamond',serif;font-style:italic"></div>
+    <button id="hadith7OkBtn" style="width:100%;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.08));border:1px solid rgba(201,168,76,.4);color:var(--gold-light);padding:14px;border-radius:50px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.14em">
+      UNDERSTOOD · BISMILLAH
+    </button>
+  </div>
+</div>
+
+<script>
+var LOGO = 'logo.png';
+
+(function() {
+
+/* ══════ DATA ══════ */
+var PRAYERS = [
+  {key:'fajr',   name:'FAJR',    arabic:'الفجر', time:'5:12 AM'},
+  {key:'dhuhr',  name:'DHUHR',   arabic:'الظهر', time:'12:34 PM'},
+  {key:'asr',    name:'ASR',     arabic:'العصر', time:'3:58 PM'},
+  {key:'maghrib',name:'MAGHRIB', arabic:'المغرب', time:'6:28 PM'},
+  {key:'isha',   name:'ISHA',    arabic:'العشاء', time:'7:52 PM'}
+];
+
+var DHIKR_DEFAULT = [
+  {key:'subhan',  arabic:'سُبْحَانَ اللَّهِ',    trans:'SubhanAllah — Glory be to Allah',          target:33},
+  {key:'alhamd',  arabic:'الْحَمْدُ لِلَّهِ',    trans:'Alhamdulillah — All praise to Allah',       target:33},
+  {key:'akbar',   arabic:'اللَّهُ أَكْبَرُ',     trans:'Allahu Akbar — Allah is the Greatest',      target:34},
+  {key:'istghfar',arabic:'أَسْتَغْفِرُ اللَّهَ', trans:'Astaghfirullah — I seek Allah\'s forgiveness',target:100}
+];
+var DHIKR_LIST = DHIKR_DEFAULT.slice();
+
+var AYAHS = [
+  {arabic:'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',trans:'"Verily, in the remembrance of Allah do hearts find rest."',ref:'SURAH AR-RA\'D · 13:28'},
+  {arabic:'إِنَّ مَعَ الْعُسْرِ يُسْرًا',trans:'"Indeed, with hardship comes ease."',ref:'SURAH ASH-SHARH · 94:6'},
+  {arabic:'وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ',trans:'"Whoever relies upon Allah — then He is sufficient for him."',ref:'SURAH AT-TALAQ · 65:3'},
+  {arabic:'إِنَّ اللَّهَ مَعَ الصَّابِرِينَ',trans:'"Indeed, Allah is with the patient."',ref:'SURAH AL-BAQARAH · 2:153'},
+  {arabic:'وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ',trans:'"Do not despair of Allah\'s mercy."',ref:'SURAH YUSUF · 12:87'},
+  {arabic:'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',trans:'"Allah is sufficient for us, and He is the best disposer of affairs."',ref:'SURAH AL IMRAN · 3:173'},
+  {arabic:'فَأَيْنَمَا تُوَلُّوا فَثَمَّ وَجْهُ اللَّهِ',trans:'"Wherever you turn, there is the Face of Allah."',ref:'SURAH AL-BAQARAH · 2:115'},
+  {arabic:'وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ',trans:'"And He is with you wherever you are."',ref:'SURAH AL-HADID · 57:4'},
+  {arabic:'إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ',trans:'"Indeed, Allah does not waste the reward of the doers of good."',ref:'SURAH AT-TAWBAH · 9:120'},
+  {arabic:'وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ',trans:'"And my success is not but through Allah."',ref:'SURAH HUD · 11:88'},
+  {arabic:'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً',trans:'"Our Lord, give us good in this world and good in the Hereafter."',ref:'SURAH AL-BAQARAH · 2:201'},
+  {arabic:'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا',trans:'"For indeed, with hardship will be ease."',ref:'SURAH ASH-SHARH · 94:5'},
+  {arabic:'وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ',trans:'"And your Lord is going to give you, and you will be satisfied."',ref:'SURAH AD-DUHA · 93:5'},
+  {arabic:'أَلَمْ يَجِدْكَ يَتِيمًا فَآوَىٰ',trans:'"Did He not find you an orphan and give you refuge?"',ref:'SURAH AD-DUHA · 93:6'},
+  {arabic:'وَذَكِّرْ فَإِنَّ الذِّكْرَىٰ تَنفَعُ الْمُؤْمِنِينَ',trans:'"And remind, for indeed the reminder benefits the believers."',ref:'SURAH ADH-DHARIYAT · 51:55'},
+  {arabic:'إِنَّ الْإِنسَانَ لَفِي خُسْرٍ إِلَّا الَّذِينَ آمَنُوا',trans:'"Indeed, mankind is in loss — except those who believe and do good."',ref:'SURAH AL-ASR · 103:2-3'},
+  {arabic:'وَقُل رَّبِّ زِدْنِي عِلْمًا',trans:'"And say: My Lord, increase me in knowledge."',ref:'SURAH TA-HA · 20:114'},
+  {arabic:'رَبِّ اشْرَحْ لِي صَدْرِي',trans:'"My Lord, expand for me my chest."',ref:'SURAH TA-HA · 20:25'},
+  {arabic:'وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ',trans:'"And seek help through patience and prayer."',ref:'SURAH AL-BAQARAH · 2:45'},
+  {arabic:'إِنَّ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي لِلَّهِ',trans:'"Indeed my prayer, my sacrifice, my life and my death are for Allah."',ref:'SURAH AL-ANAM · 6:162'},
+  {arabic:'يَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا',trans:'"O you who believe, remember Allah with much remembrance."',ref:'SURAH AL-AHZAB · 33:41'},
+  {arabic:'وَاللَّهُ خَيْرٌ وَأَبْقَىٰ',trans:'"But Allah is better and more enduring."',ref:'SURAH TA-HA · 20:73'},
+  {arabic:'إِنَّ اللَّهَ كَانَ تَوَّابًا رَّحِيمًا',trans:'"Indeed, Allah is ever Accepting of repentance, Merciful."',ref:'SURAH AN-NISA · 4:16'},
+  {arabic:'وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ',trans:'"And when My servants ask you about Me — I am near."',ref:'SURAH AL-BAQARAH · 2:186'},
+  {arabic:'إِنَّ اللَّهَ غَفُورٌ رَّحِيمٌ',trans:'"Indeed, Allah is Forgiving and Merciful."',ref:'SURAH AL-BAQARAH · 2:173'},
+  {arabic:'وَقُل رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا',trans:'"And say: My Lord, have mercy upon them as they raised me when I was small."',ref:'SURAH AL-ISRA · 17:24'},
+  {arabic:'لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا',trans:'"Allah does not burden a soul beyond that it can bear."',ref:'SURAH AL-BAQARAH · 2:286'},
+  {arabic:'فَاذْكُرُونِي أَذْكُرْكُمْ',trans:'"Remember Me and I will remember you."',ref:'SURAH AL-BAQARAH · 2:152'},
+  {arabic:'وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ',trans:'"Perhaps you hate a thing and it is good for you."',ref:'SURAH AL-BAQARAH · 2:216'},
+  {arabic:'إِنَّ مَعَ الْعُسْرِ يُسْرًا',trans:'"Indeed, with hardship comes ease."',ref:'SURAH ASH-SHARH · 94:6'}
+];
+// Pick ayah based on day of year so it changes every day
+var _d0=new Date(); var _doy=Math.floor((_d0-new Date(_d0.getFullYear(),0,0))/86400000);
+var todayAyah = AYAHS[_doy % AYAHS.length];
+/* ══════ STATE ══════ */
+var currentUser = null;
+var currentDhikrIdx = 0;
+var todayKey = new Date().toDateString();
+var now_day = new Date().getDay();
+var now_hour = new Date().getHours();
+var isFriday = (now_day === 5);
+var isThursdayMaghrib = (now_day === 4 && now_hour >= 18);
+var isFridayFajr = (now_day === 5 && now_hour < 8);
+var dhikrPromptShown = false;
+
+/* ── LOCAL DATE HELPERS (timezone-safe) ── */
+function getLocalDate(){
+  // Returns YYYY-MM-DD in USER'S LOCAL TIMEZONE — not UTC
+  var d = new Date();
+  var yyyy = d.getFullYear();
+  var mm   = ('0'+(d.getMonth()+1)).slice(-2);
+  var dd   = ('0'+d.getDate()).slice(-2);
+  return yyyy+'-'+mm+'-'+dd;
+}
+
+function getLiveHour(){
+  // Always fresh — never frozen at page-load
+  return new Date().getHours();
+}
+
+// Approximate prayer time windows (24h clock)
+var PRAYER_TIMES = {
+  fajr:   {end:7},
+  dhuhr:  {end:15},
+  asr:    {end:18},
+  maghrib:{end:20},
+  isha:   {end:24}
+};
+
+/* ══════ STORAGE ══════ */
+function ukey(k){ return 'tq_' + (currentUser ? currentUser.id : 'guest') + '_' + k; }
+function save(k,v){ try{ localStorage.setItem(ukey(k),JSON.stringify(v)); }catch(e){} }
+function load(k,def){ try{ var v=localStorage.getItem(ukey(k)); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
+function resetDailyIfNeeded() {
+  var localToday = getLocalDate(); // YYYY-MM-DD local timezone
+  var lastDay = load('last_day','');
+  if (lastDay !== localToday) {
+    save('prayers',{});
+    save('quran_pages',0);
+    save('dhikr_counts',{});
+    save('morning_checks',{});
+    save('night_checks',{});
+    save('kahf_checks',{});
+    save('morning_done',false);
+    save('night_done',false);
+    save('kahf_done',false);
+    save('dhikr_done_today',false);
+    save('last_day', localToday);
+    invalidateStreakCache();
+  }
+}
+
+/* ══════ SUPABASE CONFIG ══════ */
+var SUPABASE_URL      = 'YOUR_SUPABASE_URL_HERE';
+var SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+
+/* ══════ AUTH HELPERS ══════ */
+function showAuthErr(m){ var e=g('authErr'); e.textContent=m; e.classList.add('show'); }
+function showAuthOk(m){ var e=g('authOk'); e.textContent=m; e.classList.add('show'); }
+function clearAuthMsg(){ g('authErr').classList.remove('show'); g('authOk').classList.remove('show'); }
+
+/* ══════ SIGN IN ══════ */
+function doSignIn(){
+  clearAuthMsg();
+  var email=g('si-email').value.trim().toLowerCase();
+  var pass=g('si-pass').value;
+  if(!email||!pass){ showAuthErr('Please fill in all fields.'); return; }
+  var btn=g('siBtn'); btn.disabled=true; btn.textContent='PLEASE WAIT...';
+  sb.auth.signInWithPassword({ email:email, password:pass })
+    .then(function(res){
+      btn.disabled=false; btn.textContent='SIGN IN · BISMILLAH';
+      if(res.error){
+        var msg = res.error.message.indexOf('Invalid')>=0
+          ? 'Incorrect email or password. Try again.'
+          : res.error.message;
+        showAuthErr(msg); return;
+      }
+      loadUserProfile(res.data.user);
+    });
+}
+
+/* ══════ SIGN UP ══════ */
+function doSignUp(){
+  clearAuthMsg();
+  var name=g('su-name').value.trim();
+  var email=g('su-email').value.trim().toLowerCase();
+  var pass=g('su-pass').value;
+  var dob=g('su-dob').value;
+  if(!name){ showAuthErr('Please enter your name.'); return; }
+  if(!email||email.indexOf('@')<0){ showAuthErr('Please enter a valid email.'); return; }
+  if(pass.length<8){ showAuthErr('Password must be at least 8 characters.'); return; }
+  if(!dob){ showAuthErr('Please enter your date of birth.'); return; }
+  var btn=g('suBtn'); btn.disabled=true; btn.textContent='PLEASE WAIT...';
+  sb.auth.signUp({ email:email, password:pass, options:{ data:{ full_name:name } } })
+    .then(function(res){
+      btn.disabled=false; btn.textContent='CREATE ACCOUNT · BISMILLAH';
+      if(res.error){ showAuthErr(res.error.message); return; }
+      var uid = res.data.user ? res.data.user.id : null;
+      if(!uid){ showAuthErr('Sign up failed. Please try again.'); return; }
+      // Save profile to users table
+      sb.from('users').upsert({ id:uid, name:name, email:email, dob:dob }, { onConflict:'id' })
+        .then(function(dbRes){
+          if(dbRes.error){ showAuthErr('Profile save failed: '+dbRes.error.message); return; }
+          showAuthOk('Account created! Welcome, '+name+' 🌙');
+          setTimeout(function(){
+            showHadith7Modal({ id:uid, name:name, email:email, dob:dob, joined:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) });
+          }, 800);
+        });
+    });
+}
+
+/* ══════ GOOGLE OAUTH ══════ */
+function doGoogleAuth(){
+  sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://taqwasteps.in/webapp.html' }
+  }).then(function(res){
+    if(res.error) showAuthErr(res.error.message);
+    // Browser will redirect — nothing else needed here
+  });
+}
+
+/* ══════ OAUTH CALLBACK (Google redirect back) ══════ */
+function handleOAuthCallback(){
+  sb.auth.getSession().then(function(res){
+    if(!res.data.session) return;
+    var authUser = res.data.session.user;
+    // Check if profile exists
+    sb.from('users').select('id,name,email,dob,created_at').eq('id',authUser.id).single()
+      .then(function(profileRes){
+        if(profileRes.error || !profileRes.data){
+          // New Google user — ask for DOB
+          showDobOverlay(authUser);
+        } else {
+          loginUser(buildUser(authUser, profileRes.data));
+        }
+      });
+  });
+}
+
+function showDobOverlay(authUser){
+  var overlay = g('dobOverlay');
+  overlay._authUser = authUser;
+  overlay.style.display = 'flex';
+}
+
+function saveDobFromGoogle(){
+  var overlay = g('dobOverlay');
+  var authUser = overlay._authUser;
+  var dob = g('dobInput').value;
+  var errEl = g('dobErr');
+  errEl.textContent=''; errEl.style.display='none';
+  if(!dob){ errEl.textContent='Please enter your date of birth.'; errEl.style.display='block'; return; }
+  var btn=g('dobSaveBtn'); btn.disabled=true; btn.textContent='SAVING...';
+  var name = authUser.user_metadata.full_name || authUser.email;
+  sb.from('users').upsert({ id:authUser.id, name:name, email:authUser.email, dob:dob })
+    .then(function(res){
+      btn.disabled=false; btn.textContent='CONTINUE · BISMILLAH';
+      if(res.error){ errEl.textContent=res.error.message; errEl.style.display='block'; return; }
+      overlay.style.display='none';
+      var user = { id:authUser.id, name:name, email:authUser.email, dob:dob, joined:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) };
+      showHadith7Modal(user);
+    });
+}
+
+/* ══════ SIGN OUT ══════ */
+function doSignOut(){
+  sb.auth.signOut().then(function(){
+    currentUser=null;
+    showScreen('s-auth');
+  });
+}
+
+/* ══════ LOAD USER PROFILE ══════ */
+function loadUserProfile(authUser){
+  sb.from('users').select('id,name,email,dob,created_at').eq('id',authUser.id).single()
+    .then(function(res){
+      if(res.error || !res.data){
+        // Profile missing — might be Google user needing DOB
+        showDobOverlay(authUser);
+        return;
+      }
+      loginUser(buildUser(authUser, res.data));
+    });
+}
+
+function buildUser(authUser, profile){
+  return {
+    id:     authUser.id,
+    name:   profile.name || authUser.user_metadata.full_name || 'Friend',
+    email:  authUser.email,
+    dob:    profile.dob || null,
+    joined: profile.created_at
+      ? new Date(profile.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+      : new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+  };
+}
+
+function loginUser(user){
+  currentUser=user;
+  resetDailyIfNeeded();
+  renderHome();
+  showScreen('s-home');
+}
+
+/* ══════ DELETE ACCOUNT ══════ */
+function openDeleteModal(){
+  g('deleteEmail').value = currentUser ? currentUser.email : '';
+  g('deletePass').value = '';
+  g('deleteErr').style.display = 'none';
+  g('deleteModal').style.display = 'flex';
+}
+function closeDeleteModal(){ g('deleteModal').style.display = 'none'; }
+function closeSadModal(){ g('deleteSadModal').style.display = 'none'; }
+function closeFinalModal(){ g('deleteFinalModal').style.display = 'none'; }
+
+function deleteAccount(){
+  var email = g('deleteEmail').value.trim().toLowerCase();
+  var pass  = g('deletePass').value;
+  var errEl = g('deleteErr');
+  errEl.style.display = 'none';
+  if(!email){ errEl.textContent='Please enter your email.'; errEl.style.display='block'; return; }
+  if(!pass){  errEl.textContent='Please enter your password.'; errEl.style.display='block'; return; }
+  if(currentUser && email !== currentUser.email){
+    errEl.textContent='This email does not match your account.'; errEl.style.display='block'; return;
+  }
+  // Re-authenticate to confirm credentials
+  var btn=g('deleteConfirmBtn'); btn.disabled=true; btn.textContent='CHECKING...';
+  sb.auth.signInWithPassword({ email:email, password:pass }).then(function(res){
+    btn.disabled=false; btn.textContent='CONFIRM';
+    if(res.error){ errEl.textContent='Incorrect password. Please try again.'; errEl.style.display='block'; return; }
+    closeDeleteModal();
+    g('deleteSadModal').style.display='flex';
+  });
+}
+
+function doFinalDelete(){
+  if(!currentUser) return;
+  // Delete user data from users table
+  sb.from('users').delete().eq('id',currentUser.id).then(function(){
+    // Sign out (full auth user deletion requires Edge Function / admin)
+    sb.auth.signOut().then(function(){
+      // Wipe local app data
+      var prefix='tq_'+currentUser.id+'_';
+      var toDelete=[];
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(k&&k.indexOf(prefix)===0) toDelete.push(k);
+      }
+      toDelete.forEach(function(k){ localStorage.removeItem(k); });
+      localStorage.removeItem('tq_custom_dhikr');
+      currentUser=null;
+      closeFinalModal();
+      showScreen('s-auth');
+      setTimeout(function(){ showToast('Account deleted. JazakAllah Khair 🤍'); },400);
+    });
+  });
+}
+
+/* ══════ SCREEN NAV ══════ */
+function showScreen(id){
+  var all=document.querySelectorAll('.screen');
+  for(var i=0;i<all.length;i++) all[i].classList.remove('active');
+  g(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function g(id){ return document.getElementById(id); }
+
+/* ══════ TOAST ══════ */
+var toastTimer;
+function showToast(msg){
+  var t=g('toastEl'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ t.classList.remove('show'); },2400);
+}
+
+/* ══════ RENDER HOME ══════ */
+function renderHome(){
+  if(!currentUser) return;
+  var first=currentUser.name.split(' ')[0];
+  first=first.charAt(0).toUpperCase()+first.slice(1);
+  g('greetName').textContent=first+' 🌙';
+  g('topnavUser').textContent=first.toUpperCase();
+
+  // Date
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var now=new Date();
+  g('greetDate').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear()+(isFriday?' · جُمُعَة مُبَارَكَة':'');
+
+  // Friday / Thursday banners
+  if(isFriday){ g('fridayBanner').classList.add('show'); g('kahfToggle').style.display='flex'; }
+  if(isThursdayMaghrib){ g('thursdayBanner').classList.add('show'); }
+  if(isFridayFajr){ g('fridayFajrBanner').classList.add('show'); }
+
+  // Streaks — salah uses live calc, others use saved
+  var salahStreak = calcSalahStreak();
+  var salahStr = Number.isInteger(salahStreak) ? String(salahStreak) : salahStreak.toFixed(1);
+  g('streak-salah').textContent = salahStr;
+  g('streak-dhikr').textContent=load('streak_dhikr',0);
+  g('streak-quran').textContent=load('streak_quran',0);
+  g('streak-tahajjud').textContent=load('streak_tahajjud',0);
+
+  // Tahajjud home card
+  var tStreak=load('streak_tahajjud',0);
+  if(g('streak-tahajjud')) g('streak-tahajjud').textContent=tStreak;
+  var lastT=load('last_tahajjud','');
+  if(g('homeYes')) setTahajjudBtns(lastT===todayKey ? 'yes' : 'none');
+
+  // Ayah
+  g('ayahArabic').textContent=todayAyah.arabic;
+  g('ayahTrans').textContent=todayAyah.trans;
+  g('ayahRef').textContent=todayAyah.ref;
+
+  // Next prayer
+  var h=now.getHours();
+  var nextP=h<5?'Fajr (Dawn)':h<12?'Dhuhr (Noon)':h<15?'Asr (Afternoon)':h<18?'Maghrib (Sunset)':h<20?'Isha (Night)':'Fajr (Dawn)';
+  g('nextPName').textContent=nextP;
+  g('nextPTime').textContent='Set your prayer times in settings';
+
+  renderSalah();
+  renderDhikr();
+  renderQuran();
+  renderRoutines();
+  initPastDates();
+}
+
+/* ══════ PAST DATES ══════ */
+var selectedPastDate = null;
+
+function getDobStart(){
+  var limit365 = new Date();
+  limit365.setDate(limit365.getDate() - 365);
+
+  if(currentUser && currentUser.dob){
+    var dob = new Date(currentUser.dob);
+    // Add 7 years — salah starts at age 7 (sunnah)
+    var start7 = new Date(dob);
+    start7.setFullYear(start7.getFullYear() + 7);
+    // Use whichever is more recent: 7yr DOB or 365 days ago
+    return start7 > limit365 ? start7 : limit365;
+  }
+  return limit365;
+}
+
+function initPastDates(){
+  var btnsEl = g('pastDateBtns');
+  btnsEl.innerHTML = '';
+  var start = getDobStart();
+  var today = new Date();
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // Build list of dates from start to yesterday — show most recent first, max 30
+  var dates = [];
+  var cur = new Date(today); 
+  cur.setDate(cur.getDate()-1);
+  cur.setHours(0,0,0,0); // normalize to midnight to prevent DST/time bugs
+  while(cur >= start && dates.length < 30){
+    dates.push(new Date(cur));
+    cur.setDate(cur.getDate()-1);
+    cur.setHours(0,0,0,0);
+  }
+
+  if(dates.length === 0){
+    btnsEl.innerHTML='<span style="font-size:12px;color:var(--cream-muted)">No past dates yet</span>';
+    return;
+  }
+
+  // Sub-label
+  if(currentUser && currentUser.dob){
+    g('pastDatesSubLabel').textContent = 'From your birth date — mark all your prayers';
+  } else {
+    g('pastDatesSubLabel').textContent = 'Last 30 days — set your DOB for full history';
+  }
+
+  var today2 = new Date(); today2.setHours(0,0,0,0);
+  dates.forEach(function(d){
+    var key = d.toDateString();
+    var diffMs = today2 - d;
+    var diffDays = Math.floor((diffMs + 1000) / 86400000); // +1s buffer for floating point
+    var label = diffDays===0 ? 'Today' : diffDays===1 ? 'Yesterday' : days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
+    var btn = document.createElement('button');
+    btn.className = 'past-date-btn';
+    // Check if all 5 marked
+    var storKey = 'prayers_'+key.replace(/ /g,'_');
+    var done = load(storKey, {});
+    var cnt = PRAYERS.filter(function(p){ return done[p.key]; }).length;
+    btn.textContent = label + (cnt>0?' ('+cnt+'/5)':'');
+    if(cnt===5) btn.style.borderColor='rgba(201,168,76,.5)';
+    btn.setAttribute('data-key', key);
+    btn.setAttribute('data-label', label);
+    btn.addEventListener('click', function(){ selectPastDate(this.getAttribute('data-key'), this.getAttribute('data-label')); });
+    btnsEl.appendChild(btn);
+  });
+}
+
+function selectPastDate(key, label){
+  selectedPastDate = key;
+  var btns = document.querySelectorAll('.past-date-btn');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('active');
+  var active = document.querySelector('.past-date-btn[data-key="'+key+'"]');
+  if(active) active.classList.add('active');
+  g('pastDateLabel').textContent = label.toUpperCase()+' — TAP TO MARK / UNMARK';
+  g('pastDatePanel').style.display = 'block';
+  renderPastPrayers(key);
+}
+
+function renderPastPrayers(dateKey){
+  var storKey = 'prayers_'+dateKey.replace(/ /g,'_');
+  var done = load(storKey, {});
+  var row = g('pastPrayerRow'); row.innerHTML='';
+  var count=0;
+  var missed=[];
+  PRAYERS.forEach(function(p){
+    var isDone = done[p.key]||false;
+    if(isDone) count++;
+    else missed.push(p.name);
+    var wrap = document.createElement('div');
+    wrap.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;gap:3px';
+    var dot = document.createElement('div');
+    dot.className = 'past-p-dot '+(isDone?'done':'pending');
+    dot.textContent = isDone?'✓':'·';
+    dot.setAttribute('data-pkey', p.key);
+    dot.setAttribute('data-datekey', dateKey);
+    dot.addEventListener('click', function(){ togglePastPrayer(this.getAttribute('data-pkey'), this.getAttribute('data-datekey')); });
+    dot.addEventListener('touchend', function(e){ e.preventDefault(); togglePastPrayer(this.getAttribute('data-pkey'), this.getAttribute('data-datekey')); });
+    var nm = document.createElement('div');
+    nm.className = 'past-p-name'; nm.textContent = p.name;
+    // Qaza label under missed prayers
+    var qz = document.createElement('div');
+    qz.style.cssText='font-size:7px;color:rgba(255,120,120,.7);letter-spacing:.04em;font-family:Cinzel,serif;margin-top:1px';
+    qz.textContent = isDone ? '' : 'QAZA';
+    wrap.appendChild(dot); wrap.appendChild(nm); wrap.appendChild(qz);
+    row.appendChild(wrap);
+  });
+  var statusTxt = count===5
+    ? '👍🏻 JazakAllah Khair — all 5 marked!'
+    : missed.length>0
+      ? 'Qaza: '+missed.join(', ')+'  ·  '+count+'/5 marked'
+      : count+' / 5 marked';
+  g('pastPrayerCount').textContent = statusTxt;
+}
+
+var AW_AYAHS = [
+  {arabic:'إِنَّ اللَّهَ كَانَ عَلَيْكُمْ رَقِيبًا', trans:'"Indeed, Allah is ever over you an Observer."', ref:'AN-NISA · 4:1'},
+  {arabic:'وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ',      trans:'"And He is with you wherever you are."',        ref:'AL-HADID · 57:4'},
+  {arabic:'فَإِنَّهُ يَعْلَمُ السِّرَّ وَأَخْفَى',   trans:'"He knows the secret and what is even more hidden."', ref:'TA-HA · 20:7'}
+];
+var awAyahIdx = 0;
+var pendingPastPkey = null;
+var pendingPastDateKey = null;
+var pendingTahajjudDateKey = null;
+
+function showAwPopup(onOk){
+  var a = AW_AYAHS[awAyahIdx % AW_AYAHS.length];
+  awAyahIdx++;
+  g('awArabic').textContent = a.arabic;
+  g('awTrans').textContent = a.trans;
+  g('awRef').textContent = a.ref;
+  g('allahWatchingModal').style.display = 'flex';
+  g('allahWatchingModal')._onOk = onOk;
+}
+
+function togglePastPrayer(pkey, dateKey){
+  pendingPastPkey = pkey;
+  pendingPastDateKey = dateKey;
+  pendingTahajjudDateKey = null;
+  showAwPopup(function(){ _doTogglePastPrayer(pkey, dateKey); });
+}
+
+function togglePastTahajjud(dateKey){
+  pendingTahajjudDateKey = dateKey;
+  pendingPastPkey = null;
+  pendingPastDateKey = null;
+  showAwPopup(function(){ _doTogglePastTahajjud(dateKey); });
+}
+
+function _doTogglePastTahajjud(dateKey){
+  var storKey = 'tahajjud_'+dateKey.replace(/ /g,'_');
+  var wasDone = load(storKey, false);
+  save(storKey, !wasDone);
+  var s = load('streak_tahajjud', 0);
+  if(!wasDone) s++; else s = Math.max(0, s-1);
+  save('streak_tahajjud', s);
+  g('streak-tahajjud').textContent = s;
+  if(g('pTahajjud')) g('pTahajjud').textContent = s;
+  showToast(!wasDone ? 'Tahajjud marked for '+dateKey+' ⭐' : 'Tahajjud unmarked');
+  initPastTahajjud();
+}
+
+function _doTogglePastPrayer(pkey, dateKey){
+  var storKey = 'prayers_'+dateKey.replace(/ /g,'_');
+  var done = load(storKey, {});
+  done[pkey] = !done[pkey];
+  save(storKey, done);
+  invalidateStreakCache();
+  renderPastPrayers(dateKey);
+  var newStreak = calcSalahStreak();
+  g('streak-salah').textContent = newStreak;
+  save('salah_today_frac', newStreak);
+  showToast(done[pkey] ? pkey+' marked ✓' : pkey+' unmarked');
+  var cnt = PRAYERS.filter(function(p){ return done[p.key]; }).length;
+  var activeBtn = document.querySelector('.past-date-btn[data-key="'+dateKey+'"]');
+  if(activeBtn){
+    var lbl = activeBtn.getAttribute('data-label');
+    activeBtn.textContent = lbl+(cnt>0?' ('+cnt+'/5)':'');
+    activeBtn.style.borderColor = cnt===5?'rgba(201,168,76,.5)':'';
+  }
+}
+
+/* ══════ SALAH HISTORY (from DOB) ══════ */
+var _hadith7PendingUser = null;
+
+function showHadith7Modal(user){
+  var dobDate = new Date(user.dob);
+  var start7 = new Date(dobDate);
+  start7.setFullYear(start7.getFullYear() + 7);
+  var mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var startStr = start7.getDate()+' '+mn[start7.getMonth()]+' '+start7.getFullYear();
+  var infoEl = g('hadith7Info');
+  if(start7 <= new Date()){
+    infoEl.textContent = 'Your Salah history in TaqwaSteps starts from '+startStr+' — when you turned 7. May Allah accept every prayer. 🤍';
+  } else {
+    infoEl.textContent = 'You will reach age 7 on '+startStr+'. TaqwaSteps will track your Salah from that day. 🤍';
+  }
+  _hadith7PendingUser = user;
+  g('hadith7Modal').style.display = 'flex';
+}
+var _shRendered = 0;
+var SH_PAGE = 30;
+
+function openSalahHistory(){
+  var panel = g('s-salah-history');
+  panel.style.display = 'flex';
+
+  var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  if(!currentUser || !currentUser.dob){
+    g('salahHistoryNoDob').style.display = 'flex';
+    g('salahHistoryBody').style.display = 'none';
+    return;
+  }
+
+  g('salahHistoryNoDob').style.display = 'none';
+  g('salahHistoryBody').style.display = 'block';
+
+  var start = new Date(currentUser.dob);
+  start.setFullYear(start.getFullYear() + 7);
+  start.setHours(0,0,0,0);
+  var today = new Date(); today.setHours(0,0,0,0);
+  var yesterday = new Date(today); yesterday.setDate(yesterday.getDate()-1);
+
+  // Personalised start message
+  var mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var startStr = start.getDate()+' '+mn[start.getMonth()]+' '+start.getFullYear();
+  var infoEl = g('historyStartInfo');
+  if(infoEl){
+    if(start <= today){
+      infoEl.textContent = 'Your history starts from '+startStr+' — when you turned 7. May Allah accept every prayer 🤍';
+    } else {
+      infoEl.textContent = 'You will turn 7 on '+startStr+'. Tracking begins then 🤍';
+    }
+  }
+
+  // Build dates array once
+  _shDates = [];
+  var cur = new Date(yesterday);
+  while(cur >= start){
+    _shDates.push(new Date(cur));
+    cur.setDate(cur.getDate()-1);
+  }
+
+  g('salahHistorySubtitle').textContent = _shDates.length + ' day' + (_shDates.length!==1?'s':'') + ' of history — tap any prayer to mark or unmark';
+
+  var list = g('salahHistoryList');
+  list.innerHTML = '';
+  _shRendered = 0;
+  renderShBatch(list, dayNames, monthNames, yesterday);
+}
+
+function renderShBatch(list, dayNames, monthNames, yesterday){
+  var end = Math.min(_shRendered + SH_PAGE, _shDates.length);
+  var frag = document.createDocumentFragment();
+
+  for(var i = _shRendered; i < end; i++){
+    var d = _shDates[i];
+    frag.appendChild(buildShDay(d, dayNames, monthNames, yesterday));
+  }
+  _shRendered = end;
+
+  // Remove old load-more btn if exists
+  var oldBtn = list.querySelector('.sh-load-more');
+  if(oldBtn) oldBtn.remove();
+
+  list.appendChild(frag);
+
+  if(_shRendered < _shDates.length){
+    var loadBtn = document.createElement('button');
+    loadBtn.className = 'sh-mark-all sh-load-more';
+    loadBtn.textContent = 'LOAD MORE — Showing '+_shRendered+' of '+_shDates.length+' days';
+    loadBtn.addEventListener('click', function(){
+      var self = this;
+      self.textContent = 'Loading...';
+      setTimeout(function(){
+        renderShBatch(list, dayNames, monthNames, yesterday);
+      }, 50);
+    });
+    list.appendChild(loadBtn);
+  }
+}
+
+function buildShDay(d, dayNames, monthNames, yesterday){
+  var dateKey = d.toDateString();
+  var isYesterday = (d.getTime() === yesterday.getTime());
+  var storKey = 'prayers_' + dateKey.replace(/ /g, '_');
+  var done = load(storKey, {});
+  var count = PRAYERS.filter(function(p){ return done[p.key]; }).length;
+  var label = isYesterday ? 'Yesterday' : dayNames[d.getDay()] + ' ' + d.getDate() + ' ' + monthNames[d.getMonth()] + ' ' + d.getFullYear();
+
+  var dayDiv = document.createElement('div');
+  dayDiv.className = 'sh-day' + (count===5?' sh-complete':'');
+  dayDiv.setAttribute('data-datekey', dateKey);
+
+  var header = document.createElement('div');
+  header.className = 'sh-day-header';
+  var lbl = document.createElement('div');
+  lbl.className = 'sh-day-label';
+  lbl.textContent = label.toUpperCase();
+  var cnt = document.createElement('div');
+  cnt.className = 'sh-day-count' + (count===5?' sh-done-all':'');
+  cnt.textContent = count===5 ? '✓ All 5 prayed' : count+' / 5';
+  header.appendChild(lbl); header.appendChild(cnt);
+  dayDiv.appendChild(header);
+
+  var prayersRow = document.createElement('div');
+  prayersRow.className = 'sh-prayers';
+
+  PRAYERS.forEach(function(p){
+    var isDone = done[p.key]||false;
+    var pWrap = document.createElement('div');
+    pWrap.className = 'sh-prayer';
+    var dot = document.createElement('div');
+    dot.className = 'sh-dot '+(isDone?'sh-done':'sh-pending');
+    dot.textContent = isDone?'✓':'·';
+    dot.setAttribute('data-pkey', p.key);
+    dot.setAttribute('data-datekey', dateKey);
+    var nm = document.createElement('div');
+    nm.className = 'sh-pname'; nm.textContent = p.name;
+    var qzLbl = document.createElement('div');
+    qzLbl.style.cssText='font-size:7px;color:rgba(255,120,120,.7);font-family:Cinzel,serif;margin-top:1px';
+    qzLbl.textContent = isDone?'':'QAZA';
+
+    function handleToggle(e){
+      e.preventDefault();
+      var dk=this.getAttribute('data-datekey'); var pk=this.getAttribute('data-pkey'); var self=this;
+      showAwPopup(function(){
+        var sk='prayers_'+dk.replace(/ /g,'_');
+        var d2=load(sk,{}); d2[pk]=!d2[pk]; save(sk,d2);
+        invalidateStreakCache();
+        var isDone2=d2[pk];
+        self.className='sh-dot '+(isDone2?'sh-done':'sh-pending');
+        self.textContent=isDone2?'✓':'·';
+        qzLbl.textContent=isDone2?'':'QAZA';
+        var cnt2=PRAYERS.filter(function(p2){return d2[p2.key];}).length;
+        var parentDay=self.closest('.sh-day');
+        var cntEl=parentDay.querySelector('.sh-day-count');
+        cntEl.className='sh-day-count'+(cnt2===5?' sh-done-all':'');
+        cntEl.textContent=cnt2===5?'✓ All 5 prayed':cnt2+' / 5';
+        parentDay.className='sh-day'+(cnt2===5?' sh-complete':'');
+        var ns=calcSalahStreak(); g('streak-salah').textContent=ns; save('salah_today_frac',ns);
+        showToast(isDone2?pk+' marked ✓':pk+' unmarked');
+      });
+    }
+    dot.addEventListener('click', handleToggle);
+    dot.addEventListener('touchend', handleToggle);
+    pWrap.appendChild(dot); pWrap.appendChild(nm); pWrap.appendChild(qzLbl);
+    prayersRow.appendChild(pWrap);
+  });
+  dayDiv.appendChild(prayersRow);
+
+  // Mark all btn
+  var markAllBtn = document.createElement('button');
+  markAllBtn.className = 'sh-mark-all';
+  markAllBtn.textContent = count===5?'✓ ALL 5 MARKED':'MARK ALL 5 AS PRAYED';
+  markAllBtn.setAttribute('data-datekey', dateKey);
+  markAllBtn.addEventListener('click', function(){
+    var dk=this.getAttribute('data-datekey'); var self=this;
+    showAwPopup(function(){
+      var sk='prayers_'+dk.replace(/ /g,'_');
+      var d3=load(sk,{}); var alreadyAll=PRAYERS.every(function(p){return d3[p.key];});
+      PRAYERS.forEach(function(p){d3[p.key]=!alreadyAll;}); save(sk,d3);
+      invalidateStreakCache();
+      var parentDay=self.closest('.sh-day');
+      parentDay.querySelectorAll('.sh-dot').forEach(function(dot){dot.className='sh-dot '+(!alreadyAll?'sh-done':'sh-pending');dot.textContent=!alreadyAll?'✓':'·';});
+      parentDay.querySelectorAll('.sh-prayer div:last-child').forEach(function(ql){ql.textContent=!alreadyAll?'':'QAZA';});
+      var cntEl=parentDay.querySelector('.sh-day-count'); var nc=alreadyAll?0:5;
+      cntEl.className='sh-day-count'+(nc===5?' sh-done-all':''); cntEl.textContent=nc===5?'✓ All 5 prayed':nc+' / 5';
+      parentDay.className='sh-day'+(nc===5?' sh-complete':''); self.textContent=nc===5?'✓ ALL 5 MARKED':'MARK ALL 5 AS PRAYED';
+      var ns=calcSalahStreak(); g('streak-salah').textContent=ns; save('salah_today_frac',ns);
+      showToast(nc===5?'All 5 prayers marked ✓':'Prayers unmarked');
+    });
+  });
+  dayDiv.appendChild(markAllBtn);
+
+  // Tahajjud row
+  var tStorKey='tahajjud_'+dateKey.replace(/ /g,'_');
+  var tDone=load(tStorKey,false);
+  var tRow=document.createElement('div'); tRow.className='sh-tahajjud-row';
+  var tLbl=document.createElement('span'); tLbl.className='sh-tahajjud-lbl'; tLbl.textContent='🌙 TAHAJJUD';
+  var tBtn=document.createElement('button');
+  tBtn.className='sh-tahajjud-btn'+(tDone?' sh-t-done':'');
+  tBtn.textContent=tDone?'✓ PRAYED':'MARK AS PRAYED';
+  tBtn.setAttribute('data-datekey',dateKey);
+  tBtn.addEventListener('click',function(){
+    var dk=this.getAttribute('data-datekey'); var self=this;
+    showAwPopup(function(){
+      var sk='tahajjud_'+dk.replace(/ /g,'_');
+      var was=load(sk,false); save(sk,!was);
+      var s=load('streak_tahajjud',0); if(!was) s++; else s=Math.max(0,s-1);
+      save('streak_tahajjud',s); g('streak-tahajjud').textContent=s;
+      if(g('pTahajjud')) g('pTahajjud').textContent=s;
+      self.className='sh-tahajjud-btn'+(!was?' sh-t-done':'');
+      self.textContent=!was?'✓ PRAYED':'MARK AS PRAYED';
+      showToast(!was?'Tahajjud marked ⭐':'Tahajjud unmarked');
+    });
+  });
+  tRow.appendChild(tLbl); tRow.appendChild(tBtn);
+  dayDiv.appendChild(tRow);
+
+  return dayDiv;
+}
+
+function closeSalahHistory(){
+  g('s-salah-history').style.display = 'none';
+}
+
+/* ══════ STREAK CACHE ══════ */
+/* ══════ STREAK CACHE ══════ */
+var _streakCache = null;
+var _streakCacheKey = '';
+function invalidateStreakCache(){ _streakCache = null; }
+
+/* ══════ SALAH STREAK ══════ */
+/* Rules:
+   - Start from first_use_day (not DOB — that causes 365 days of misses)
+   - Use LIVE hour so marking mid-day works correctly
+   - Past days: all windows treated as closed (dayHour=24)
+   - Marked → +0.2 | Missed window → reset to 0 | Future slot → neutral
+*/
+function calcSalahStreak(){
+  var liveHour = getLiveHour();
+  var cacheKey = getLocalDate() + '_' + liveHour;
+  if(_streakCache !== null && _streakCacheKey === cacheKey) return _streakCache;
+
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  // Use first_use_day so we only count days since user started the app
+  var firstUseSaved = load('first_use_day','');
+  var start;
+  if(firstUseSaved){
+    start = new Date(firstUseSaved); start.setHours(0,0,0,0);
+  } else {
+    save('first_use_day', getLocalDate());
+    start = new Date(today);
+  }
+  // Hard cap: never go back more than 365 days
+  var maxBack = new Date(); maxBack.setDate(maxBack.getDate()-365); maxBack.setHours(0,0,0,0);
+  if(start < maxBack) start = maxBack;
+
+  var totalRead = 0;
+  var d = new Date(start);
+
+  while(d <= today){
+    var isToday = (d.getTime() === today.getTime());
+    // Use local-date-based storage key for past days
+    var storKey = isToday ? 'prayers' : 'prayers_'+d.toDateString().replace(/ /g,'_');
+    var done = load(storKey, {});
+    var dayHour = isToday ? liveHour : 24;
+
+    for(var pi=0; pi<PRAYERS.length; pi++){
+      var p = PRAYERS[pi];
+      var slotPassed = dayHour >= PRAYER_END[p.key];
+      if(done[p.key]){
+        totalRead++;
+      } else if(slotPassed){
+        totalRead = 0;
+      }
+    }
+    d.setDate(d.getDate()+1);
+  }
+
+  var result = parseFloat((totalRead*0.2).toFixed(1));
+  _streakCache = result;
+  _streakCacheKey = cacheKey;
+  return result;
+}
+
+/* ══════ SALAH ══════ */
+// Prayer end times (24h) — after this hour the window is considered passed
+var PRAYER_END = {fajr:12, dhuhr:15, asr:18, maghrib:21, isha:23};
+
+function renderSalah(){
+  var done=load('prayers',{});
+  var row=g('prayersRow'); row.innerHTML='';
+  var count=0;
+  PRAYERS.forEach(function(p){
+    var isDone=done[p.key]||false;
+    if(isDone) count++;
+    var div=document.createElement('div'); div.className='p-item';
+    div.innerHTML='<div class="p-name">'+p.name+'</div>'+
+      '<div class="p-dot '+(isDone?'done':'pending')+'" data-prayer="'+p.key+'">'+(isDone?'✓':'·')+'</div>'+
+      '<div class="p-arabic">'+p.arabic+'</div>';
+    row.appendChild(div);
+  });
+  g('salahProgFill').style.width=(count/5*100)+'%';
+
+  // New streak calculation — cumulative across all days
+  var streak = calcSalahStreak();
+  var streakStr = Number.isInteger(streak) ? String(streak) : streak.toFixed(1);
+  g('streak-salah').textContent = streakStr;
+  save('salah_today_frac', streak);
+
+  // Qaza reminder — use LIVE hour, not page-load hour
+  var liveHr = getLiveHour();
+  var missed=[];
+  PRAYERS.forEach(function(p){
+    if(!done[p.key] && liveHr >= PRAYER_END[p.key]) missed.push(p.name);
+  });
+  if(missed.length>0){
+    g('salahProgCount').textContent = count+' / 5  ·  Qaza: '+missed.join(', ');
+  } else {
+    g('salahProgCount').textContent = count+' / 5  ·  🔥 '+streakStr;
+  }
+
+  if(count===5 && (done['fajr']||false)){
+    g('salahCard').classList.add('done-card');
+  } else {
+    g('salahCard').classList.remove('done-card');
+  }
+}
+
+function togglePrayer(key){
+  var done=load('prayers',{});
+  done[key]=!done[key];
+  save('prayers',done);
+  invalidateStreakCache();
+  if(done[key] && !dhikrPromptShown){
+    setTimeout(function(){
+      g('dhikrPrompt').classList.add('show');
+      dhikrPromptShown=true;
+    },600);
+  }
+  renderSalah();
+}
+
+/* ══════ QURAN ══════ */
+function renderQuran(){
+  var hasGoal = load('quran_goal_set', false);
+  if(!hasGoal){
+    g('quranSetup').style.display='block';
+    g('quranTracker').style.display='none';
+    return;
+  }
+  g('quranSetup').style.display='none';
+  g('quranTracker').style.display='block';
+  var pages=load('quran_pages',0);
+  var goal=load('quran_goal',1);
+  var isDone=pages>=goal;
+  var pct=Math.min(100,(pages/goal)*100);
+  g('quranPages').textContent=pages;
+  g('quranGoal').textContent=goal;
+  g('quranProgFill').style.width=pct+'%';
+  g('qStreakNum').textContent=load('streak_quran',0);
+  if(isDone){
+    g('quranDoneBadge').style.display='block';
+    g('quranAddBtn').disabled=true;
+    g('quranCard').classList.add('done-card');
+    g('sp-quran').classList.add('active');
+  } else {
+    g('quranDoneBadge').style.display='none';
+    g('quranAddBtn').disabled=false;
+    g('quranCard').classList.remove('done-card');
+  }
+}
+
+function setQuranGoalAndStart(val){
+  if(!val||val<1) return;
+  val=Math.min(604,Math.max(1,parseInt(val)));
+  save('quran_goal', val);
+  save('quran_goal_set', true);
+  renderQuran();
+  showToast('Quran goal set: '+val+' page(s) daily ✨');
+}
+
+function addQuranPage(){
+  var pages=load('quran_pages',0)+1;
+  var goal=load('quran_goal',1);
+  save('quran_pages',pages);
+  if(pages>=goal){
+    var last=load('last_quran_full','');
+    if(last!==todayKey){
+      var s=load('streak_quran',0)+1;
+      save('streak_quran',s); save('last_quran_full',todayKey);
+      g('streak-quran').textContent=s;
+      showToast('SubhanAllah! Quran goal complete ✨🔥');
+    }
+  } else {
+    showToast(pages+' / '+goal+' pages ✨');
+  }
+  renderQuran();
+}
+
+function setQuranGoal(){
+  save('quran_goal_set', false);
+  renderQuran();
+}
+
+/* ══════ DHIKR ══════ */
+function renderDhikr(){
+  var d=DHIKR_LIST[currentDhikrIdx];
+  var counts=load('dhikr_counts',{});
+  var c=counts[d.key]||0;
+  g('dcArabic').textContent=d.arabic;
+  g('dcTrans').textContent=d.trans;
+  g('dcCount').textContent=c;
+  g('dcOf').textContent='of '+d.target;
+  g('dcBarFill').style.width=Math.min(100,(c/d.target)*100)+'%';
+  g('dStreakNum').textContent=load('streak_dhikr',0);
+  renderDhikrList(counts);
+}
+
+function tapDhikr(){
+  var d=DHIKR_LIST[currentDhikrIdx];
+  var counts=load('dhikr_counts',{});
+  var c=(counts[d.key]||0)+1;
+  counts[d.key]=c; save('dhikr_counts',counts);
+  save('total_dhikr',load('total_dhikr',0)+1);
+  // animate
+  var btn=g('dcTapBtn');
+  btn.style.transform='scale(0.9)';
+  setTimeout(function(){ btn.style.transform='scale(1)'; },90);
+  g('dcCount').textContent=c;
+  g('dcBarFill').style.width=Math.min(100,(c/d.target)*100)+'%';
+  if(c>=d.target){
+    showToast(d.trans.split('—')[0].trim()+' complete ✓');
+    // move to next dhikr automatically
+    setTimeout(function(){
+      if(currentDhikrIdx<DHIKR_LIST.length-1){ currentDhikrIdx++; renderDhikr(); }
+    },800);
+  }
+  renderDhikrList(counts);
+}
+
+function renderDhikrList(counts){
+  var list=g('dcList'); list.innerHTML='';
+  var allDone=true;
+  DHIKR_LIST.forEach(function(d,i){
+    var c=counts[d.key]||0;
+    var done=c>=d.target;
+    if(!done) allDone=false;
+    var div=document.createElement('div');
+    div.className='dc-item'+(i===currentDhikrIdx?' dc-active':'')+(done?' done-dhikr':'');
+    div.innerHTML='<span class="dc-item-name">'+(done?'✓ ':'')+d.trans.split('—')[0].trim()+'</span><span class="dc-item-prog">'+c+'/'+d.target+'</span>';
+    div.setAttribute('data-idx',i);
+    list.appendChild(div);
+  });
+  if(allDone && !load('dhikr_done_today',false)){
+    save('dhikr_done_today',true);
+    var last=load('last_dhikr_full','');
+    if(last!==todayKey){
+      var s=load('streak_dhikr',0)+1;
+      save('streak_dhikr',s); save('last_dhikr_full',todayKey);
+      g('streak-dhikr').textContent=s;
+      g('sp-dhikr').classList.add('active');
+      showToast('Alhamdulillah! All Dhikr complete 📿🔥');
+    }
+  }
+}
+
+function addCustomDhikr(){
+  var en=g('customDhikrEn').value.trim();
+  var ar=g('customDhikrAr').value.trim();
+  var cnt=parseInt(g('customDhikrCount').value)||33;
+  if(!en&&!ar){ showToast('Please enter at least a name or Arabic text'); return; }
+  var label=en||(ar?'Custom Dhikr':'');
+  var key='custom_'+Date.now();
+  var newD={key:key, arabic:ar||'', trans:label, target:cnt};
+  DHIKR_LIST.push(newD);
+  // save custom list
+  var custom=JSON.parse(localStorage.getItem('tq_custom_dhikr')||'[]');
+  custom.push(newD);
+  localStorage.setItem('tq_custom_dhikr',JSON.stringify(custom));
+  // clear inputs
+  g('customDhikrEn').value=''; g('customDhikrAr').value=''; g('customDhikrCount').value='';
+  showToast('Custom dhikr added: '+label+' ×'+cnt);
+  renderDhikr();
+}
+
+function loadCustomDhikr(){
+  var custom=JSON.parse(localStorage.getItem('tq_custom_dhikr')||'[]');
+  for(var i=0;i<custom.length;i++) DHIKR_LIST.push(custom[i]);
+}
+
+function completeDhikr(){
+  // mark all done
+  var counts=load('dhikr_counts',{});
+  DHIKR_LIST.forEach(function(d){ counts[d.key]=d.target; });
+  save('dhikr_counts',counts);
+  g('dhikrPrompt').classList.remove('show');
+  checkDhikrStreak();
+  renderDhikr();
+  showToast('Dhikr marked complete 📿');
+}
+
+function checkDhikrStreak(){
+  if(!load('dhikr_done_today',false)){
+    save('dhikr_done_today',true);
+    var last=load('last_dhikr_full','');
+    if(last!==todayKey){
+      var s=load('streak_dhikr',0)+1;
+      save('streak_dhikr',s); save('last_dhikr_full',todayKey);
+      g('streak-dhikr').textContent=s;
+      g('sp-dhikr').classList.add('active');
+    }
+  }
+}
+
+/* ══════ ROUTINES ══════ */
+function renderRoutines(){
+  renderRoutine('morning');
+  renderRoutine('night');
+  if(isFriday) renderRoutine('kahf');
+}
+
+function renderRoutine(name){
+  var checks=load(name+'_checks',{});
+  var items=document.querySelectorAll('[data-routine="'+name+'"]');
+  var total=items.length; var done=0;
+  for(var i=0;i<items.length;i++){
+    var key=items[i].getAttribute('data-key');
+    if(checks[key]){ items[i].classList.add('checked'); done++; }
+    else items[i].classList.remove('checked');
+  }
+  var isDone=load(name+'_done',false);
+  var statusEl=g(name+'Status');
+  if(statusEl){
+    if(isDone) statusEl.textContent='✅ Completed';
+    else statusEl.textContent=done+'/'+total+' completed';
+  }
+  var btn=g(name+'CompleteBtn');
+  if(btn) btn.disabled=(done<total||isDone);
+  if(isDone && g(name+'Toggle')) g(name+'Toggle').style.borderColor='rgba(201,168,76,.4)';
+}
+
+function toggleCheckItem(el){
+  var routine=el.getAttribute('data-routine');
+  var key=el.getAttribute('data-key');
+  var checks=load(routine+'_checks',{});
+  checks[key]=!checks[key];
+  save(routine+'_checks',checks);
+  renderRoutine(routine);
+}
+
+function completeRoutine(name){
+  save(name+'_done',true);
+  renderRoutine(name);
+  // contribute to dhikr streak for morning/night
+  if(name==='morning'||name==='night') checkDhikrStreak();
+  showToast((name==='morning'?'Morning':'name'==='night'?'Night':'Kahf')+' routine complete 👍🏻');
+}
+
+function toggleRoutineBody(name){
+  var body=g(name+'Body');
+  var arrow=g(name+'Arrow');
+  var isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  arrow.classList.toggle('open',!isOpen);
+}
+
+/* ══════ PROFILE ══════ */
+function renderProfile(){
+  if(!currentUser) return;
+  g('profileAvatar').src=LOGO;
+  g('profileName').textContent=currentUser.name;
+  g('profileEmail').textContent=currentUser.email;
+  var dobStr = currentUser.dob ? ' · DOB: '+currentUser.dob : '';
+  g('profileJoined').textContent='Since '+currentUser.joined+dobStr;
+
+  var salahStreak = calcSalahStreak();
+  var salahStr = Number.isInteger(salahStreak)?String(salahStreak):salahStreak.toFixed(1);
+  var sDhikr=load('streak_dhikr',0);
+  var sQuran=load('streak_quran',0);
+  var sTahajjud=load('streak_tahajjud',0);
+
+  g('pSalah').textContent=salahStr;
+  g('pDhikr').textContent=sDhikr;
+  g('pQuran').textContent=sQuran;
+  g('pTahajjud').textContent=sTahajjud;
+  g('streak-salah').textContent=salahStr;
+  g('streak-dhikr').textContent=sDhikr;
+  g('streak-quran').textContent=sQuran;
+  g('streak-tahajjud').textContent=sTahajjud;
+
+  var lastT=load('last_tahajjud','');
+  setTahajjudBtns(lastT===todayKey ? 'yes' : 'none');
+  initPastTahajjud();
+}
+
+
+
+/* ══════ PAST TAHAJJUD ══════ */
+function initPastTahajjud(){
+  var el = g('pastTahajjudBtns');
+  if(!el) return;
+  el.innerHTML = '';
+  var start = getDobStart();
+  var today = new Date(); today.setHours(0,0,0,0);
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dates = [];
+  var cur = new Date(today); cur.setDate(cur.getDate()-1);
+  while(cur >= start && dates.length < 30){
+    dates.push(new Date(cur));
+    cur.setDate(cur.getDate()-1);
+  }
+  if(!dates.length){ el.innerHTML='<span style="font-size:12px;color:var(--cream-muted)">No past dates yet</span>'; return; }
+  dates.forEach(function(d){
+    var key = d.toDateString();
+    var storKey = 'tahajjud_'+key.replace(/ /g,'_');
+    var isDone = load(storKey, false);
+    var diffMs = today - d;
+    var diffDays = Math.round(diffMs/86400000);
+    var label = diffDays===1 ? 'Yesterday' : days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
+    var btn = document.createElement('button');
+    btn.className = 'past-date-btn';
+    btn.textContent = label + (isDone ? ' ⭐' : '');
+    if(isDone){ btn.style.borderColor='rgba(201,168,76,.5)'; btn.style.color='var(--gold-light)'; }
+    btn.addEventListener('click', function(){ togglePastTahajjud(key); });
+    el.appendChild(btn);
+  });
+}
+function setTahajjudBtns(state){
+  // state: 'yes' | 'no' | 'none'
+  var neutral = {bg:'rgba(255,255,255,.04)', border:'rgba(255,255,255,.1)', color:'var(--cream-dim)', opacity:'1'};
+  var yesSel  = {bg:'rgba(201,168,76,.2)',   border:'var(--gold)',           color:'var(--gold-light)', opacity:'1'};
+  var noSel   = {bg:'rgba(255,80,80,.1)',     border:'rgba(255,80,80,.3)',    color:'rgba(255,150,150,.9)', opacity:'1'};
+
+  function applyStyle(el, s){
+    if(!el) return;
+    el.style.background  = s.bg;
+    el.style.borderColor = s.border;
+    el.style.color       = s.color;
+    el.style.opacity     = s.opacity;
+  }
+
+  var yStyle = state==='yes' ? yesSel : neutral;
+  var nStyle = state==='no'  ? noSel  : neutral;
+
+  applyStyle(g('homeYes'),      yStyle);
+  applyStyle(g('homeNo'),       nStyle);
+  applyStyle(g('tahajjudYes'),  yStyle);
+  applyStyle(g('tahajjudNo'),   nStyle);
+}
+function initStars(){
+  var sc=g('starsEl');
+  for(var i=0;i<50;i++){
+    var s=document.createElement('div'); s.className='star';
+    var sz=Math.random()*2+0.4;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;--d:'+(Math.random()*4+2).toFixed(1)+'s;--o:'+(Math.random()*.4+.1).toFixed(2)+';animation-delay:'+(Math.random()*6).toFixed(1)+'s';
+    sc.appendChild(s);
+  }
+}
+
+/* ══════ INIT ══════ */
+function init(){
+  // Set logos
+  g('loadLogo').src=LOGO;
+  g('authLogoImg').src=LOGO;
+  g('topnavLogo').src=LOGO;
+
+  initStars();
+
+  // Auth tab switching
+  g('tab-in').addEventListener('click',function(){
+    clearAuthMsg();
+    g('tab-in').classList.add('active'); g('tab-up').classList.remove('active');
+    g('panel-in').style.display='block'; g('panel-up').style.display='none';
+  });
+  g('tab-up').addEventListener('click',function(){
+    clearAuthMsg();
+    g('tab-up').classList.add('active'); g('tab-in').classList.remove('active');
+    g('panel-up').style.display='block'; g('panel-in').style.display='none';
+  });
+  g('goSignup').addEventListener('click',function(){ g('tab-up').click(); });
+  g('goSignin').addEventListener('click',function(){ g('tab-in').click(); });
+
+  // Auth actions
+  g('siBtn').addEventListener('click',doSignIn);
+  g('suBtn').addEventListener('click',doSignUp);
+  g('googleBtn').addEventListener('click',doGoogleAuth);
+  g('googleBtn2').addEventListener('click',doGoogleAuth);
+  g('signoutBtn').addEventListener('click',doSignOut);
+  g('profileSignout').addEventListener('click',doSignOut);
+
+  // Enter key on password
+  g('si-pass').addEventListener('keydown',function(e){ if(e.key==='Enter') doSignIn(); });
+  g('su-pass').addEventListener('keydown',function(e){ if(e.key==='Enter') doSignUp(); });
+
+  // DOB save (Google new users)
+  g('dobSaveBtn').addEventListener('click', saveDobFromGoogle);
+  g('dobInput').addEventListener('keydown',function(e){ if(e.key==='Enter') saveDobFromGoogle(); });
+
+  // Prayer dots
+  g('prayersRow').addEventListener('click',function(e){
+    var dot=e.target.closest('.p-dot');
+    if(dot) togglePrayer(dot.getAttribute('data-prayer'));
+  });
+  g('prayersRow').addEventListener('touchend',function(e){
+    var dot=e.target.closest('.p-dot');
+    if(dot){ e.preventDefault(); togglePrayer(dot.getAttribute('data-prayer')); }
+  });
+
+  // Dhikr prompt
+  g('dhikrPromptBtn').addEventListener('click',function(){
+    g('dhikrPrompt').classList.remove('show');
+    g('dcTapBtn').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  loadCustomDhikr();
+
+  // Custom dhikr
+  g('addCustomDhikrBtn').addEventListener('click', addCustomDhikr);
+
+  // Home tahajjud buttons
+  g('homeYes').addEventListener('click', function(){
+    var last=load('last_tahajjud','');
+    if(last===todayKey){
+      // unmark — no popup needed
+      save('last_tahajjud','');
+      var s=Math.max(0,load('streak_tahajjud',0)-1); save('streak_tahajjud',s);
+      g('streak-tahajjud').textContent=s;
+      g('sp-tahajjud').classList.remove('active');
+      if(g('pTahajjud')) g('pTahajjud').textContent=s;
+      setTahajjudBtns('none');
+      showToast('Tahajjud unmarked');
+    } else {
+      // show popup before marking
+      showAwPopup(function(){
+        save('last_tahajjud',todayKey);
+        var s=load('streak_tahajjud',0)+1; save('streak_tahajjud',s);
+        g('streak-tahajjud').textContent=s;
+        g('sp-tahajjud').classList.add('active');
+        if(g('pTahajjud')) g('pTahajjud').textContent=s;
+        setTahajjudBtns('yes');
+        showToast('Tahajjud logged! MashaAllah 🌙🔥 Streak: '+s);
+      });
+    }
+  });
+  g('homeNo').addEventListener('click', function(){
+    var last=load('last_tahajjud','');
+    if(last===todayKey){
+      save('last_tahajjud','');
+      var s=Math.max(0,load('streak_tahajjud',0)-1); save('streak_tahajjud',s);
+      g('streak-tahajjud').textContent=s;
+      g('sp-tahajjud').classList.remove('active');
+      if(g('pTahajjud')) g('pTahajjud').textContent=s;
+    }
+    setTahajjudBtns('no');
+    showToast('May Allah make it easy for you 🤲🏻');
+  });
+  var presets=document.querySelectorAll('.qgoal-preset');
+  for(var pi=0;pi<presets.length;pi++){
+    presets[pi].addEventListener('click',function(){
+      for(var x=0;x<presets.length;x++) presets[x].classList.remove('selected');
+      this.classList.add('selected');
+      g('quranCustomGoal').value='';
+    });
+  }
+  g('quranSetGoalBtn').addEventListener('click',function(){
+    var selected=document.querySelector('.qgoal-preset.selected');
+    var val=selected?parseInt(selected.getAttribute('data-val')):parseInt(g('quranCustomGoal').value);
+    if(val&&val>0) setQuranGoalAndStart(val);
+    else showToast('Please select or enter a goal first');
+  });
+  g('quranCustomGoal').addEventListener('input',function(){
+    var presets2=document.querySelectorAll('.qgoal-preset');
+    for(var x=0;x<presets2.length;x++) presets2[x].classList.remove('selected');
+  });
+
+  // Quran add + change goal
+  g('quranAddBtn').addEventListener('click',addQuranPage);
+  g('quranGoalBtn').addEventListener('click',setQuranGoal);
+
+  // Dhikr tap
+  g('dcTapBtn').addEventListener('click',tapDhikr);
+  g('dcTapBtn').addEventListener('touchend',function(e){ e.preventDefault(); tapDhikr(); });
+
+  // Dhikr list click
+  g('dcList').addEventListener('click',function(e){
+    var item=e.target.closest('.dc-item');
+    if(item){ currentDhikrIdx=parseInt(item.getAttribute('data-idx')); renderDhikr(); }
+  });
+
+  // Complete all dhikr
+  g('dcCompleteAll').addEventListener('click',completeDhikr);
+
+  // Routine toggles
+  g('morningToggle').addEventListener('click',function(){ toggleRoutineBody('morning'); });
+  g('nightToggle').addEventListener('click',function(){ toggleRoutineBody('night'); });
+  g('kahfToggle').addEventListener('click',function(){ toggleRoutineBody('kahf'); });
+
+  // Routine checklist
+  document.addEventListener('click',function(e){
+    var item=e.target.closest('.check-item');
+    if(item && !load(item.getAttribute('data-routine')+'_done',false)){
+      toggleCheckItem(item);
+    }
+  });
+  document.addEventListener('touchend',function(e){
+    var item=e.target.closest('.check-item');
+    if(item && !load(item.getAttribute('data-routine')+'_done',false)){
+      e.preventDefault(); toggleCheckItem(item);
+    }
+  });
+
+  // Routine complete btns
+  g('morningCompleteBtn').addEventListener('click',function(){ completeRoutine('morning'); });
+  g('nightCompleteBtn').addEventListener('click',function(){ completeRoutine('night'); });
+  g('kahfCompleteBtn').addEventListener('click',function(){ completeRoutine('kahf'); });
+
+  // Bottom nav — 3 tabs: Home / Salah / Profile
+  function goHome(){ setActiveBnav('home'); showScreen('s-home'); }
+  function goSalah(){ setActiveBnav('salah'); if(!salahTimesLoaded) initSalahTimes(); if(currentUser) g('salahTopnavUser').textContent=currentUser.name.split(' ')[0].toUpperCase(); renderSalahTrack(); showScreen('s-salah'); }
+  function goProfile(){ setActiveBnav('profile'); renderProfile(); showScreen('s-profile'); }
+  function setActiveBnav(tab){
+    var navIds=[['bn-home','bn-salah','bn-profile'],['bn-home2','bn-salah2','bn-profile2'],['bn-home3','bn-salah3','bn-profile3']];
+    var tabs=['home','salah','profile'];
+    navIds.forEach(function(row){ row.forEach(function(id,i){ var el=g(id); if(el){ el.classList.toggle('active',tabs[i]===tab); } }); });
+  }
+  g('bn-home').addEventListener('click', goHome);
+  g('bn-home2').addEventListener('click', goHome);
+  g('bn-home3').addEventListener('click', goHome);
+  g('bn-salah').addEventListener('click', goSalah);
+  g('bn-salah2').addEventListener('click', goSalah);
+  g('bn-salah3').addEventListener('click', goSalah);
+  g('bn-profile').addEventListener('click', goProfile);
+  g('bn-profile2').addEventListener('click', goProfile);
+  g('bn-profile3').addEventListener('click', goProfile);
+  g('profileBack').addEventListener('click', goHome);
+
+  // Profile items
+  g('pNotif').addEventListener('click',function(){ showToast('Notifications coming soon 🔔'); });
+  g('pBlocker').addEventListener('click',function(){ showToast('App blocker coming soon 🔒'); });
+
+  g('resetQuranStreakBtn').addEventListener('click',function(){
+    if(!confirm('Reset your Quran streak to 0? This cannot be undone.')) return;
+    save('streak_quran',0); save('last_quran_full',''); save('quran_pages',0);
+    save('quran_goal_set',false);
+    g('streak-quran').textContent='0';
+    if(g('pQuran')) g('pQuran').textContent='0';
+    renderQuran();
+    showToast('Quran streak reset ✓ Start fresh 📖');
+  });
+
+  g('resetDhikrStreakBtn').addEventListener('click',function(){
+    if(!confirm('Reset your Dhikr streak to 0? This cannot be undone.')) return;
+    save('streak_dhikr',0); save('last_dhikr_full','');
+    save('dhikr_counts',{}); save('dhikr_done_today',false);
+    g('streak-dhikr').textContent='0';
+    if(g('pDhikr')) g('pDhikr').textContent='0';
+    currentDhikrIdx=0;
+    renderDhikr();
+    showToast('Dhikr streak reset ✓ Start fresh 📿');
+  });
+  g('pSalahHistory').addEventListener('click', openSalahHistory);
+  g('salahHistoryBack').addEventListener('click', closeSalahHistory);
+  g('deleteAccountBtn').addEventListener('click', openDeleteModal);
+  g('deleteCancelBtn').addEventListener('click', closeDeleteModal);
+  g('deleteConfirmBtn').addEventListener('click', deleteAccount);
+  g('deletePass').addEventListener('keydown',function(e){ if(e.key==='Enter') deleteAccount(); });
+
+  // Hadith 7 years modal OK
+  g('hadith7OkBtn').addEventListener('click', function(){
+    g('hadith7Modal').style.display = 'none';
+    if(_hadith7PendingUser){
+      loginUser(_hadith7PendingUser);
+      _hadith7PendingUser = null;
+    }
+  });
+
+  // Allah is watching popup OK
+  g('allahWatchingOkBtn').addEventListener('click', function(){
+    g('allahWatchingModal').style.display = 'none';
+    var cb = g('allahWatchingModal')._onOk;
+    g('allahWatchingModal')._onOk = null;
+    if(cb) cb();
+  });
+
+  // Password eye toggle — Sign In
+  // Password eye toggle — Sign In
+  g('siPassEye').addEventListener('click', function(){
+    var inp = g('si-pass');
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    this.style.opacity = show ? '0.85' : '0.45';
+    this.textContent = show ? 'Hide' : 'Show';
+  });
+
+  // Password eye toggle — Sign Up
+  g('suPassEye').addEventListener('click', function(){
+    var inp = g('su-pass');
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    this.style.opacity = show ? '0.85' : '0.45';
+    this.textContent = show ? 'Hide' : 'Show';
+  });
+
+  // Password eye toggle — Delete modal
+  g('delPassEye').addEventListener('click', function(){
+    var inp = g('deletePass');
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    this.style.opacity = show ? '0.85' : '0.5';
+    this.textContent = show ? 'Hide' : 'Show';
+  });
+
+  // Sad modal — Stay button
+  g('deleteSadCancelBtn').addEventListener('click', closeSadModal);
+
+  // Sad modal — Delete Permanently button → show final confirmation
+  g('deletePermanentBtn').addEventListener('click', function(){
+    closeSadModal();
+    g('deleteFinalModal').style.display = 'flex';
+  });
+
+  // Final modal — Cancel
+  g('deleteFinalCancelBtn').addEventListener('click', closeFinalModal);
+
+  // Final modal — YES DELETE NOW → actually delete
+  g('deleteFinalYesBtn').addEventListener('click', function(){
+    doFinalDelete();
+  });
+
+  // Profile tahajjud buttons
+  g('tahajjudYes').addEventListener('click',function(){
+    var last=load('last_tahajjud','');
+    if(last===todayKey){
+      save('last_tahajjud','');
+      var s=Math.max(0,load('streak_tahajjud',0)-1); save('streak_tahajjud',s);
+      g('streak-tahajjud').textContent=s;
+      g('sp-tahajjud').classList.remove('active');
+      g('pTahajjud').textContent=s;
+      setTahajjudBtns('none');
+      showToast('Tahajjud unmarked');
+    } else {
+      showAwPopup(function(){
+        save('last_tahajjud',todayKey);
+        var s=load('streak_tahajjud',0)+1; save('streak_tahajjud',s);
+        g('streak-tahajjud').textContent=s;
+        g('sp-tahajjud').classList.add('active');
+        g('pTahajjud').textContent=s;
+        setTahajjudBtns('yes');
+        showToast('Tahajjud logged! MashaAllah 🌙🔥 Streak: '+s);
+      });
+    }
+  });
+  g('tahajjudNo').addEventListener('click',function(){
+    var last=load('last_tahajjud','');
+    if(last===todayKey){
+      save('last_tahajjud','');
+      var s=Math.max(0,load('streak_tahajjud',0)-1); save('streak_tahajjud',s);
+      g('streak-tahajjud').textContent=s;
+      g('sp-tahajjud').classList.remove('active');
+      g('pTahajjud').textContent=s;
+    }
+    setTahajjudBtns('no');
+    showToast('May Allah make it easy for you 🤲🏻');
+  });
+
+  // Check Supabase session on load
+  g('s-loading').style.opacity='0';
+  setTimeout(function(){ g('s-loading').style.display='none'; },500);
+
+  sb.auth.getSession().then(function(res){
+    if(res.data.session){
+      var authUser = res.data.session.user;
+      // Handle Google OAuth callback (URL has #access_token or code param)
+      var isOAuthCallback = window.location.hash.indexOf('access_token')>=0
+        || window.location.search.indexOf('code=')>=0;
+      if(isOAuthCallback){
+        handleOAuthCallback();
+      } else {
+        loadUserProfile(authUser);
+      }
+    } else {
+      showScreen('s-auth');
+    }
+  });
+}
+
+/* ══════════════════════════════════════
+   SALAH SCREEN — Prayer Times + Tracking
+   ══════════════════════════════════════ */
+
+var salahTimesLoaded = false;
+var salahLat = null, salahLng = null;
+var salahHanafi = null, salahShafi = null;
+var salahMadhab = 'both';
+var salahCdInterval = null;
+
+/* ── UTILS ── */
+function ptPad(n){ return n < 10 ? '0'+n : ''+n; }
+
+function ptFmt12(raw){
+  if(!raw) return '—:—';
+  var p = raw.split(':');
+  var h = parseInt(p[0]), m = p[1];
+  var ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + m + ' ' + ap;
+}
+
+function ptAddMins(raw, mins){
+  if(!raw) return '—:—';
+  var p = raw.split(':');
+  var total = parseInt(p[0])*60 + parseInt(p[1]) + mins;
+  total = ((total % 1440) + 1440) % 1440;
+  return ptPad(Math.floor(total/60)) + ':' + ptPad(total%60);
+}
+
+function ptRawToMins(raw){
+  if(!raw) return -1;
+  var p = raw.split(':');
+  return parseInt(p[0])*60 + parseInt(p[1]);
+}
+
+function ptNowMins(){
+  var n = new Date();
+  return n.getHours()*60 + n.getMinutes();
+}
+
+function ptMidpoint(r1, r2){
+  var m1 = ptRawToMins(r1), m2 = ptRawToMins(r2);
+  if(m2 < m1) m2 += 1440;
+  var mid = Math.floor((m1+m2)/2) % 1440;
+  return ptPad(Math.floor(mid/60)) + ':' + ptPad(mid%60);
+}
+
+function ptLastThird(maghribRaw, fajrRaw){
+  var m1 = ptRawToMins(maghribRaw);
+  var m2 = ptRawToMins(fajrRaw);
+  if(m2 <= m1) m2 += 1440;
+  var night = m2 - m1;
+  var start = (m1 + Math.floor(night * 2/3)) % 1440;
+  return ptPad(Math.floor(start/60)) + ':' + ptPad(start%60);
+}
+
+function ptIsNow(prayerRaw, nextRaw){
+  var now = ptNowMins();
+  var start = ptRawToMins(prayerRaw);
+  var end = ptRawToMins(nextRaw);
+  if(end <= start) end += 1440;
+  var nowAdj = now < start ? now + 1440 : now;
+  return nowAdj >= start && nowAdj < end;
+}
+
+function ptCountdown(targetMins){
+  var now = ptNowMins();
+  var diff = targetMins - now;
+  if(diff < 0) diff += 1440;
+  var h = Math.floor(diff/60), m = diff%60;
+  if(h > 0) return 'in ' + h + 'h ' + m + 'm';
+  return 'in ' + m + ' min';
+}
+
+/* ── MADHAB TAB ── */
+function setMadhab(m){
+  salahMadhab = m;
+  g('mt-both').className = 'mtab' + (m==='both'?' active':'');
+  g('mt-hanafi').className = 'mtab' + (m==='hanafi'?' active':'');
+  g('mt-shafi').className = 'mtab' + (m==='shafi'?' active':'');
+  if(salahHanafi && salahShafi) renderSalahTimes();
+}
+
+/* ── INIT ── */
+function initSalahTimes(){
+  salahTimesLoaded = false;
+  g('salahTimesContent').innerHTML = '<div class="pt-loading"><div class="pt-spin"></div><div class="pt-load-txt">Detecting location...</div></div>';
+  g('salahLocCity').textContent = '📍 Detecting...';
+  g('cityForm').classList.remove('show');
+
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      function(pos){ salahLat = pos.coords.latitude; salahLng = pos.coords.longitude; fetchSalahTimes(); },
+      function(){ g('cityForm').classList.add('show'); g('salahLocCity').textContent = '📍 Location denied'; g('salahTimesContent').innerHTML = '<div class="pt-loading"><div style="font-size:30px;margin-bottom:10px">📍</div><div class="pt-load-txt">Please enter your city above</div></div>'; },
+      {timeout: 8000}
+    );
+  } else {
+    g('cityForm').classList.add('show');
+  }
+}
+
+function fetchByCity(){
+  var city = g('cityInput').value.trim();
+  if(!city){ showToast('Please enter a city name'); return; }
+  g('salahTimesContent').innerHTML = '<div class="pt-loading"><div class="pt-spin"></div><div class="pt-load-txt">Fetching for '+city+'...</div></div>';
+  // Use Nominatim to geocode city
+  fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(city)+'&format=json&limit=1')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(!data || data.length === 0){ showToast('City not found. Try again.'); return; }
+      salahLat = parseFloat(data[0].lat);
+      salahLng = parseFloat(data[0].lon);
+      g('cityForm').classList.remove('show');
+      fetchSalahTimes();
+    }).catch(function(){ showToast('Error finding city'); });
+}
+
+function fetchSalahTimes(){
+  var today = new Date();
+  var dd = ptPad(today.getDate()), mm = ptPad(today.getMonth()+1), yyyy = today.getFullYear();
+  var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  g('salahLocDate').textContent = dayNames[today.getDay()] + ', ' + dd + ' ' + monthNames[today.getMonth()] + ' ' + yyyy;
+
+  // Geocode city name
+  fetch('https://nominatim.openstreetmap.org/reverse?lat='+salahLat+'&lon='+salahLng+'&format=json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var city = d.address.city || d.address.town || d.address.village || d.address.county || 'Your Location';
+      g('salahLocCity').textContent = '📍 ' + city;
+    }).catch(function(){ g('salahLocCity').textContent = '📍 Location detected'; });
+
+  var base = 'https://api.aladhan.com/v1/timings/'+dd+'-'+mm+'-'+yyyy+'?latitude='+salahLat+'&longitude='+salahLng;
+  var hUrl = base + '&method=1&school=1'; // Hanafi Asr (shadow 2x)
+  var sUrl = base + '&method=3&school=0'; // Shafi/ISNA Asr (shadow 1x)
+
+  Promise.all([
+    fetch(hUrl).then(function(r){ return r.json(); }),
+    fetch(sUrl).then(function(r){ return r.json(); })
+  ]).then(function(res){
+    salahHanafi = res[0].data.timings;
+    salahShafi  = res[1].data.timings;
+    var hijri   = res[0].data.date.hijri;
+    g('salahLocHijri').textContent = hijri.day + ' ' + hijri.month.en + ' ' + hijri.year + ' AH';
+    salahTimesLoaded = true;
+    renderSalahTimes();
+    startSalahCountdown();
+  }).catch(function(){
+    g('salahTimesContent').innerHTML = '<div class="pt-loading"><div style="font-size:30px;margin-bottom:10px">⚠️</div><div class="pt-load-txt">Failed to fetch times.<br>Check your internet.</div><button class="pt-err-btn" onclick="initSalahTimes()">RETRY</button></div>';
+  });
+}
+
+/* ── RENDER TIMES ── */
+function renderSalahTimes(){
+  var H = salahHanafi, S = salahShafi, m = salahMadhab;
+
+  // Derived
+  var ishraqRaw  = ptAddMins(H.Sunrise, 15);
+  var chastRaw   = ptMidpoint(H.Sunrise, H.Dhuhr);
+  var zawalRaw   = ptAddMins(H.Dhuhr, -5);
+  var lastThirdRaw = ptLastThird(H.Maghrib, H.Fajr);
+
+  var html = '';
+
+  /* ─ FAJR ─ */
+  html += secDiv('🌙', 'FAJR');
+  html += ptCard('🌙', 'Fajr', 'Subh Sadiq · Dawn begins', ptFmt12(H.Fajr), false, false, ptIsNow(H.Fajr, H.Sunrise));
+  html += ptCard('⏳', 'Fajr Qaza ends', 'Must be prayed before sunrise', ptFmt12(H.Sunrise), true, false, false);
+
+  /* ─ MORNING ─ */
+  html += secDiv('🌅', 'SUNRISE & NAWAFIL');
+  html += ptCard('🌅', 'Sunrise', 'Fajr ends · Makrooh begins', ptFmt12(H.Sunrise), false, true, false);
+  html += ptCard('☀️', 'Ishraq', '15 mins after sunrise', ptFmt12(ishraqRaw), false, true, false);
+  html += ptCard('🌤️', 'Chasht (Duha)', 'Midway between sunrise & Zuhr', ptFmt12(chastRaw), false, true, false);
+  html += ptCard('⚡', 'Zawal', '~5 mins before Zuhr · Makrooh', ptFmt12(zawalRaw), false, false, false);
+
+  /* ─ ZUHR ─ */
+  html += secDiv('☀️', 'ZUHR');
+  if(m==='both'){
+    html += dualCard('🕌','Zuhr','Midday prayer',ptFmt12(H.Dhuhr),ptFmt12(S.Dhuhr),false);
+    html += dualCard('⏳','Zuhr Qaza ends','Closes at Asr time',ptFmt12(H.Asr),ptFmt12(S.Asr),true);
+  } else if(m==='hanafi'){
+    html += ptCard('🕌','Zuhr','Midday prayer (Hanafi)',ptFmt12(H.Dhuhr),false,false,ptIsNow(H.Dhuhr,H.Asr));
+    html += ptCard('⏳','Zuhr Qaza ends','At Asr (Hanafi)',ptFmt12(H.Asr),true,false,false);
+  } else {
+    html += ptCard('🕌','Zuhr','Midday prayer (Shafi)',ptFmt12(S.Dhuhr),false,false,false);
+    html += ptCard('⏳','Zuhr Qaza ends','At Asr (Shafi)',ptFmt12(S.Asr),true,false,false);
+  }
+
+  /* ─ ASR ─ */
+  html += secDiv('🌆', 'ASR');
+  if(m==='both'){
+    html += dualCard('🕌','Asr','Afternoon prayer',ptFmt12(H.Asr),ptFmt12(S.Asr),false);
+    html += dualCard('⏳','Asr Qaza ends','Closes at Maghrib',ptFmt12(H.Maghrib),ptFmt12(S.Maghrib),true);
+  } else if(m==='hanafi'){
+    html += ptCard('🕌','Asr','Shadow = 2× object (Hanafi)',ptFmt12(H.Asr),false,false,ptIsNow(H.Asr,H.Maghrib));
+    html += ptCard('⏳','Asr Qaza ends','At Maghrib',ptFmt12(H.Maghrib),true,false,false);
+  } else {
+    html += ptCard('🕌','Asr','Shadow = 1× object (Shafi)',ptFmt12(S.Asr),false,false,false);
+    html += ptCard('⏳','Asr Qaza ends','At Maghrib',ptFmt12(S.Maghrib),true,false,false);
+  }
+
+  /* ─ MAGHRIB ─ */
+  html += secDiv('🌇', 'MAGHRIB & IFTAR');
+  html += ptCard('🌇','Maghrib / Iftar','Sunset · Fast breaks here',ptFmt12(H.Maghrib),false,false,ptIsNow(H.Maghrib,H.Isha));
+  html += ptCard('⏳','Maghrib Qaza ends','Closes at Isha',ptFmt12(H.Isha),true,false,false);
+
+  /* ─ ISHA ─ */
+  html += secDiv('🌙', 'ISHA');
+  html += ptCard('🕌','Isha','Night prayer begins',ptFmt12(H.Isha),false,false,ptIsNow(H.Isha,H.Fajr));
+  html += ptCard('⏳','Isha Qaza ends','Until next Fajr',ptFmt12(H.Fajr)+' (next day)',true,false,false);
+
+  /* ─ TAHAJJUD & SEHRI ─ */
+  html += secDiv('✨', 'TAHAJJUD & SEHRI');
+  html += ptCard('✨','Last ⅓ of Night','Best time for Tahajjud & Dua',ptFmt12(lastThirdRaw),false,true,false);
+  html += ptCard('🍽️','Sehri begins','Last third of night starts',ptFmt12(lastThirdRaw),false,true,false);
+  html += ptCard('🚫','Sehri ends / Imsak','Subh Sadiq · Fast begins',ptFmt12(H.Fajr),false,false,false);
+
+  html += '<div class="salah-note"><div class="salah-note-txt">Hanafi Asr: shadow = 2× · Shafi Asr: shadow = 1× · Ishraq: 15 mins after sunrise · Chasht: midway sunrise–Zuhr · Last ⅓ night: from Maghrib to Fajr</div></div>';
+
+  g('salahTimesContent').innerHTML = html;
+}
+
+function secDiv(ico, txt){
+  return '<div class="s-sec-hd"><div class="s-sec-line"></div><span class="s-sec-ico">'+ico+'</span><span class="s-sec-txt">'+txt+'</span><div class="s-sec-line"></div></div>';
+}
+
+function ptCard(ico, name, sub, time, isQaza, isSpecial, isNow){
+  var cls = 'ptc';
+  if(isQaza) cls += ' qaza-card';
+  else if(isSpecial) cls += ' special-card';
+  if(isNow) cls += ' now-card';
+  var badge = isNow ? '<div class="ptc-now-badge">● NOW</div>' : '';
+  return '<div class="'+cls+'"><div class="ptc-inner"><div class="ptc-left"><div class="ptc-ico">'+ico+'</div><div><div class="ptc-name">'+name+'</div><div class="ptc-sub">'+sub+'</div></div></div><div style="text-align:right"><div class="ptc-time">'+time+'</div>'+badge+'</div></div></div>';
+}
+
+function dualCard(ico, name, sub, hTime, sTime, isQaza){
+  var cls = 'dual-ptc' + (isQaza?' qaza-card':'');
+  return '<div class="'+cls+'"><div class="dual-ptc-hdr"><div class="dual-ptc-ico">'+ico+'</div><div><div class="dual-ptc-name">'+name+'</div><div class="dual-ptc-sub">'+sub+'</div></div></div><div class="dual-ptc-row"><div class="dual-cell"><div class="dual-cell-lbl hanafi">HANAFI</div><div class="dual-cell-time">'+hTime+'</div></div><div class="dual-cell"><div class="dual-cell-lbl shafi">SHAFI</div><div class="dual-cell-time">'+sTime+'</div></div></div></div>';
+}
+
+/* ── CURRENT PRAYER STATE ── */
+function getCurrentPrayerState(){
+  if(!salahHanafi) return null;
+  var H = salahHanafi;
+  var now = ptNowMins();
+
+  var ishraq   = ptAddMins(H.Sunrise, 15);
+  var chasht   = ptMidpoint(H.Sunrise, H.Dhuhr);
+  var zawal    = ptAddMins(H.Dhuhr, -5);
+  var lastThird= ptLastThird(H.Maghrib, H.Fajr);
+
+  // Full ordered timeline for current-state detection
+  var timeline = [
+    {name:'Last Third of Night', icon:'✨', start:lastThird, end:H.Fajr,   key:null},
+    {name:'Fajr Time',           icon:'🌙', start:H.Fajr,    end:H.Sunrise, key:'fajr'},
+    {name:'Sunrise',             icon:'🌅', start:H.Sunrise, end:ishraq,    key:null},
+    {name:'Ishraq Time',         icon:'☀️', start:ishraq,    end:chasht,    key:null},
+    {name:'Chasht (Duha)',       icon:'🌤️', start:chasht,    end:zawal,     key:null},
+    {name:'Zawal (Makrooh)',     icon:'⚡', start:zawal,     end:H.Dhuhr,   key:null},
+    {name:'Zuhr Time',           icon:'🕌', start:H.Dhuhr,   end:H.Asr,     key:'dhuhr'},
+    {name:'Asr Time',            icon:'🌆', start:H.Asr,     end:H.Maghrib, key:'asr'},
+    {name:'Maghrib Time',        icon:'🌇', start:H.Maghrib, end:H.Isha,    key:'maghrib'},
+    {name:'Isha Time',           icon:'🌙', start:H.Isha,    end:lastThird, key:'isha'},
+  ];
+
+  for(var i=0; i<timeline.length; i++){
+    var t = timeline[i];
+    if(ptIsNow(t.start, t.end)){
+      return t;
+    }
+  }
+  return null;
+}
+
+/* ── NEXT PRAYER COUNTDOWN ── */
+function startSalahCountdown(){
+  if(salahCdInterval) clearInterval(salahCdInterval);
+  updateSalahCountdown();
+  salahCdInterval = setInterval(updateSalahCountdown, 15000); // refresh every 15s
+}
+
+function updateSalahCountdown(){
+  if(!salahHanafi) return;
+
+  // ── Current State ──
+  var currentState = getCurrentPrayerState();
+  var nowBanner = g('snextCd');
+  var nowLabel  = g('snextName');
+  var nowTime   = g('snextTime');
+  var nowIcon   = g('snextIco');
+
+  if(currentState){
+    if(nowLabel) nowLabel.textContent = currentState.name;
+    if(nowTime)  nowTime.textContent  = 'Until ' + ptFmt12(currentState.end);
+    if(nowIcon)  nowIcon.textContent  = currentState.icon;
+    if(nowBanner){
+      var endMins = ptRawToMins(currentState.end);
+      nowBanner.textContent = '● NOW · ends ' + ptCountdown(endMins);
+    }
+  }
+
+  // ── Next Prayer (always show regardless) ──
+  var prayers = [
+    {name:'Fajr',    raw:salahHanafi.Fajr,    ico:'🌙'},
+    {name:'Sunrise', raw:salahHanafi.Sunrise,  ico:'🌅'},
+    {name:'Zuhr',    raw:salahHanafi.Dhuhr,    ico:'☀️'},
+    {name:'Asr',     raw:salahHanafi.Asr,      ico:'🌆'},
+    {name:'Maghrib', raw:salahHanafi.Maghrib,   ico:'🌇'},
+    {name:'Isha',    raw:salahHanafi.Isha,      ico:'🌙'}
+  ];
+  var now = ptNowMins();
+  var next = null;
+  for(var i=0; i<prayers.length; i++){
+    var t = ptRawToMins(prayers[i].raw);
+    if(t > now){ next = prayers[i]; next.mins = t; break; }
+  }
+  if(!next){
+    next = {name:'Fajr', raw:salahHanafi.Fajr, ico:'🌙', mins: ptRawToMins(salahHanafi.Fajr)+1440};
+  }
+
+  // If no current state, show next prayer in the card
+  if(!currentState){
+    if(nowLabel) nowLabel.textContent = 'Next: ' + next.name;
+    if(nowTime)  nowTime.textContent  = ptFmt12(next.raw);
+    if(nowIcon)  nowIcon.textContent  = next.ico;
+    if(nowBanner) nowBanner.textContent = ptCountdown(next.mins);
+  }
+
+  // Auto-refresh qaza status every minute
+  renderSalahTrack();
+}
+
+/* ── TODAY SALAH TRACKING DATA ── */
+var SALAH_PRAYERS = ['fajr','dhuhr','asr','maghrib','isha'];
+var SALAH_NAMES   = {fajr:'FAJR', dhuhr:'ZUHR', asr:'ASR', maghrib:'MAGHRIB', isha:'ISHA'};
+var SALAH_ICONS   = {fajr:'🌙', dhuhr:'☀️', asr:'🌆', maghrib:'🌇', isha:'🌙'};
+
+/* ── PRAYER END TIMES for qaza detection (24h) ── */
+/* These are the hours AFTER WHICH a prayer window is considered closed */
+var SALAH_END_HOUR = {fajr:7, dhuhr:15, asr:18, maghrib:20, isha:24};
+
+/* ── QAZA DETECTION ── */
+function updateQazaStatus(){
+  // Returns object: {fajr:'completed'|'qaza'|'pending', ...} for today
+  var liveHr = getLiveHour();
+  var prayers = load('prayers',{});
+  var status = {};
+  SALAH_PRAYERS.forEach(function(key){
+    if(prayers[key]){
+      status[key] = 'completed';
+    } else if(liveHr >= SALAH_END_HOUR[key]){
+      status[key] = 'qaza'; // window passed, not marked → QAZA
+    } else {
+      status[key] = 'pending'; // window still open
+    }
+  });
+  return status;
+}
+
+/* ── RENDER TRACKING DOTS ── */
+function renderSalahTrack(){
+  var status = updateQazaStatus();
+  var count = 0;
+  var html = '';
+  SALAH_PRAYERS.forEach(function(key){
+    var s = status[key];
+    if(s === 'completed') count++;
+    var dotClass = s === 'completed' ? 'done' : s === 'qaza' ? 'qaza' : 'pending';
+    var dotIcon  = s === 'completed' ? '✓' : s === 'qaza' ? '!' : '·';
+    html += '<div class="tdot-wrap">'
+      + '<div class="tdot '+dotClass+'" data-skey="'+key+'" id="tdot-'+key+'">'+dotIcon+'</div>'
+      + '<div class="tdot-name">'+SALAH_NAMES[key]+'</div>'
+      + (s==='qaza' ? '<div style="font-size:6px;color:rgba(255,100,100,.7);font-family:\'Cinzel\',serif;letter-spacing:.04em">QAZA</div>' : '<div style="height:9px"></div>')
+      + '</div>';
+  });
+  if(g('salahTrackDots')) g('salahTrackDots').innerHTML = html;
+  if(g('salahTrackCount')){
+    var qazaCount = SALAH_PRAYERS.filter(function(k){ return status[k]==='qaza'; }).length;
+    g('salahTrackCount').textContent = count+'/5 prayed' + (qazaCount>0 ? ' · '+qazaCount+' qaza' : '');
+  }
+  if(g('salahTrackFill')) g('salahTrackFill').style.width = (count/5*100)+'%';
+
+  // Wire click listeners (not onclick attr — avoids IIFE scope issues)
+  SALAH_PRAYERS.forEach(function(key){
+    var dot = g('tdot-'+key);
+    if(dot){
+      dot.addEventListener('click', function(){ toggleSalahTrackByKey(key); });
+      dot.addEventListener('touchend', function(e){ e.preventDefault(); toggleSalahTrackByKey(key); });
+    }
+  });
+}
+
+function toggleSalahTrackByKey(key){
+  var prayers = load('prayers',{});
+  var wasDone = prayers[key] || false;
+  showAwPopup(function(){
+    prayers[key] = !wasDone;
+    save('prayers', prayers);
+    invalidateStreakCache();
+    renderSalahTrack();
+    renderSalah(); // sync home screen
+
+    // Supabase upsert with LOCAL date (not UTC)
+    if(currentUser){
+      var localDate = getLocalDate();
+      sb.from('salah_logs').upsert({
+        user_id:     currentUser.id,
+        date:        localDate,
+        prayer_name: key,
+        status:      prayers[key] ? 'completed' : 'missed'
+      }, { onConflict: 'user_id,date,prayer_name' }).then(function(r){
+        if(r.error) console.warn('salah_logs sync:', r.error.message);
+      });
+    }
+
+    var newStreak = calcSalahStreak();
+    if(g('streak-salah')) g('streak-salah').textContent = newStreak;
+    showToast(prayers[key] ? SALAH_NAMES[key]+' ✓ Alhamdulillah' : SALAH_NAMES[key]+' unmarked');
+  });
+}
+
+// Legacy wrapper for any remaining onclick="toggleSalahTrack(this)"
+function toggleSalahTrack(el){
+  var key = el.getAttribute('data-skey');
+  if(key) toggleSalahTrackByKey(key);
+}
+
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+else init();
+
+// ── EXPOSE to window so onclick="" attributes work (IIFE scope fix) ──
+window.initSalahTimes   = initSalahTimes;
+window.setMadhab        = setMadhab;
+window.fetchByCity      = fetchByCity;
+window.toggleSalahTrack = toggleSalahTrack;
+
+})();
+</script>
+</body>
+</html>
