@@ -2092,7 +2092,7 @@ function calcSalahStreak(){
 
     for(var pi=0; pi<PRAYERS.length; pi++){
       var p = PRAYERS[pi];
-      var slotPassed = dayHour >= PRAYER_END[p.key];
+      var _dh = (typeof now_hour!=='undefined') ? now_hour + (new Date().getMinutes()/60) : dayHour; var slotPassed = _dh >= PRAYER_END[p.key];
       if(done[p.key]){
         totalRead++;
       } else if(slotPassed){
@@ -2111,7 +2111,7 @@ function calcSalahStreak(){
 /* ══════ SALAH ══════ */
 // Fallback prayer end times (24h, approximate) — used only when API times not yet loaded.
 // Once salahHanafi is available, H_isQazaToday() uses the real API times instead.
-var PRAYER_END = {fajr:6, dhuhr:15, asr:18, maghrib:20, isha:23};
+var PRAYER_END = {fajr:6.5, dhuhr:16, asr:18.75, maghrib:19.667, isha:4.5};
 
 function renderSalah(){
   var done=load('prayers',{});
@@ -2139,7 +2139,7 @@ function renderSalah(){
   var missed=[];
   PRAYERS.forEach(function(p){
     if(!done[p.key]){
-      var isQaza = (typeof H_isQaza==='function') ? H_isQaza(p.key) : (new Date().getHours() >= PRAYER_END[p.key]);
+      var isQaza = (typeof H_isQaza==='function') ? H_isQaza(p.key) : ((new Date().getHours()+(new Date().getMinutes()/60)) >= PRAYER_END[p.key]);
       if(isQaza) missed.push(p.name);
     }
   });
@@ -3234,8 +3234,9 @@ function renderSJTrack(){
     if(done) count++;
 
     var isQaza=false;
-    if(!done && salahHanafi){
-      isQaza=H_isQaza(p.key);
+    if(!done){
+      if(salahHanafi) isQaza=H_isQaza(p.key);
+      else isQaza=((new Date().getHours()+(new Date().getMinutes()/60)) >= PRAYER_END[p.key]);
       if(isQaza) qazaCount++;
     }
 
