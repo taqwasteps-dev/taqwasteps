@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#080808"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+
+/* ══════════════════════════════════════════════
+   RESET + TOKENS
+══════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --bg:       #080808;
+  --s1:       #0f0f0f;
+  --s2:       #151515;
+  --s3:       #1b1b1b;
+  --s4:       #212121;
+  --border:   #222;
+  --border2:  #2c2c2c;
+  --border3:  #363636;
+  --text:     #ede9e3;
+  --text2:    #857f78;
+  --text3:    #3e3b38;
+  --gold:     #c9a86c;
+  --gold-l:   #e8c990;
+  --gold-d:   #7a6540;
+  --gold-dim: rgba(201,168,108,.06);
+  --green:    #4d9e74;
+  --green-d:  #2a5a42;
+  --red:      #9e5757;
+  --red-d:    #5a2a2a;
+  --amber:    #d4955a;
+  --amber-d:  #5a3a20;
+  --calm:     #c5cfe0;
+  --r:        16px;
+  --r2:       24px;
+  --r3:       12px;
+}
+
+html, body { height:100%; background:var(--bg); overflow-x:hidden; }
+body { font-family:'DM Sans',sans-serif; color:var(--text); -webkit-font-smoothing:antialiased; }
+
+/* ══════════════════════════════════════════════
+   SCREEN SYSTEM
+══════════════════════════════════════════════ */
+.screen {
+  display:none; min-height:100vh; max-width:420px;
+  margin:0 auto; padding:0 20px 60px; flex-direction:column;
+}
+.screen.active { display:flex; }
+
+/* ══════════════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════════════ */
+.serif   { font-family:'Cormorant Garamond',serif; }
+.t-2xl   { font-size:3rem;   line-height:1; font-weight:300; }
+.t-xl    { font-size:2.6rem; line-height:1.1; font-weight:300; }
+.t-lg    { font-size:1.6rem; line-height:1.2; font-weight:300; }
+.t-md    { font-size:1.1rem; }
+.t-sm    { font-size:.875rem; }
+.t-xs    { font-size:.78rem; font-weight:300; }
+.t-2xs   { font-size:.7rem;  font-weight:300; }
+.italic  { font-style:italic; }
+.muted   { color:var(--text2); }
+.gold-c  { color:var(--gold); }
+.green-c { color:#7dd4a8; }
+.red-c   { color:#d49090; }
+.amber-c { color:var(--amber); }
+.center  { text-align:center; }
+.upper   { letter-spacing:.08em; text-transform:uppercase; }
+.bold    { font-weight:500; }
+
+/* ══════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════ */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+@keyframes checkPop{ 0%{transform:scale(.4);opacity:0} 65%{transform:scale(1.25)} 100%{transform:scale(1);opacity:1} }
+@keyframes goldGlow{ 0%,100%{box-shadow:0 0 0 0 rgba(201,168,108,0)} 50%{box-shadow:0 0 40px 12px rgba(201,168,108,.13)} }
+@keyframes redGlow { 0%,100%{box-shadow:0 0 0 0 rgba(158,87,87,0)}  50%{box-shadow:0 0 40px 10px rgba(158,87,87,.11)} }
+@keyframes breathe { 0%,100%{transform:scale(1);opacity:.75} 50%{transform:scale(1.02);opacity:1} }
+@keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+@keyframes barFill { from{width:0} to{width:var(--w)} }
+@keyframes emotionalFade {
+  0%{opacity:0;transform:translateY(10px) scale(.98)}
+  10%,80%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-8px) scale(.98)}
+}
+@keyframes calmFade {
+  0%{opacity:0;transform:translateY(6px)}
+  12%,82%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-4px)}
+}
+@keyframes numberPop {
+  0%{transform:scale(.8);opacity:0}
+  60%{transform:scale(1.1)}
+  100%{transform:scale(1);opacity:1}
+}
+
+.fu  { animation:fadeUp  .5s  ease both; }
+.fi  { animation:fadeIn  .4s  ease both; }
+.cp  { animation:checkPop .55s cubic-bezier(.175,.885,.32,1.275) both; }
+.gg  { animation:goldGlow 2.5s ease-in-out infinite; }
+.rg  { animation:redGlow  2.5s ease-in-out infinite; }
+.br  { animation:breathe  4s   ease-in-out infinite; }
+.em  { animation:emotionalFade 4.5s ease both; }
+.cm  { animation:calmFade      4s   ease both; }
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════ */
+.nav   { display:flex; align-items:center; justify-content:space-between; padding:24px 0 8px; }
+.divider { height:1px; background:var(--border); margin:20px 0; }
+.row   { display:flex; gap:12px; }
+.col   { display:flex; flex-direction:column; }
+.f1    { flex:1; }
+.gap-4 { gap:4px; }
+.gap-8 { gap:8px; }
+.gap-12{ gap:12px; }
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════ */
+.btn {
+  width:100%; padding:18px 22px; border-radius:var(--r); border:none; cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:400; letter-spacing:.01em;
+  transition:all .2s ease; display:flex; align-items:center; justify-content:center;
+  gap:10px; position:relative; overflow:hidden;
+}
+.btn:active { transform:scale(.975); }
+
+.btn-gold {
+  background:linear-gradient(135deg,#c9a86c 0%,#e8c98a 50%,#c9a86c 100%);
+  background-size:200% auto; color:#1a1209; font-weight:500; border:none;
+}
+.btn-gold:hover { animation:shimmer 1.5s linear infinite; }
+
+.btn-green{ background:var(--green-d); border:1px solid #3a6e52; color:#7dd4a8; font-weight:500; }
+.btn-green:hover{ background:#325e45; }
+
+.btn-red  { background:var(--red-d); border:1px solid #6e3a3a; color:#d49090; }
+.btn-red:hover{ background:#5a2e2e; }
+
+.btn-amber{ background:var(--amber-d); border:1px solid #7a5230; color:#e8b080; }
+.btn-amber:hover{ background:#4a2e18; }
+
+.btn-primary{ background:var(--s2); border:1px solid var(--border2); color:var(--text); }
+.btn-primary:hover{ background:var(--s3); }
+
+.btn-ghost{ background:transparent; border:1px solid var(--border); color:var(--text2); font-size:.875rem; padding:12px 18px; }
+.btn-ghost:hover{ border-color:var(--border2); color:var(--text); }
+
+.btn-back{ background:none; border:none; color:var(--text2); cursor:pointer;
+  font-size:.85rem; font-family:'DM Sans',sans-serif;
+  display:flex; align-items:center; gap:6px; padding:4px; transition:color .2s; }
+.btn-back:hover{ color:var(--text); }
+
+.btn-reflect{
+  background:rgba(201,168,108,.055); border:1px solid rgba(201,168,108,.18);
+  color:var(--gold); font-size:.82rem; padding:11px 18px; transition:all .25s;
+}
+.btn-reflect:hover{ background:rgba(201,168,108,.11); border-color:rgba(201,168,108,.38); }
+
+/* Quick-pick number buttons */
+.btn-num{
+  flex:1; padding:14px 8px; border-radius:12px; border:1px solid var(--border2);
+  background:var(--s3); color:var(--text); font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem; font-weight:300; cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.btn-num:hover, .btn-num.sel{
+  background:var(--red-d); border-color:#6e3a3a; color:#d49090;
+}
+.btn-num.sel{ box-shadow:0 0 0 1px #6e3a3a; }
+
+/* ══════════════════════════════════════════════
+   CARDS
+══════════════════════════════════════════════ */
+.card    { background:var(--s1); border:1px solid var(--border); border-radius:var(--r2); padding:24px; }
+.card-sm { background:var(--s2); border:1px solid var(--border); border-radius:var(--r);  padding:16px 18px; }
+.card-xs { background:var(--s3); border:1px solid var(--border); border-radius:var(--r3); padding:12px 14px; }
+
+/* ══════════════════════════════════════════════
+   STAT GRID
+══════════════════════════════════════════════ */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.stat-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+.stat-card { background:var(--s2); border:1px solid var(--border); border-radius:var(--r); padding:18px 16px; }
+.stat-value{ font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; line-height:1; }
+.stat-unit { font-size:.72rem; font-weight:300; color:var(--text2); margin-top:4px; }
+.stat-label{ font-size:.72rem; font-weight:300; color:var(--text2); margin-bottom:8px; line-height:1.4; }
+
+/* ══════════════════════════════════════════════
+   PROGRESS BAR
+══════════════════════════════════════════════ */
+.prog-wrap{ height:4px; background:var(--s3); border-radius:99px; overflow:hidden; }
+.prog-bar {
+  height:100%; border-radius:99px;
+  background:linear-gradient(90deg, var(--green) 0%, var(--gold) 100%);
+  transition:width .8s cubic-bezier(.22,.68,0,1.2);
+}
+
+/* ══════════════════════════════════════════════
+   BADGES / PILLS
+══════════════════════════════════════════════ */
+.score-badge{
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--s2); border:1px solid var(--border2);
+  border-radius:20px; padding:6px 14px; font-size:.8rem; color:var(--gold);
+}
+.pill{
+  display:inline-flex; align-items:center; gap:5px;
+  border-radius:20px; padding:4px 10px; font-size:.72rem;
+}
+.pill-green{ background:rgba(77,158,116,.12); border:1px solid rgba(77,158,116,.25); color:#7dd4a8; }
+.pill-red  { background:rgba(158,87,87,.12);  border:1px solid rgba(158,87,87,.25);  color:#d49090; }
+.pill-amber{ background:rgba(212,149,90,.12); border:1px solid rgba(212,149,90,.25); color:#e8b080; }
+.pill-gold { background:rgba(201,168,108,.1); border:1px solid rgba(201,168,108,.25); color:var(--gold-l); }
+
+/* ══════════════════════════════════════════════
+   HOME SPECIFICS
+══════════════════════════════════════════════ */
+.identity{
+  border-left:2px solid var(--gold-d); padding:12px 16px;
+  background:rgba(201,168,108,.04); border-radius:0 10px 10px 0;
+}
+.bottom-nav{ display:flex; gap:8px; margin-top:auto; padding-top:24px; }
+
+/* Today strip */
+.today-strip{
+  background:var(--s2); border:1px solid var(--border); border-radius:var(--r);
+  padding:14px 18px; display:flex; align-items:center; justify-content:space-between;
+}
+
+/* ══════════════════════════════════════════════
+   URGE SCREEN
+══════════════════════════════════════════════ */
+#urge-ambient{ position:fixed; inset:0; pointer-events:none; z-index:0; transition:background 1.4s ease; }
+#urge-inner  { position:relative; z-index:1; display:flex; flex-direction:column; flex:1; }
+
+.timer-wrap    { position:relative; width:150px; height:150px; margin:0 auto; }
+.timer-wrap svg{ transform:rotate(-90deg); display:block; }
+.timer-center  { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+#timer-num     { font-family:'Cormorant Garamond',serif; font-size:2.3rem; font-weight:300; line-height:1; letter-spacing:-.02em; transition:color .9s ease; }
+
+#intro-ctx{
+  font-family:'Cormorant Garamond',serif; font-style:italic; font-size:.82rem;
+  color:var(--text3); text-align:center; letter-spacing:.03em;
+  transition:opacity 1.6s ease; height:28px;
+  display:flex; align-items:center; justify-content:center; margin-bottom:8px;
+}
+#type-dot{ width:5px; height:5px; border-radius:50%; margin:0 auto 14px; transition:background .7s ease, box-shadow .7s ease; }
+
+#msg-stage{
+  width:100%; min-height:96px; display:flex; align-items:center;
+  justify-content:center; padding:0 8px; margin-bottom:28px; position:relative;
+}
+#msg-text{ position:absolute; width:100%; text-align:center; padding:0 8px; }
+
+.msg-emotional{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:1.5rem; font-weight:300; line-height:1.45;
+  color:var(--gold-l); text-shadow:0 0 32px rgba(232,201,144,.22);
+}
+.msg-calm{
+  font-family:'DM Sans',sans-serif; font-size:.88rem; font-weight:300;
+  letter-spacing:.1em; color:var(--calm); text-transform:uppercase; opacity:.72;
+}
+#urge-done{ display:none; flex-direction:column; align-items:center; gap:24px; width:100%; padding-top:32px; }
+
+/* ══════════════════════════════════════════════
+   SUCCESS / CHECK CIRCLE
+══════════════════════════════════════════════ */
+.check-circle{
+  width:96px; height:96px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2.8rem; margin:0 auto 32px;
+}
+
+/* ══════════════════════════════════════════════
+   INPUTS
+══════════════════════════════════════════════ */
+textarea, input[type="text"], input[type="number"]{
+  width:100%; background:var(--s2); border:1px solid var(--border2);
+  border-radius:var(--r); color:var(--text); font-family:'DM Sans',sans-serif;
+  font-size:.95rem; padding:14px 16px; resize:none; outline:none;
+  transition:border-color .2s; display:block;
+  -webkit-appearance:none; appearance:none;
+}
+textarea:focus, input:focus{ border-color:var(--gold-d); }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance:none; }
+
+/* Toggle switch */
+.toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; }
+.toggle{
+  position:relative; width:44px; height:24px; cursor:pointer;
+  background:var(--s3); border:1px solid var(--border2); border-radius:99px;
+  transition:background .2s, border-color .2s;
+}
+.toggle.on{ background:var(--green-d); border-color:#3a6e52; }
+.toggle::after{
+  content:''; position:absolute; top:3px; left:3px;
+  width:16px; height:16px; border-radius:50%;
+  background:var(--text2); transition:transform .2s, background .2s;
+}
+.toggle.on::after{ transform:translateX(20px); background:#7dd4a8; }
+
+/* ══════════════════════════════════════════════
+   TAB SYSTEM
+══════════════════════════════════════════════ */
+.tab-row{ display:flex; gap:6px; margin-bottom:22px; flex-wrap:wrap; }
+.tab-btn{
+  background:transparent; border:1px solid var(--border); color:var(--text2);
+  font-size:.8rem; padding:9px 16px; border-radius:10px; cursor:pointer;
+  font-family:'DM Sans',sans-serif; transition:all .2s; white-space:nowrap;
+}
+.tab-btn.active{ border-color:var(--gold-d); color:var(--gold); background:var(--gold-dim); }
+
+/* ══════════════════════════════════════════════
+   CIG COUNT MODAL
+══════════════════════════════════════════════ */
+#cig-modal{
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.9); backdrop-filter:blur(10px);
+  z-index:300; align-items:flex-end; padding:16px;
+  animation:fadeIn .25s ease;
+}
+#cig-modal.open{ display:flex; }
+.cig-panel{
+  background:var(--s1); border:1px solid var(--border2);
+  border-radius:var(--r2) var(--r2) var(--r) var(--r);
+  padding:28px 22px 32px; width:100%; max-width:420px; margin:0 auto;
+  animation:slideUp .35s cubic-bezier(.22,.68,0,1.2);
+}
+.num-row{ display:flex; gap:8px; margin:20px 0 16px; }
+
+/* ══════════════════════════════════════════════
+   REFLECTION OVERLAY
+══════════════════════════════════════════════ */
+#overlay{
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.88); backdrop-filter:blur(8px);
+  z-index:200; align-items:flex-end; padding:16px;
+}
+#overlay.open{ display:flex; animation:fadeIn .3s ease; }
+.overlay-panel{
+  background:var(--s1); border:1px solid var(--border2);
+  border-radius:var(--r2) var(--r2) var(--r) var(--r);
+  padding:28px 24px; width:100%; max-width:420px; margin:0 auto;
+  animation:slideUp .38s cubic-bezier(.22,.68,0,1.2);
+  max-height:82vh; overflow-y:auto;
+}
+.refl-para{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; line-height:2; color:var(--text2); margin-bottom:20px; }
+.refl-para:last-child{ margin-bottom:0; }
+.refl-hi{ color:var(--gold-l); }
+.intro-ctx-label{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:.82rem; color:var(--gold-d); margin-bottom:20px; display:block; }
+
+/* ══════════════════════════════════════════════
+   DASHBOARD ADDITIONS
+══════════════════════════════════════════════ */
+.section-title{ font-size:.72rem; color:var(--text3); letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; }
+.cig-bar-row{ display:flex; align-items:center; gap:10px; }
+.cig-bar-label{ font-size:.72rem; color:var(--text2); width:70px; flex-shrink:0; }
+.cig-count{ font-size:.72rem; color:var(--text2); width:24px; text-align:right; flex-shrink:0; }
+
+/* ══════════════════════════════════════════════
+   REDUCE MODE BADGE
+══════════════════════════════════════════════ */
+.mode-badge{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:.7rem; border-radius:20px; padding:3px 10px;
+  background:rgba(212,149,90,.1); border:1px solid rgba(212,149,90,.22); color:var(--amber);
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: HOME
+══════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="nav fi">
+    <div>
+      <div class="serif t-xl" style="letter-spacing:-.02em">Control</div>
+      <div class="t-xs muted" style="margin-top:3px">over nafs. over habit. over time.</div>
+    </div>
+    <div class="col gap-4" style="align-items:flex-end">
+      <div class="score-badge">✦ <span id="home-score">0</span></div>
+      <div id="home-mode-badge" style="display:none" class="mode-badge">⬇ Reduce Mode</div>
+      <div id="home-streak-txt" class="t-xs muted" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Today strip (only shown when baseline is set) -->
+  <div id="today-strip" class="today-strip fu" style="display:none;margin-bottom:14px;animation-delay:.05s">
+    <div>
+      <div class="t-xs muted upper" style="margin-bottom:4px">Today</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="serif t-lg" id="today-cigs" style="color:#d49090">0</span>
+        <span class="t-xs muted">smoked</span>
+        <span id="today-avoided-wrap" style="display:none">
+          <span class="serif t-sm" id="today-avoided" style="color:#7dd4a8"></span>
+          <span class="t-xs muted"> avoided</span>
+        </span>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="t-xs muted" style="margin-bottom:6px">vs baseline</div>
+      <div id="today-prog-wrap" style="width:80px">
+        <div class="prog-wrap"><div class="prog-bar" id="today-prog-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Urge -->
+  <div class="fu" style="animation-delay:.1s;margin-bottom:12px">
+    <button class="btn btn-gold br" id="btn-urge" style="padding:22px;font-size:1.05rem">
+      ⏳ &nbsp;I have an urge
+    </button>
+  </div>
+
+  <!-- Controlled / Gave In -->
+  <div class="row fu" style="animation-delay:.2s;margin-bottom:28px">
+    <button class="btn btn-green f1" id="btn-controlled">✅&nbsp; I Controlled It</button>
+    <button class="btn btn-red   f1" id="btn-gavein">❌&nbsp; I Gave In</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid fu" style="animation-delay:.3s;margin-bottom:14px">
+    <div class="stat-card">
+      <div class="stat-label">Urges Resisted</div>
+      <div class="stat-value gold-c" id="home-resisted">0</div>
+      <div class="stat-unit">total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Smoke-Free Days</div>
+      <div class="stat-value green-c" id="home-smokefree">0</div>
+      <div class="stat-unit">days</div>
+    </div>
+  </div>
+
+  <!-- Identity -->
+  <div class="identity fi" id="identity-strip" style="display:none;margin-bottom:16px">
+    <div class="serif italic t-sm" style="color:var(--gold-l)">"You are someone who has control over your nafs."</div>
+  </div>
+
+  <!-- Why preview -->
+  <div class="card-sm fu" id="why-preview" style="display:none;animation-delay:.44s;margin-bottom:16px">
+    <div class="t-xs muted" style="margin-bottom:5px">why you quit</div>
+    <div class="t-sm muted" id="why-preview-text" style="line-height:1.6"></div>
+  </div>
+
+  <div class="bottom-nav fu" style="animation-delay:.5s">
+    <button class="btn btn-ghost f1" id="btn-dashboard" style="font-size:.8rem">Progress</button>
+    <button class="btn btn-ghost f1" id="btn-anchor"    style="font-size:.8rem">Settings</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: URGE
+══════════════════════════════════════════════ -->
+<div id="screen-urge" class="screen">
+  <div id="urge-ambient"></div>
+  <div id="urge-inner">
+    <div class="nav fi">
+      <button class="btn-back" id="urge-back">← back</button>
+      <div class="t-xs muted">urge mode</div>
+    </div>
+
+    <div id="intro-ctx">This is what I felt from her words…</div>
+
+    <div class="timer-wrap fu" style="animation-delay:.1s;margin-bottom:28px">
+      <svg width="150" height="150" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--s3)" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="45" fill="none" id="timer-ring"
+          stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"
+          stroke-dasharray="282.7" stroke-dashoffset="282.7"
+          style="transition:stroke-dashoffset 1s linear,stroke .9s ease"/>
+      </svg>
+      <div class="timer-center">
+        <div id="timer-num" style="color:var(--gold-l)">2:00</div>
+        <div class="t-xs muted" style="margin-top:4px">hold on</div>
+      </div>
+    </div>
+
+    <div id="type-dot" style="background:var(--gold);box-shadow:0 0 8px 2px rgba(201,168,108,.4)"></div>
+
+    <div id="msg-stage">
+      <div id="msg-text" class="msg-emotional">…</div>
+    </div>
+
+    <div class="fu" style="animation-delay:.3s;width:100%;margin-bottom:22px">
+      <div class="t-xs muted center upper" style="margin-bottom:12px">try this instead</div>
+      <div class="chips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
+        <div class="chip">💧 Drink water</div>
+        <div class="chip">🌬️ 5 deep breaths</div>
+        <div class="chip">🚶 Walk 2 min</div>
+        <div class="chip">🤲 Make du'a</div>
+        <div class="chip">📿 SubhanAllah</div>
+      </div>
+    </div>
+
+    <div class="card fu" id="urge-why-card" style="display:none;animation-delay:.5s;width:100%;margin-bottom:16px">
+      <div class="t-xs muted" style="margin-bottom:8px">your reason</div>
+      <div class="t-sm muted" id="urge-why-text" style="line-height:1.7"></div>
+    </div>
+
+    <button class="btn btn-reflect fu" id="btn-read-reflection" style="animation-delay:.65s">
+      ✦ Read full reflection
+    </button>
+
+    <div id="urge-done">
+      <div class="cp center" style="font-size:3rem">⏱️</div>
+      <div class="fu center" style="animation-delay:.2s">
+        <div class="serif t-lg" style="color:var(--gold-l);margin-bottom:8px">You made it through.</div>
+        <div class="t-sm muted">The urge is fading.</div>
+      </div>
+
+      <!-- What stopped you — note field -->
+      <div id="urge-note-wrap" style="display:none;width:100%;margin-top:4px">
+        <div class="t-xs muted upper" style="margin-bottom:8px;text-align:center">What helped you stop?</div>
+        <textarea id="urge-note-input" rows="3"
+          placeholder="Write what you felt, thought, or did that got you through this…"
+          style="line-height:1.7;font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;margin-bottom:10px"></textarea>
+        <button class="btn btn-reflect" id="btn-save-urge-note" style="font-size:.82rem;padding:10px 18px;width:100%">
+          ✦ Save this moment
+        </button>
+        <div id="urge-note-saved" style="display:none;text-align:center;margin-top:8px">
+          <span class="t-xs" style="color:var(--gold)">✓ Saved</span>
+        </div>
+      </div>
+
+      <div class="fu" style="animation-delay:.4s;width:100%">
+        <button class="btn btn-green gg" id="btn-urge-controlled" style="padding:20px">
+          ✅ &nbsp;I chose control
+        </button>
+      </div>
+      <button class="btn btn-reflect fu" id="btn-read-reflection2" style="animation-delay:.6s">
+        ✦ Read full reflection
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: SUCCESS
+══════════════════════════════════════════════ -->
+<div id="screen-success" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:40px">
+    <div class="check-circle cp gg" style="background:var(--green-d);border:1.5px solid var(--green)">✓</div>
+
+    <div class="fu center" style="animation-delay:.2s;margin-bottom:12px">
+      <div class="serif t-xl" style="color:var(--gold-l);letter-spacing:-.01em">Controlled.</div>
+    </div>
+
+    <div class="fu center" style="animation-delay:.35s;margin-bottom:36px;padding:0 16px">
+      <div class="serif italic" style="font-size:1.2rem;color:var(--text2);line-height:1.5" id="success-line"></div>
+    </div>
+
+    <div class="stat-grid fu" style="animation-delay:.5s;width:100%;margin-bottom:28px">
+      <div class="stat-card center">
+        <div class="stat-label">Score</div>
+        <div class="stat-value gold-c" id="success-score">0</div>
+      </div>
+      <div class="stat-card center">
+        <div class="stat-label">Streak</div>
+        <div class="stat-value green-c" id="success-streak">0 🔥</div>
+      </div>
+    </div>
+
+    <div class="identity fu" style="animation-delay:.6s;width:100%;margin-bottom:28px">
+      <div class="serif italic t-sm" style="color:var(--gold-l)">"You are someone who has control over your nafs."</div>
+    </div>
+
+    <button class="btn btn-ghost fu" id="success-back" style="animation-delay:.7s">← Back</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: GAVE IN (enhanced with cig summary)
+══════════════════════════════════════════════ -->
+<div id="screen-gavein" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px 40px">
+
+    <div class="check-circle cp rg"
+         style="background:var(--red-d);border:1.5px solid var(--red);color:#d49090;margin-bottom:28px;font-size:2.2rem">↺</div>
+
+    <div class="fu center" style="animation-delay:.2s;margin-bottom:16px">
+      <div class="serif t-xl" style="letter-spacing:-.01em">It's okay.</div>
+    </div>
+
+    <div class="card fu center" style="animation-delay:.3s;margin-bottom:20px;width:100%">
+      <div class="serif italic" style="font-size:1.1rem;color:var(--text2);line-height:1.9">
+        "One fall doesn't define you.<br/>Reset and stand again."
+      </div>
+    </div>
+
+    <!-- Cig summary card — shows after cig modal -->
+    <div id="gavein-cig-card" class="card-sm fu" style="display:none;animation-delay:.38s;width:100%;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="t-xs muted upper">Today's record</div>
+        <div id="gavein-mode-tag"></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div class="card-xs f1 center">
+          <div class="t-xs muted" style="margin-bottom:4px">Smoked</div>
+          <div class="serif" style="font-size:1.8rem;color:#d49090;line-height:1" id="gavein-smoked">0</div>
+        </div>
+        <div class="card-xs f1 center" id="gavein-avoided-block" style="display:none">
+          <div class="t-xs muted" style="margin-bottom:4px">Avoided</div>
+          <div class="serif" style="font-size:1.8rem;color:#7dd4a8;line-height:1" id="gavein-avoided">0</div>
+        </div>
+        <div class="card-xs f1 center" id="gavein-streak-block">
+          <div class="t-xs muted" style="margin-bottom:4px">Streak</div>
+          <div class="serif" style="font-size:1.8rem;line-height:1" id="gavein-streak-val">0</div>
+        </div>
+      </div>
+      <!-- Reduction bar -->
+      <div id="gavein-reduce-wrap" style="display:none;margin-top:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <div class="t-xs muted">Reduction progress</div>
+          <div class="t-xs" id="gavein-reduce-pct" style="color:#7dd4a8"></div>
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" id="gavein-reduce-bar" style="width:0%"></div></div>
+        <div class="t-xs muted" id="gavein-reduce-msg" style="margin-top:8px;line-height:1.6"></div>
+      </div>
+    </div>
+
+    <div class="fu center" style="animation-delay:.5s;margin-bottom:16px;padding:0 8px">
+      <div class="t-sm muted" style="line-height:1.8">
+        Your total progress is saved.<br/>Every step is data. Keep going.
+      </div>
+    </div>
+
+    <div class="card-sm fu center" id="gavein-resisted-card"
+         style="display:none;animation-delay:.6s;margin-bottom:28px;width:100%">
+      <div class="t-xs muted" style="margin-bottom:4px">You've resisted</div>
+      <div class="stat-value gold-c" id="gavein-resisted-num">0</div>
+      <div class="stat-unit">times — that doesn't disappear.</div>
+    </div>
+
+    <div class="fu" style="animation-delay:.7s;width:100%">
+      <button class="btn btn-primary" id="gavein-back">Reset and continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: DASHBOARD
+══════════════════════════════════════════════ -->
+<div id="screen-dashboard" class="screen">
+  <div class="nav fi">
+    <button class="btn-back" id="dashboard-back">← back</button>
+    <div class="t-xs muted">your progress</div>
+  </div>
+
+  <div class="serif t-xl fu" style="animation-delay:.1s;margin-bottom:6px">Progress</div>
+  <div class="t-sm muted fu" style="animation-delay:.15s;margin-bottom:24px">Every number is a moment you chose yourself.</div>
+
+  <!-- ── Control stats ── -->
+  <div class="section-title fu" style="animation-delay:.18s">Control</div>
+  <div class="stat-grid fu" style="animation-delay:.2s;margin-bottom:20px">
+    <div class="stat-card">
+      <div class="stat-label">Self-Control Score</div>
+      <div class="stat-value gold-c" id="d-score">0</div>
+      <div class="stat-unit">pts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Current Streak</div>
+      <div class="stat-value green-c" id="d-streak">0</div>
+      <div class="stat-unit">days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Longest Streak</div>
+      <div class="stat-value muted" id="d-best">0</div>
+      <div class="stat-unit">days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Urges Resisted</div>
+      <div class="stat-value gold-c" id="d-resisted">0</div>
+      <div class="stat-unit">total</div>
+    </div>
+  </div>
+
+  <!-- ── Cigarette stats ── -->
+  <div class="section-title fu" style="animation-delay:.25s">Cigarettes</div>
+  <div class="stat-grid fu" style="animation-delay:.28s;margin-bottom:16px">
+    <div class="stat-card">
+      <div class="stat-label">Smoke-Free Days</div>
+      <div class="stat-value green-c" id="d-smokefree">0</div>
+      <div class="stat-unit">days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Smoked</div>
+      <div class="stat-value red-c" id="d-total-smoked">0</div>
+      <div class="stat-unit">cigarettes</div>
+    </div>
+    <div class="stat-card" id="d-avoided-card">
+      <div class="stat-label">Total Avoided</div>
+      <div class="stat-value green-c" id="d-total-avoided">0</div>
+      <div class="stat-unit">vs baseline</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Life Regained</div>
+      <div class="stat-value" id="d-life">0h 0m</div>
+    </div>
+  </div>
+
+  <!-- ── Reduction progress ── -->
+  <div id="d-reduce-section" style="display:none;margin-bottom:20px">
+    <div class="fu card-sm" style="animation-delay:.32s">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="t-xs muted upper">Reduction progress</div>
+        <div id="d-reduce-badge"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div class="t-xs muted">Baseline: <span id="d-baseline-num" style="color:var(--text2)">0</span>/day</div>
+        <div class="t-xs muted">Avg: <span id="d-avg-num" style="color:var(--text)">0</span>/day</div>
+      </div>
+      <div class="prog-wrap" style="height:6px">
+        <div class="prog-bar" id="d-reduce-bar" style="width:0%"></div>
+      </div>
+      <div class="t-xs muted" id="d-reduce-msg" style="margin-top:10px;line-height:1.7"></div>
+    </div>
+  </div>
+
+  <!-- ── 7-day log ── -->
+  <div id="d-log-section" style="display:none;margin-bottom:20px">
+    <div class="section-title fu" style="animation-delay:.35s">Last 7 Days</div>
+    <div class="card-sm fu" style="animation-delay:.38s">
+      <div id="d-log-rows"></div>
+    </div>
+  </div>
+
+  <!-- Falls -->
+  <div class="card-sm fu" id="falls-row" style="display:none;animation-delay:.4s">
+    <div class="t-xs muted">Falls recorded</div>
+    <div class="t-sm" style="margin-top:4px;color:var(--text2)" id="d-falls"></div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="card fu" id="d-empty-msg" style="animation-delay:.5s;text-align:center">
+    <div class="serif italic t-md muted" style="line-height:1.6">Your journey starts with a single moment of control.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: SETTINGS (Anchor + Baseline + Reduce Mode)
+══════════════════════════════════════════════ -->
+<div id="screen-anchor" class="screen">
+  <div class="nav fi">
+    <button class="btn-back" id="anchor-back">← back</button>
+    <div class="t-xs muted">settings</div>
+  </div>
+
+  <div class="serif t-xl fu" style="animation-delay:.1s;margin-bottom:6px">Settings</div>
+  <div class="t-sm muted fu" style="animation-delay:.15s;margin-bottom:22px">Personalise your journey.</div>
+
+  <div class="tab-row fu" style="animation-delay:.18s">
+    <button class="tab-btn active" id="tab-why-btn">Why I Quit</button>
+    <button class="tab-btn"        id="tab-track-btn">Tracking</button>
+    <button class="tab-btn"        id="tab-note-btn">Note</button>
+    <button class="tab-btn"        id="tab-reset-btn">Timer & Reset</button>
+  </div>
+
+  <!-- TAB: Why I Quit -->
+  <div id="tab-why-content">
+    <div class="t-xs muted upper" style="margin-bottom:10px">I quit because…</div>
+    <textarea id="why-textarea" rows="7" placeholder="Write your reason here. Make it real. Make it yours." style="line-height:1.7"></textarea>
+    <div class="t-xs muted" style="margin-top:10px;line-height:1.6">This appears on your home screen and during urge moments.</div>
+  </div>
+
+  <!-- TAB: Tracking -->
+  <div id="tab-track-content" style="display:none">
+    <div class="card-sm" style="margin-bottom:16px">
+      <div class="t-xs muted upper" style="margin-bottom:10px">Daily baseline</div>
+      <div class="t-sm muted" style="margin-bottom:14px;line-height:1.6">
+        How many cigarettes did you smoke per day <em>before</em> trying to quit?
+      </div>
+      <input type="number" id="baseline-input" placeholder="e.g. 10" min="1" max="60"
+             style="margin-bottom:4px"/>
+      <div class="t-xs muted" style="margin-top:8px">Used to calculate cigarettes avoided.</div>
+    </div>
+
+    <div class="card-sm" style="margin-bottom:16px">
+      <div class="toggle-row">
+        <div>
+          <div class="t-sm bold" style="margin-bottom:3px">Reduction Mode</div>
+          <div class="t-xs muted" style="line-height:1.6;max-width:220px">
+            Track progress even when you're reducing, not yet quitting completely.
+          </div>
+        </div>
+        <div class="toggle" id="reduce-toggle"></div>
+      </div>
+      <div id="reduce-mode-info" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <div class="t-xs muted" style="line-height:1.7">
+          In Reduce Mode, smoking less than your baseline counts as progress — even if you didn't quit completely.
+          Your streak still resets on any smoking, but you'll see a reduction percentage on your dashboard.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Personal Note -->
+  <div id="tab-note-content" style="display:none">
+    <div class="t-xs muted upper" style="margin-bottom:10px">A note to yourself</div>
+    <textarea id="note-textarea" rows="7"
+              placeholder="Write something to your future self — for the hard moments."
+              style="line-height:1.8;font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic"></textarea>
+  </div>
+
+  <!-- TAB: Timer & Reset -->
+  <div id="tab-reset-content" style="display:none">
+
+    <!-- Urge Timer Duration -->
+    <div class="card-sm" style="margin-bottom:20px">
+      <div class="t-xs muted upper" style="margin-bottom:6px">Urge timer duration</div>
+      <div class="t-xs muted" style="margin-bottom:14px;line-height:1.6">
+        How long should the urge timer run? Longer = harder = stronger.
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="timer-opt btn-ghost btn" data-s="60"  style="flex:1;padding:12px 8px;font-size:.85rem">1 min</button>
+        <button class="timer-opt btn-ghost btn" data-s="120" style="flex:1;padding:12px 8px;font-size:.85rem">2 min</button>
+        <button class="timer-opt btn-ghost btn" data-s="180" style="flex:1;padding:12px 8px;font-size:.85rem">3 min</button>
+        <button class="timer-opt btn-ghost btn" data-s="300" style="flex:1;padding:12px 8px;font-size:.85rem">5 min</button>
+      </div>
+      <div id="timer-opt-note" class="t-xs muted" style="margin-top:10px;text-align:center"></div>
+    </div>
+
+    <!-- Reset -->
+    <div class="card-sm" style="border-color:rgba(158,87,87,.3)">
+      <div class="t-xs muted upper" style="margin-bottom:6px">Reset cigarette data</div>
+      <div class="t-xs muted" style="margin-bottom:16px;line-height:1.7">
+        Resets your daily log and cigarette counts only.<br/>
+        Your control score, streaks, and reasons are kept safe.
+      </div>
+      <div id="reset-confirm-wrap" style="display:none;padding:14px;background:var(--red-d);border-radius:var(--r3);border:1px solid #6e3a3a;margin-bottom:12px">
+        <div class="t-sm" style="color:#d49090;margin-bottom:10px;line-height:1.6">Are you sure? This will clear your daily log and cigarette totals.</div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-red f1" id="btn-reset-confirm" style="padding:12px">Yes, reset</button>
+          <button class="btn btn-ghost f1" id="btn-reset-cancel" style="padding:12px">Cancel</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-reset-trigger" style="border-color:rgba(158,87,87,.3);color:#d49090">
+        ⟳ Reset cigarette data
+      </button>
+    </div>
+  </div>
+
+  <div style="margin-top:22px">
+    <button class="btn btn-gold fu" id="btn-save-anchor" style="animation-delay:.4s">Save</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CIG COUNT MODAL
+══════════════════════════════════════════════ -->
+<div id="cig-modal">
+  <div class="cig-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="serif t-lg" style="color:var(--text)">How many did you smoke?</div>
+      <button id="cig-modal-close" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.4rem;line-height:1">×</button>
+    </div>
+    <div class="t-sm muted" style="margin-bottom:4px;line-height:1.6">Be honest — this data helps you.</div>
+
+    <!-- Quick pick -->
+    <div class="num-row" id="num-row">
+      <button class="btn-num" data-n="1">1</button>
+      <button class="btn-num" data-n="2">2</button>
+      <button class="btn-num" data-n="3">3</button>
+      <button class="btn-num" data-n="5">5</button>
+      <button class="btn-num" data-n="10">10</button>
+    </div>
+
+    <!-- Manual -->
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px">
+      <input type="number" id="cig-manual" placeholder="or enter a number…" min="0" max="60"
+             style="flex:1"/>
+    </div>
+
+    <!-- Zero option -->
+    <div style="margin-bottom:18px">
+      <button class="btn-num" id="btn-cig-zero" data-n="0"
+              style="width:100%;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:400;color:var(--text2);gap:8px">
+        0 &nbsp;—&nbsp; I didn't actually smoke
+      </button>
+    </div>
+
+    <button class="btn btn-red" id="btn-cig-confirm" style="font-size:.95rem">
+      Confirm &amp; continue
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     REFLECTION OVERLAY
+══════════════════════════════════════════════ -->
+<div id="overlay">
+  <div class="overlay-panel">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px">
+      <div>
+        <div class="t-xs muted upper" style="margin-bottom:6px">What she was really saying</div>
+        <div class="serif italic" style="color:var(--gold);font-size:1rem">Read this when the urge is loudest.</div>
+      </div>
+      <button id="overlay-close" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.4rem;line-height:1;flex-shrink:0;margin-left:12px">×</button>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="refl-phase-label">Her fear</div>
+    <p class="refl-para"><span class="refl-q">"You don't need me? I'll start crying now. I got a heart attack."</span></p>
+    <p class="refl-para">She wasn't being dramatic. The moment she felt you pulling away — her body responded. Her chest tightened. She was telling you: <em>your choices physically hurt me.</em> Not as guilt. As truth.</p>
+
+    <!-- Phase 2 -->
+    <div class="refl-phase-label">The plea</div>
+    <p class="refl-para"><span class="refl-q">"Baba please meri baat suno. Please beta."</span></p>
+    <p class="refl-para">She dropped everything she had — pride, composure, authority — and just begged. A person who loves you without condition is the only person who begs like this. She wasn't commanding you. She was surrendering to you, hoping you'd respond.</p>
+
+    <!-- Phase 3 -->
+    <div class="refl-phase-label">Her uncertainty about herself</div>
+    <p class="refl-para"><span class="refl-q">"I don't know where I'll be… But please take care of yourself. Stop all these."</span></p>
+    <p class="refl-para">She didn't know how much time she had. She was facing her own uncertainty — and her first thought was still <em>you.</em> Not herself. You. That's what love looks like when it's completely selfless.</p>
+
+    <!-- Phase 4 -->
+    <div class="refl-phase-label">Her last will</div>
+    <div style="border-left:2px solid var(--gold-d);padding:14px 18px;margin:16px 0;background:var(--gold-dim);border-radius:0 var(--r3) var(--r3) 0">
+      <p class="refl-para refl-hi" style="margin:0;line-height:1.85">"If I die — my last words to you: Allah is your protector. Please leave smoking."</p>
+    </div>
+    <p class="refl-para">Think about that. If she had one breath left, one final sentence to give you — she chose this. Not "I love you." Not "be good." She chose: <em>leave smoking.</em> Because she knew this was the thing standing between you and the life you deserve.</p>
+
+    <!-- Phase 5 -->
+    <div class="refl-phase-label">Your worth in her eyes</div>
+    <p class="refl-para"><span class="refl-q">"You are important. You should be happy. I want you to be okay."</span></p>
+    <p class="refl-para">She didn't say this to flatter you. She said it because she genuinely saw something in you that you couldn't see in yourself. She was telling you: <em>your life has value beyond what you think.</em> Don't waste it on something that slowly destroys you.</p>
+
+    <!-- Phase 6 -->
+    <div class="refl-phase-label">Her life's effort</div>
+    <p class="refl-para"><span class="refl-q">"See, I tried my best in my life to guide you. Don't destroy my efforts. But I don't want you to smoke — never ever again. I can't leave you easily, beta. My efforts — Allah knows."</span></p>
+    <p class="refl-para">She was asking you to honor a lifetime of her care. Everything she gave you — time, prayers, worry, sleepless nights — it all lived in that one sentence. <em>Don't destroy my efforts.</em> Every cigarette is a rejection of everything she built in you.</p>
+
+    <!-- Phase 7 -->
+    <div class="refl-phase-label">She tried to be your peace</div>
+    <p class="refl-para"><span class="refl-q">"Beta listen. See. Be calm. You have Jannah. You have Allah with you. Please remember Allah. Remember me. But never be sad."</span></p>
+    <p class="refl-para">Even in her panic, she stopped and tried to calm <em>you.</em> She was the one in pain and she still said: <em>be calm, never be sad.</em> She wanted to hold your heart together from wherever she was. That's a mother's love — it puts you first even when she is breaking.</p>
+
+    <!-- Phase 8 -->
+    <div class="refl-phase-label">Your future</div>
+    <p class="refl-para"><span class="refl-q">"Who told you to forget me? Prove to Allah that you deserve the best things. I will remember you in my sujood. You'll get a beautiful woman — a righteous woman. What's the problem? Just ask Allah."</span></p>
+    <p class="refl-para">She wasn't telling you to move on. She was telling you to <em>be worthy</em> of what's coming. She was making dua for your future wife while worrying about you in this moment. She saw your whole life ahead — and she wanted all of it to be good.</p>
+
+    <!-- Phase 9 -->
+    <div class="refl-phase-label">She saw through your walls</div>
+    <p class="refl-para">You told her: <em>I don't want anyone.</em></p>
+    <p class="refl-para">She said: <span class="refl-q">"You need Ummer."</span></p>
+    <p class="refl-para">She didn't argue. She didn't lecture. She just quietly said the truth — that you need yourself. She knew your self-destruction better than you did. And she called it by your own name.</p>
+
+    <!-- Phase 10 -->
+    <div class="refl-phase-label">She would have walked to you</div>
+    <p class="refl-para"><span class="refl-q">"Main udhar rahti toh paas ch aati."</span></p>
+    <p class="refl-para">If I was there, I would have come to you. She wasn't saying this poetically. She meant it literally. She would have gotten up, crossed whatever distance, and stood in front of you — just to make you listen. Distance was the only thing stopping her.</p>
+
+    <!-- Phase 11 -->
+    <div class="refl-phase-label">She knew you were busy — and waited anyway</div>
+    <p class="refl-para"><span class="refl-q">"Manje malum kaisa hota karko. Meri baat sundalo — ek baar. Please karo manje call. Honde manje bhi baat karo."</span></p>
+    <p class="refl-para">She knew you were on a call with your sister. She understood. And she still waited — because what she had to say couldn't wait. She wasn't being impatient. She was scared. Scared you'd reach for a cigarette and she wouldn't be there to stop it.</p>
+
+    <!-- Phase 12 -->
+    <div class="refl-phase-label">The wait</div>
+    <p class="refl-para"><span class="refl-q">"Main wait karryu. Main baat karna chahti hoon tumse. Ummer mere paas baat karryu. Please beta — baat karo."</span></p>
+    <p class="refl-para">Message after message. She sat there, phone in hand, watching for a reply that didn't come. She didn't give up. She didn't get angry. She just kept saying: <em>I'm still here. Talk to me.</em> That kind of patient love is rare. It deserves to be honored.</p>
+
+    <!-- Phase 13 -->
+    <div class="refl-phase-label">Her one and only request</div>
+    <p class="refl-para"><span class="refl-q">"Yetta request karna? Main yetta samjhaaryu honde chodo nakko cigarettes."</span></p>
+    <p class="refl-para"><em>Is this my only request?</em> She was saying: I don't ask much of you. I never asked for money, status, or success. I am asking for one thing. This one thing. Leave this. That's all.</p>
+
+    <!-- The deepest line -->
+    <div style="border-left:2px solid #7a9e7e;padding:14px 18px;margin:20px 0;background:rgba(122,158,126,.07);border-radius:0 var(--r3) var(--r3) 0">
+      <div class="t-xs muted upper" style="margin-bottom:10px">The most important thing she ever said to you</div>
+      <p class="refl-para refl-hi" style="margin:0;font-size:1.1rem;color:#9ecfa2;line-height:1.85">"I see me in you."</p>
+    </div>
+    <p class="refl-para">This is not about cigarettes anymore. She looked at you and saw herself — her struggles, her strength, her spirit — living inside you. She wasn't just trying to save you from smoking. She was trying to protect the part of her that lives on through you.</p>
+    <p class="refl-para">When you light up, you're not just hurting yourself. You're slowly erasing something of her.</p>
+    <p class="refl-para">When you put it down — you carry her forward.</p>
+
+    <!-- Close -->
+    <div style="border-top:1px solid var(--border2);margin-top:24px;padding-top:20px">
+      <p class="refl-para" style="color:var(--gold-l);font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;line-height:1.9;margin:0">Every time the urge hits — this is what's on the other side of it. Her words. Her wait. Her love. Her last request. Her in you.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CHIP STYLES (inline since dynamic)
+══════════════════════════════════════════════ -->
+<style>
+.chip{ background:var(--s3); border:1px solid var(--border2); border-radius:30px; padding:7px 14px; font-size:.82rem; color:var(--text2); display:inline-flex; align-items:center; gap:6px; }
+.refl-q { color:var(--gold-l); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.02em; }
+.refl-phase-label { font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text3); margin:22px 0 8px; border-bottom:1px solid var(--border2); padding-bottom:6px; }
+</style>
+
+<script>
+/* ══════════════════════════════════════════════
+   TRIGGER DATA
+══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   HER WORDS — every message, in order, with meaning
+══════════════════════════════════════════════ */
+var HER_WORDS = [
+  { msg:"You don't need me?",                         meaning:"She felt you pulling away. It broke her." },
+  { msg:"I'll start crying now…",                     meaning:"Not guilt. Pain. Your choice caused this." },
+  { msg:"I got a heart attack.",                       meaning:"Her body reacted to the thought of losing you." },
+  { msg:"Baba please meri baat suno.",                 meaning:"She dropped everything and begged." },
+  { msg:"Please beta.",                                meaning:"Two words. Everything behind them." },
+  { msg:"I don't know where I'll be…",                meaning:"She was facing her own end, still thinking of you." },
+  { msg:"But please take care of yourself.",           meaning:"Her last concern — not herself. You." },
+  { msg:"Stop all these.",                             meaning:"Not a request. A plea from someone scared." },
+  { msg:"If I die…",                                  meaning:"She thought about this. Seriously." },
+  { msg:"My last words to you —",                     meaning:"She chose you for her final breath." },
+  { msg:"Allah is your protector.",                    meaning:"She wanted you held by something greater than her." },
+  { msg:"Please leave smoking.",                       meaning:"This is what she used her last words on." },
+  { msg:"You are important.",                          meaning:"She saw your value when you couldn't." },
+  { msg:"You should be happy.",                        meaning:"She didn't want you suffering alone." },
+  { msg:"I want you to be okay.",                      meaning:"This is all she ever wanted for you." },
+  { msg:"See, I tried my best in my life to guide you.", meaning:"A lifetime of effort lives in that sentence." },
+  { msg:"Don't destroy my efforts.",                   meaning:"Every cigarette erases something she built in you." },
+  { msg:"But I don't want you to smoke.",              meaning:"Simple. Clear. From the heart." },
+  { msg:"Never ever again.",                           meaning:"She meant forever. She believed you could." },
+  { msg:"I can't leave you easily, beta.",             meaning:"You were too important to let go of." },
+  { msg:"My efforts — Allah knows.",                   meaning:"She made dua for you in ways you'll never see." },
+  { msg:"Beta, listen.",                               meaning:"She was desperate for you to hear her." },
+  { msg:"See.",                                        meaning:"Just look at what you're doing to yourself." },
+  { msg:"Be calm.",                                    meaning:"She was panicking and still trying to calm you." },
+  { msg:"You have Jannah.",                            meaning:"She reminded you of your destination." },
+  { msg:"You have Allah with you.",                    meaning:"You are never alone in this fight." },
+  { msg:"Please remember Allah.",                      meaning:"She pointed you to the only one who can truly help." },
+  { msg:"Remember me.",                                meaning:"Not to grieve — to be worthy of her love." },
+  { msg:"But never be sad.",                           meaning:"Even in her pain, she protected your peace." },
+  { msg:"Who told you to forget me?",                  meaning:"She never asked you to move on. Only to survive." },
+  { msg:"Prove to Allah that you deserve the best.",   meaning:"She believed you deserved more than you gave yourself." },
+  { msg:"I will remember you in my sujood.",           meaning:"She carried you into her prayers. Every. Single. Day." },
+  { msg:"You'll get a beautiful woman.",               meaning:"She was building your future while worrying about you now." },
+  { msg:"A righteous woman.",                          meaning:"She wanted someone worthy of you — and you worthy of her." },
+  { msg:"What's the problem?",                         meaning:"She couldn't understand why you'd choose this over yourself." },
+  { msg:"Just ask Allah.",                             meaning:"She trusted Allah could give you what she couldn't." },
+  { msg:"You need Ummer.",                             meaning:"You said you wanted no one. She saw through it." },
+  { msg:"Main udhar rahti toh paas ch aati…",         meaning:"If I was there, I would have walked to you myself." },
+  { msg:"Beta please — ek min. 🥺",                  meaning:"One minute. She just needed one minute." },
+  { msg:"Manje malum kaisa hota karko.",               meaning:"She knew you were busy. She waited anyway." },
+  { msg:"Meri baat sundalo — ek baar.",               meaning:"Just listen to me once. That's all she asked." },
+  { msg:"Please karo manje call.",                     meaning:"She was watching your last seen. Hoping." },
+  { msg:"Honde manje bhi baat karo.",                  meaning:"Even just for a moment. She would have taken anything." },
+  { msg:"Main wait karryu…",                          meaning:"She sat there alone, waiting. For you." },
+  { msg:"Main baat karna chahti hoon tumse.",          meaning:"I want to talk to you. Present tense. Right now." },
+  { msg:"Ummer, mere paas baat karryu.",               meaning:"Come to me. She was reaching across distance." },
+  { msg:"Please beta — baat karo.",                   meaning:"She was still patient after all those messages." },
+  { msg:"Yetta request karna?",                        meaning:"Is this my only request? One. Just this one." },
+  { msg:"Main yetta samjhaaryu honde chodo nakko cigarettes.", meaning:"I explained this one last time. Now leave them." },
+  { msg:"Baba please meri baat suno.",                 meaning:"She came back to the beginning. Still begging." },
+  { msg:"Ummer, I don't want to leave you alone.",     meaning:"She feared leaving you — while she herself was afraid of being left." },
+  { msg:"I see me in you.",                            meaning:"She wasn't saving you from a cigarette. She was protecting herself in you." },
+];
+
+const TRIGGERS = HER_WORDS.map(function(w){ return {t:"E", text:w.msg}; });
+
+
+const MOTIVATIONAL = [
+  "You just defeated your nafs.",
+  "This urge would have passed anyway.",
+  "Discipline is stronger than desire.",
+  "Allah sees your struggle.",
+  "Every resistance makes you stronger.",
+  "You chose yourself today.",
+  "Control is a muscle. You just trained it.",
+  "She sees you fighting. Keep going.",
+  "One second of discipline. That's all it ever is.",
+  "You are not your urges.",
+  "The hardest battles are fought in silence.",
+  "True strength is choosing not to.",
+  "Your future self is grateful.",
+  "Each no is a step toward freedom.",
+  "You are building the person you want to be.",
+  "Sabr is strength, not weakness.",
+  "You didn't just resist a cigarette. You chose your life.",
+  "The nafs whispers. The heart decides.",
+  "Small victories compound into transformation.",
+  "You just proved that you can.",
+  "Willpower grows every time you use it.",
+  "The craving lied. You caught it.",
+  "You are in command of yourself.",
+  "Every breath you take freely is a gift.",
+  "Your body is already beginning to heal.",
+  "Control is the greatest luxury.",
+  "You chose love over habit.",
+  "The urge was loud. You were louder.",
+  "Recovery is built one moment at a time.",
+  "She believes in you. Prove her right.",
+  "You refused what was hurting you.",
+  "One moment of control changes everything.",
+  "Freedom is built moment by moment.",
+  "The best version of you just showed up.",
+  "You respected yourself today.",
+  "You didn't need it. You proved it.",
+  "A clean breath is the truest reward.",
+  "You are someone who has control.",
+  "Stronger than habit. Stronger than craving.",
+  "Today you chose life.",
+  "Alhamdulillah for this moment of strength.",
+  "She's proud. Even if she doesn't know yet.",
+  "I will remember you in my sujood — she said this. Honor it.",
+];
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+const DEFAULT = {
+  selfControlScore: 0,
+  currentStreak:    0,
+  longestStreak:    0,
+  totalResisted:    0,
+  totalGaveIn:      0,
+  whyIQuit:         "",
+  personalNote:     "",
+  // Cigarette tracking
+  baseline:         0,
+  reduceMode:       false,
+  totalCigsSmoked:  0,
+  smokeFreedays:    0,
+  dailyLog:         {},
+  // Urge settings
+  urgeDuration:     180,
+  // Victory notes
+  urgeNotes:        [],
+};
+
+function loadStats() {
+  try {
+    const s = localStorage.getItem("control-v3");
+    return s ? Object.assign({}, DEFAULT, JSON.parse(s)) : Object.assign({}, DEFAULT);
+  } catch { return Object.assign({}, DEFAULT); }
+}
+function saveStats() {
+  try { localStorage.setItem("control-v3", JSON.stringify(stats)); } catch {}
+}
+
+let stats = loadStats();
+
+/* ══════════════════════════════════════════════
+   DATE HELPERS
+══════════════════════════════════════════════ */
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-"
+    + String(d.getMonth()+1).padStart(2,"0") + "-"
+    + String(d.getDate()).padStart(2,"0");
+}
+function getOrCreateDay(key) {
+  if (!stats.dailyLog[key]) stats.dailyLog[key] = { cigs:0, resisted:0 };
+  return stats.dailyLog[key];
+}
+function todayEntry() { return getOrCreateDay(todayKey()); }
+
+/* ══════════════════════════════════════════════
+   SCREEN ROUTER
+══════════════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-"+id).classList.add("active");
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════════════════════════
+   HOME
+══════════════════════════════════════════════ */
+function refreshHome() {
+  const entry = todayEntry();
+
+  document.getElementById("home-score").textContent    = stats.selfControlScore;
+  document.getElementById("home-resisted").textContent = stats.totalResisted;
+
+  // Smoke-free days
+  const sf = computeSmokeFree();
+  document.getElementById("home-smokefree").textContent = sf;
+
+  // Streak
+  const stEl = document.getElementById("home-streak-txt");
+  if (stats.currentStreak > 0) {
+    stEl.textContent = stats.currentStreak+" day streak 🔥";
+    stEl.style.display = "block";
+  } else { stEl.style.display = "none"; }
+
+  // Mode badge
+  const modeBadge = document.getElementById("home-mode-badge");
+  modeBadge.style.display = stats.reduceMode ? "flex" : "none";
+
+  // Identity
+  document.getElementById("identity-strip").style.display = stats.totalResisted > 0 ? "block" : "none";
+
+  // Why preview
+  const wp = document.getElementById("why-preview");
+  if (stats.whyIQuit) {
+    wp.style.display = "block";
+    document.getElementById("why-preview-text").textContent =
+      stats.whyIQuit.slice(0,110) + (stats.whyIQuit.length>110?"…":"");
+  } else { wp.style.display = "none"; }
+
+  document.getElementById("btn-anchor").textContent = "Settings";
+
+  // Today strip
+  const todayStrip = document.getElementById("today-strip");
+  if (stats.baseline > 0) {
+    todayStrip.style.display = "flex";
+    document.getElementById("today-cigs").textContent = entry.cigs;
+    const avoided = Math.max(0, stats.baseline - entry.cigs);
+    const avoidedWrap = document.getElementById("today-avoided-wrap");
+    if (avoided > 0) {
+      avoidedWrap.style.display = "inline";
+      document.getElementById("today-avoided").textContent = "+"+avoided;
+    } else { avoidedWrap.style.display = "none"; }
+    // Progress bar: 100% = baseline reduced to 0
+    const pct = stats.baseline > 0 ? Math.max(0, Math.min(100, (avoided/stats.baseline)*100)) : 0;
+    document.getElementById("today-prog-bar").style.width = pct + "%";
+  } else { todayStrip.style.display = "none"; }
+}
+
+function computeSmokeFree() {
+  return Object.values(stats.dailyLog).filter(d => d.cigs === 0).length;
+}
+
+document.getElementById("btn-urge").addEventListener("click", () => { startUrgeFlow(); showScreen("urge"); });
+document.getElementById("btn-controlled").addEventListener("click", doControlled);
+document.getElementById("btn-gavein").addEventListener("click", openCigModal);
+document.getElementById("btn-dashboard").addEventListener("click", () => { refreshDashboard(); showScreen("dashboard"); });
+document.getElementById("btn-anchor").addEventListener("click", () => { refreshAnchor(); showScreen("anchor"); });
+
+/* ══════════════════════════════════════════════
+   CONTROLLED
+══════════════════════════════════════════════ */
+function doControlled() {
+  const entry = todayEntry();
+  entry.resisted = (entry.resisted||0) + 1;
+
+  stats.selfControlScore++;
+  stats.currentStreak++;
+  stats.longestStreak = Math.max(stats.longestStreak, stats.currentStreak);
+  stats.totalResisted++;
+  saveStats();
+
+  stopUrgeTimers();
+
+  const line = MOTIVATIONAL[Math.floor(Math.random()*MOTIVATIONAL.length)];
+  document.getElementById("success-line").textContent = `"${line}"`;
+  document.getElementById("success-score").textContent  = stats.selfControlScore;
+  document.getElementById("success-streak").textContent = stats.currentStreak+" 🔥";
+  showScreen("success");
+}
+
+/* ══════════════════════════════════════════════
+   CIG MODAL
+══════════════════════════════════════════════ */
+let selectedCigCount = null;
+
+function openCigModal() {
+  selectedCigCount = null;
+  document.getElementById("cig-manual").value = "";
+  document.querySelectorAll(".btn-num").forEach(b => b.classList.remove("sel"));
+  document.getElementById("cig-modal").classList.add("open");
+}
+function closeCigModal() { document.getElementById("cig-modal").classList.remove("open"); }
+
+// Quick-pick buttons
+document.querySelectorAll(".btn-num[data-n]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".btn-num").forEach(b => b.classList.remove("sel"));
+    btn.classList.add("sel");
+    selectedCigCount = parseInt(btn.dataset.n);
+    document.getElementById("cig-manual").value = "";
+  });
+});
+
+// Manual input clears selection
+document.getElementById("cig-manual").addEventListener("input", () => {
+  document.querySelectorAll(".btn-num").forEach(b => b.classList.remove("sel"));
+  selectedCigCount = null;
+});
+
+document.getElementById("cig-modal-close").addEventListener("click", closeCigModal);
+
+document.getElementById("btn-cig-confirm").addEventListener("click", () => {
+  // Resolve count
+  let count = selectedCigCount;
+  if (count === null) {
+    const manual = parseInt(document.getElementById("cig-manual").value);
+    count = isNaN(manual) ? 0 : Math.max(0, manual);
+  }
+  closeCigModal();
+  doGaveIn(count);
+});
+
+/* ══════════════════════════════════════════════
+   GAVE IN (with cig count)
+══════════════════════════════════════════════ */
+function doGaveIn(cigCount) {
+  cigCount = cigCount || 0;
+  stopUrgeTimers();
+
+  const entry = todayEntry();
+  entry.cigs += cigCount;
+  stats.totalGaveIn = (stats.totalGaveIn||0) + 1;
+  stats.totalCigsSmoked += cigCount;
+
+  // Streak logic: only reset if actually smoked
+  if (cigCount > 0) {
+    stats.currentStreak = 0;
+  }
+  // If 0 cigarettes, streak can still tick (they "gave in" mentally but didn't smoke)
+
+  saveStats();
+
+  // ── Populate gave-in screen ──
+  const card = document.getElementById("gavein-cig-card");
+  card.style.display = "block";
+
+  document.getElementById("gavein-smoked").textContent = cigCount;
+
+  // Avoided today
+  const avoided = stats.baseline > 0 ? Math.max(0, stats.baseline - entry.cigs) : 0;
+  const avoidedBlock = document.getElementById("gavein-avoided-block");
+  if (stats.baseline > 0) {
+    avoidedBlock.style.display = "block";
+    document.getElementById("gavein-avoided").textContent = avoided;
+  } else { avoidedBlock.style.display = "none"; }
+
+  // Streak block
+  const strEl = document.getElementById("gavein-streak-val");
+  strEl.textContent = stats.currentStreak;
+  strEl.style.color = cigCount > 0 ? "#d49090" : "#7dd4a8";
+
+  // Mode tag
+  const modeTag = document.getElementById("gavein-mode-tag");
+  modeTag.innerHTML = stats.reduceMode
+    ? '<span class="pill pill-amber">⬇ Reduce Mode</span>'
+    : (cigCount === 0
+        ? '<span class="pill pill-green">✓ No smoke</span>'
+        : '<span class="pill pill-red">↺ Reset</span>');
+
+  // Reduction bar
+  const reduceWrap = document.getElementById("gavein-reduce-wrap");
+  if (stats.reduceMode && stats.baseline > 0) {
+    reduceWrap.style.display = "block";
+    const pct = Math.max(0, Math.min(100, ((stats.baseline - entry.cigs) / stats.baseline) * 100));
+    setTimeout(() => {
+      document.getElementById("gavein-reduce-bar").style.width = pct + "%";
+    }, 300);
+    document.getElementById("gavein-reduce-pct").textContent = Math.round(pct) + "% reduced";
+
+    let msg = "";
+    if (pct >= 100)       msg = "🎉 Smoke-free today. Keep this going.";
+    else if (pct >= 60)   msg = "Real progress. You smoked less than half your baseline today.";
+    else if (pct >= 20)   msg = "A step in the right direction. Tomorrow, go lower.";
+    else if (cigCount > stats.baseline) msg = "Hard day. Every day is a new start. Tomorrow matters more.";
+    else                  msg = "You recorded it. That awareness is the first step.";
+    document.getElementById("gavein-reduce-msg").textContent = msg;
+  } else { reduceWrap.style.display = "none"; }
+
+  // Resisted card
+  const rc = document.getElementById("gavein-resisted-card");
+  if (stats.totalResisted > 0) {
+    rc.style.display = "block";
+    document.getElementById("gavein-resisted-num").textContent = stats.totalResisted;
+  } else { rc.style.display = "none"; }
+
+  showScreen("gavein");
+}
+
+document.getElementById("success-back").addEventListener("click", () => { refreshHome(); showScreen("home"); });
+document.getElementById("gavein-back").addEventListener("click", () => { refreshHome(); showScreen("home"); });
+
+/* ══════════════════════════════════════════════
+   URGE FLOW
+══════════════════════════════════════════════ */
+var urgeTotalSecs = 120;
+let urgeTimeLeft=urgeTotalSecs, urgeTriggerIdx=0;
+let urgeTimerInterval=null, urgeMsgTimeout=null, introFadeTimeout=null, urgeRunning=false;
+const CIRC = 282.7;
+
+const timerRing = document.getElementById("timer-ring");
+const timerNum  = document.getElementById("timer-num");
+const typeDot   = document.getElementById("type-dot");
+const ambient   = document.getElementById("urge-ambient");
+const introCTX  = document.getElementById("intro-ctx");
+
+function fmtTime(s) { return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+
+function setEmotionalStyle(isE) {
+  timerRing.style.stroke = isE ? "var(--gold)"  : "var(--calm)";
+  timerNum.style.color   = isE ? "#e8c990" : "#c5cfe0";
+  if (isE) {
+    typeDot.style.background = "var(--gold)"; typeDot.style.boxShadow = "0 0 8px 2px rgba(201,168,108,.4)"; typeDot.style.opacity = "1";
+  } else {
+    typeDot.style.background = "#c5cfe0"; typeDot.style.boxShadow = "none"; typeDot.style.opacity = ".35";
+  }
+  ambient.style.background = isE
+    ? "radial-gradient(ellipse 70% 45% at 50% 0%, rgba(201,168,108,.09) 0%, transparent 68%)"
+    : "radial-gradient(ellipse 70% 45% at 50% 0%, rgba(197,207,224,.045) 0%, transparent 68%)";
+}
+
+function showTrigger(idx) {
+  var word = HER_WORDS[idx % HER_WORDS.length];
+  var old = document.getElementById("msg-text");
+  if (old) old.remove();
+  var wrap = document.createElement("div");
+  wrap.id = "msg-text";
+  wrap.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;animation:fadeUp .5s ease both";
+  var main = document.createElement("div");
+  main.className = "msg-emotional em";
+  main.style.marginBottom = "0";
+  main.textContent = word.msg;
+  var sub = document.createElement("div");
+  sub.className = "msg-calm";
+  sub.style.cssText = "font-size:.78rem;opacity:.7;font-style:italic;text-align:center;max-width:88%;line-height:1.55;margin-top:2px";
+  sub.textContent = word.meaning;
+  wrap.appendChild(main);
+  wrap.appendChild(sub);
+  document.getElementById("msg-stage").appendChild(wrap);
+  setEmotionalStyle(true);
+  urgeTriggerIdx = idx;
+  urgeMsgTimeout = setTimeout(function() {
+    var next = idx + 1;
+    if (next >= HER_WORDS.length) next = 0;
+    if (urgeRunning) showTrigger(next);
+  }, 4500);
+}
+
+function startUrgeFlow() {
+  stopUrgeTimers();
+  urgeTotalSecs = stats.urgeDuration || 120;
+  urgeTimeLeft=urgeTotalSecs; urgeTriggerIdx=0; urgeRunning=true;
+  introCTX.style.opacity="1";
+  document.getElementById("urge-done").style.display="none";
+  document.getElementById("urge-note-wrap").style.display="none";
+  document.getElementById("urge-note-input").value="";
+  document.getElementById("msg-stage").style.display="flex";
+  document.getElementById("type-dot").style.display="block";
+  document.querySelector(".timer-wrap").style.display="block";
+  document.getElementById("btn-read-reflection").style.display="flex";
+  const urgeWhy=document.getElementById("urge-why-card");
+  if (stats.whyIQuit) { urgeWhy.style.display="block"; document.getElementById("urge-why-text").textContent=stats.whyIQuit; }
+  else { urgeWhy.style.display="none"; }
+  timerRing.style.strokeDashoffset=CIRC;
+  timerNum.textContent=fmtTime(urgeTotalSecs);
+  introFadeTimeout = setTimeout(()=>{ introCTX.style.opacity="0"; }, 3500);
+  showTrigger(0);
+  urgeTimerInterval = setInterval(()=>{
+    urgeTimeLeft--;
+    timerRing.style.strokeDashoffset = CIRC - ((urgeTotalSecs-urgeTimeLeft)/urgeTotalSecs)*CIRC;
+    timerNum.textContent = fmtTime(urgeTimeLeft);
+    if (urgeTimeLeft<=0) {
+      clearInterval(urgeTimerInterval); urgeRunning=false;
+      document.querySelector(".timer-wrap").style.display="none";
+      document.getElementById("msg-stage").style.display="none";
+      document.getElementById("type-dot").style.display="none";
+      document.getElementById("urge-why-card").style.display="none";
+      document.getElementById("btn-read-reflection").style.display="none";
+      document.getElementById("urge-done").style.display="flex";
+      document.getElementById("urge-note-wrap").style.display="block";
+    }
+  }, 1000);
+}
+
+function stopUrgeTimers() {
+  urgeRunning=false;
+  clearInterval(urgeTimerInterval); clearTimeout(urgeMsgTimeout); clearTimeout(introFadeTimeout);
+}
+
+document.getElementById("urge-back").addEventListener("click", function(){ stopUrgeTimers(); refreshHome(); showScreen("home"); });
+document.getElementById("btn-urge-controlled").addEventListener("click", doControlled);
+
+/* ── Save urge note ── */
+document.getElementById("btn-save-urge-note").addEventListener("click", function(){
+  var note = document.getElementById("urge-note-input").value.trim();
+  if (!note) return;
+  if (!stats.urgeNotes) stats.urgeNotes = [];
+  stats.urgeNotes.push({ ts: new Date().toISOString(), note: note });
+  saveStats();
+  document.getElementById("urge-note-saved").style.display = "block";
+  document.getElementById("btn-save-urge-note").style.display = "none";
+});
+
+/* ══════════════════════════════════════════════
+   REFLECTION OVERLAY
+══════════════════════════════════════════════ */
+function openOverlay() { document.getElementById("overlay").classList.add("open"); }
+function closeOverlay(){ document.getElementById("overlay").classList.remove("open"); }
+document.getElementById("btn-read-reflection").addEventListener("click",  openOverlay);
+document.getElementById("btn-read-reflection2").addEventListener("click", openOverlay);
+document.getElementById("overlay-close").addEventListener("click", closeOverlay);
+document.getElementById("overlay").addEventListener("click", e => { if(e.target===document.getElementById("overlay")) closeOverlay(); });
+
+/* ══════════════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════════════ */
+function refreshDashboard() {
+  const sf = computeSmokeFree();
+
+  // Life regained: 11 min per cig not smoked, based on baseline days
+  const daysTracked = Object.keys(stats.dailyLog).length || 1;
+  const expectedTotal = stats.baseline * daysTracked;
+  const totalAvoided = Math.max(0, expectedTotal - stats.totalCigsSmoked);
+  const lifeMin = Math.round(totalAvoided * 11);
+  const lh = Math.floor(lifeMin/60), lm = lifeMin%60;
+
+  document.getElementById("d-score").textContent       = stats.selfControlScore;
+  document.getElementById("d-streak").textContent      = stats.currentStreak;
+  document.getElementById("d-best").textContent        = stats.longestStreak;
+  document.getElementById("d-resisted").textContent    = stats.totalResisted;
+  document.getElementById("d-smokefree").textContent   = sf;
+  document.getElementById("d-total-smoked").textContent= stats.totalCigsSmoked;
+  document.getElementById("d-total-avoided").textContent = totalAvoided > 0 ? totalAvoided : "—";
+  document.getElementById("d-life").textContent        = `${lh}h ${lm}m`;
+
+  // Empty state
+  const isEmpty = stats.totalResisted===0 && stats.totalCigsSmoked===0;
+  document.getElementById("d-empty-msg").style.display = isEmpty ? "block" : "none";
+
+  // Falls
+  const fallsRow = document.getElementById("falls-row");
+  if (stats.totalGaveIn > 0) {
+    fallsRow.style.display="block";
+    document.getElementById("d-falls").textContent = stats.totalGaveIn+" — each one you stood back up from.";
+  } else { fallsRow.style.display="none"; }
+
+  // Reduction section
+  const redSection = document.getElementById("d-reduce-section");
+  if (stats.baseline > 0 && stats.reduceMode) {
+    redSection.style.display="block";
+    const avgCigs = daysTracked > 0 ? (stats.totalCigsSmoked / daysTracked).toFixed(1) : 0;
+    const redPct  = Math.max(0, Math.min(100, ((stats.baseline - avgCigs) / stats.baseline)*100));
+    document.getElementById("d-baseline-num").textContent = stats.baseline;
+    document.getElementById("d-avg-num").textContent = avgCigs;
+    setTimeout(()=>{ document.getElementById("d-reduce-bar").style.width = redPct+"%"; }, 300);
+    const badge = document.getElementById("d-reduce-badge");
+    badge.innerHTML = `<span class="pill pill-amber">${Math.round(redPct)}% reduced</span>`;
+    let msg="";
+    if (redPct>=100)      msg="You've fully quit based on your average. Incredible.";
+    else if (redPct>=70)  msg="You're down more than 70%. The finish line is close.";
+    else if (redPct>=40)  msg="Meaningful progress. Keep reducing.";
+    else if (redPct>=10)  msg="You've started. That matters. Keep the trend going.";
+    else                  msg="Every reduction counts. Stay with it.";
+    document.getElementById("d-reduce-msg").textContent=msg;
+  } else { redSection.style.display="none"; }
+
+  // 7-day log
+  const logSection = document.getElementById("d-log-section");
+  const logRows = document.getElementById("d-log-rows");
+  const keys = Object.keys(stats.dailyLog).sort().slice(-7);
+  if (keys.length > 0) {
+    logSection.style.display = "block";
+    logRows.innerHTML = keys.map(k => {
+      const d = stats.dailyLog[k];
+      const date = new Date(k+"T12:00:00");
+      const label = date.toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"});
+      const cigs = d.cigs || 0;
+      const maxCigs = stats.baseline || 10;
+      const barW = Math.min(100, (cigs/maxCigs)*100);
+      const color = cigs===0 ? "#7dd4a8" : cigs<(stats.baseline||10) ? "#e8b080" : "#d49090";
+      return `<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:.72rem;color:var(--text2);width:76px;flex-shrink:0">${label}</div>
+        <div style="flex:1;height:4px;background:var(--s3);border-radius:99px;overflow:hidden">
+          <div style="height:100%;width:${barW}%;background:${color};border-radius:99px;transition:width .6s ease"></div>
+        </div>
+        <div style="font-size:.72rem;width:20px;text-align:right;color:${color}">${cigs}</div>
+      </div>`;
+    }).join("");
+    // Remove last border
+    const lastDiv = logRows.querySelector("div:last-child");
+    if(lastDiv) lastDiv.style.borderBottom="none";
+  } else { logSection.style.display="none"; }
+}
+
+document.getElementById("dashboard-back").addEventListener("click", ()=>{ refreshHome(); showScreen("home"); });
+
+/* ══════════════════════════════════════════════
+   SETTINGS / ANCHOR
+══════════════════════════════════════════════ */
+function refreshAnchor() {
+  document.getElementById("why-textarea").value    = stats.whyIQuit    || "";
+  document.getElementById("note-textarea").value   = stats.personalNote|| "";
+  document.getElementById("baseline-input").value  = stats.baseline > 0 ? stats.baseline : "";
+  var tog = document.getElementById("reduce-toggle");
+  if(stats.reduceMode) tog.classList.add("on"); else tog.classList.remove("on");
+  document.getElementById("reduce-mode-info").style.display = stats.reduceMode ? "block" : "none";
+  refreshTimerOpts();
+}
+
+// Tabs
+const tabs = {
+  "why":   {btn:"tab-why-btn",   content:"tab-why-content"},
+  "track": {btn:"tab-track-btn", content:"tab-track-content"},
+  "note":  {btn:"tab-note-btn",  content:"tab-note-content"},
+  "reset": {btn:"tab-reset-btn", content:"tab-reset-content"},
+};
+Object.keys(tabs).forEach(function(key) {
+  document.getElementById(tabs[key].btn).addEventListener("click", function(){
+    Object.keys(tabs).forEach(function(k){
+      document.getElementById(tabs[k].btn).classList.remove("active");
+      document.getElementById(tabs[k].content).style.display="none";
+    });
+    document.getElementById(tabs[key].btn).classList.add("active");
+    document.getElementById(tabs[key].content).style.display="block";
+    if (key==="reset") refreshTimerOpts();
+  });
+});
+
+// Reduce toggle
+document.getElementById("reduce-toggle").addEventListener("click", function(){
+  stats.reduceMode = !stats.reduceMode;
+  var tog = document.getElementById("reduce-toggle");
+  stats.reduceMode ? tog.classList.add("on") : tog.classList.remove("on");
+  document.getElementById("reduce-mode-info").style.display = stats.reduceMode ? "block" : "none";
+});
+
+/* ── Timer options ── */
+function refreshTimerOpts() {
+  var dur = stats.urgeDuration || 120;
+  document.querySelectorAll(".timer-opt").forEach(function(btn){
+    var s = parseInt(btn.dataset.s);
+    if (s === dur) {
+      btn.style.borderColor = "var(--gold-d)";
+      btn.style.color = "var(--gold)";
+      btn.style.background = "var(--gold-dim)";
+    } else {
+      btn.style.borderColor = "";
+      btn.style.color = "";
+      btn.style.background = "";
+    }
+  });
+  var mins = Math.round(dur/60);
+  document.getElementById("timer-opt-note").textContent =
+    "Currently set to " + mins + " minute" + (mins!==1?"s":"") + ".";
+}
+
+document.querySelectorAll(".timer-opt").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    stats.urgeDuration = parseInt(btn.dataset.s);
+    saveStats();
+    refreshTimerOpts();
+  });
+});
+
+/* ── Reset cigarette data ── */
+document.getElementById("btn-reset-trigger").addEventListener("click", function(){
+  document.getElementById("reset-confirm-wrap").style.display = "block";
+});
+document.getElementById("btn-reset-cancel").addEventListener("click", function(){
+  document.getElementById("reset-confirm-wrap").style.display = "none";
+});
+document.getElementById("btn-reset-confirm").addEventListener("click", function(){
+  stats.dailyLog       = {};
+  stats.totalCigsSmoked = 0;
+  stats.totalGaveIn    = 0;
+  stats.smokeFreedays  = 0;
+  saveStats();
+  document.getElementById("reset-confirm-wrap").style.display = "none";
+  var btn = document.getElementById("btn-reset-trigger");
+  btn.textContent = "✓ Data cleared";
+  btn.style.color = "#7dd4a8";
+  setTimeout(function(){ btn.textContent = "⟳ Reset cigarette data"; btn.style.color = ""; }, 2500);
+});
+
+// Save
+document.getElementById("btn-save-anchor").addEventListener("click", ()=>{
+  stats.whyIQuit    = document.getElementById("why-textarea").value.trim();
+  stats.personalNote= document.getElementById("note-textarea").value.trim();
+  const bVal = parseInt(document.getElementById("baseline-input").value);
+  stats.baseline = isNaN(bVal) ? 0 : Math.max(0, bVal);
+  saveStats();
+
+  const btn = document.getElementById("btn-save-anchor");
+  btn.textContent="✓ Saved";
+  btn.classList.replace("btn-gold","btn-green");
+  setTimeout(()=>{ btn.textContent="Save"; btn.classList.replace("btn-green","btn-gold"); }, 2000);
+});
+
+document.getElementById("anchor-back").addEventListener("click", ()=>{ refreshHome(); showScreen("home"); });
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+// Ensure today exists in log
+getOrCreateDay(todayKey());
+refreshHome();
+</script>
+</body>
+</html>
