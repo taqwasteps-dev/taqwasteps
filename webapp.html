@@ -3138,12 +3138,59 @@ function startPTCountdown(){
 /* ══ NOTIFICATION SYSTEM ══════════════════════════════════════════ */
 var _notifTimers = [];
 
+var VAPID_PUB = 'BFFoHassgLR_Q7afVXI0eFq6Y5vEBPszPlgSNZSAy34bhal5LDTTYJ4QU4yfOVISswcRB1m3ke0cudQTSZPtYS0';
+var SB_PUSH_URL = 'https://aknmebznbzrbxzyfkjin.supabase.co/functions/v1/taqwasteps-push';
+
+function urlB64ToUint8(b64){
+  var pad='='.repeat((4-b64.length%4)%4);
+  var b=(b64+pad).replace(/-/g,'+').replace(/_/g,'/');
+  var raw=atob(b);var arr=new Uint8Array(raw.length);
+  for(var i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
+  return arr;
+}
+
+function registerSW(){
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)) return;
+  navigator.serviceWorker.register('/sw.js').then(function(reg){
+    console.log('TaqwaSteps SW registered');
+    window._swReg=reg;
+    if(Notification.permission==='granted') subscribePush(reg);
+  }).catch(function(e){console.warn('SW err:',e);});
+}
+
+function subscribePush(reg){
+  if(!reg){if(window._swReg)reg=window._swReg;else return;}
+  reg.pushManager.getSubscription().then(function(sub){
+    if(sub){saveSub(sub);return;}
+    reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64ToUint8(VAPID_PUB)})
+    .then(function(sub){saveSub(sub);showToast('Background notifications enabled! 🕌');})
+    .catch(function(e){console.warn('Sub err:',e);});
+  });
+}
+
+function saveSub(sub){
+  supabase.auth.getUser().then(function(res){
+    var uid=res&&res.data&&res.data.user?res.data.user.id:null;
+    if(!uid)return;
+    supabase.from('push_subscriptions').upsert(
+      {user_id:uid,subscription:JSON.stringify(sub),updated_at:new Date().toISOString()},
+      {onConflict:'user_id'}
+    ).then(function(r){if(r.error)console.warn('saveSub:',r.error.message);});
+  });
+}
+
 function requestNotifPermission(){
   if(!('Notification' in window)) return;
-  if(Notification.permission === 'default'){
+  if(Notification.permission==='granted'){
+    registerSW();
+    if(salahHanafi) scheduleNotifications();
+    return;
+  }
+  if(Notification.permission==='default'){
     Notification.requestPermission().then(function(p){
-      if(p === 'granted'){
-        showToast('Notifications enabled! We'll remind you for each Salah 🕌');
+      if(p==='granted'){
+        showToast('Notifications enabled! 🕌');
+        registerSW();
         if(salahHanafi) scheduleNotifications();
       }
     });
@@ -3203,7 +3250,7 @@ function scheduleNotifications(){
     var azanMs = (pMins - now) * 60000;
     if(azanMs > 0){
       var ADHANS = [
-        'When you hear the Adhān, say what the Mu'adhdhin says — Bukhari',
+        "When you hear the Adhan, say what the Muadhdhin says — Bukhari"adhdhin says — Bukhari',
         'Allah is calling you. Answer His call.',
         'Leave everything. Allah is Greatest — الله أكبر'
       ];
