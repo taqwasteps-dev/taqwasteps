@@ -1277,35 +1277,6 @@ var PRAYER_TIMES = {
   isha:   {end:24}
 };
 
-/* ══════ STORAGE ══════ */
-function ukey(k){ return 'tq_' + (currentUser ? currentUser.id : 'guest') + '_' + k; }
-function save(k,v){ try{ localStorage.setItem(ukey(k),JSON.stringify(v)); }catch(e){} }
-function load(k,def){ try{ var v=localStorage.getItem(ukey(k)); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
-function resetDailyIfNeeded() {
-  var lastDay = load('last_day','');
-  if (lastDay !== todayKey) {
-    // Archive yesterday BEFORE wiping — without this, tomorrow shows 0/5
-    if(lastDay){
-      var prev = load('prayers',{});
-      if(Object.keys(prev).length > 0){
-        var archKey = 'prayers_'+lastDay.replace(/ /g,'_');
-        if(!load(archKey, null)) save(archKey, prev);
-      }
-    }
-    save('prayers',{});
-    save('quran_pages',0);
-    save('dhikr_counts',{});
-    save('morning_checks',{});
-    save('night_checks',{});
-    save('kahf_checks',{});
-    save('morning_done',false);
-    save('night_done',false);
-    save('kahf_done',false);
-    save('dhikr_done_today',false);
-    save('last_day',todayKey);
-  }
-}
-
 /* ══════ SUPABASE CONFIG ══════ */
 var SUPABASE_URL      = 'https://aknmebznbzrbxzyfkjin.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrbm1lYnpuYnpyYnh6eWZramluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDgwMjQsImV4cCI6MjA5MTY4NDAyNH0.A7kvNjXZkS8eQxvI9226ufIUyUnhqTFK_heAAolTZMg';
@@ -3250,9 +3221,9 @@ function scheduleNotifications(){
     var azanMs = (pMins - now) * 60000;
     if(azanMs > 0){
       var ADHANS = [
-        "When you hear the Adhan, say what the Muadhdhin says — Bukhari"adhdhin says — Bukhari',
-        'Allah is calling you. Answer His call.',
-        'Leave everything. Allah is Greatest — الله أكبر'
+        "When you hear the Adhan, say what the Muadhdhin says",
+        "Allah is calling you. Answer His call.",
+        "Leave everything. Allah is Greatest"
       ];
       var t2 = setTimeout(function(){
         sendNotif(
