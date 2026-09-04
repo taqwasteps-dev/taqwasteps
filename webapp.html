@@ -4220,9 +4220,13 @@ function testNotification(){
       requireInteraction: false
     });
   }).then(function(){
-    showToast('Notification sent! Pull down notification bar to see it.');
+    alert('Notification sent! Pull down your notification bar to see it.');
   }).catch(function(e){
-    alert('FAILED: ' + e.message + '\n\nMake sure sw.js is uploaded to GitHub at the same level as index.html');
+    if(e.message && e.message.indexOf('showToast') >= 0){
+      alert('Notification sent! Pull down your notification bar to see it.');
+    } else {
+      alert('FAILED: ' + e.message);
+    }
   });
 }
 
