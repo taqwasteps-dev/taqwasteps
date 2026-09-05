@@ -4233,5 +4233,186 @@ function testNotification(){
 function showVisibleError(msg){ alert(msg); }
 </script>
 
+
+<!-- ══ IN-APP PRAYER NOTIFICATION POPUP ══ -->
+<div id="prayerPopup" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99998;padding:12px 14px;animation:slideDown .4s cubic-bezier(.4,0,.2,1);">
+  <div style="background:linear-gradient(135deg,#0d3d3d,#0a2e2e);border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:16px 18px;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 0 1px rgba(201,168,76,.1);display:flex;align-items:center;gap:14px;">
+    <!-- Icon -->
+    <div id="ppIcon" style="font-size:36px;flex-shrink:0;filter:drop-shadow(0 0 12px rgba(201,168,76,.8));">🕌</div>
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;color:rgba(201,168,76,.7);margin-bottom:2px;" id="ppLabel">PRAYER TIME</div>
+      <div style="font-family:'Cinzel',serif;font-size:16px;color:#e8c96a;letter-spacing:.08em;margin-bottom:2px;" id="ppTitle">Fajr</div>
+      <div style="font-size:12px;color:rgba(245,240,232,.65);line-height:1.4;" id="ppBody">Time to pray</div>
+    </div>
+    <!-- Close -->
+    <button onclick="closePrayerPopup()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:50%;width:32px;height:32px;color:rgba(245,240,232,.5);font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+</div>
+
+<style>
+@keyframes slideDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-100%)}}
+</style>
+
+
+<script>
+/* ══ IN-APP PRAYER NOTIFICATION SYSTEM ══ */
+
+// Detect if sound is enabled (tries a silent audio)
+function isSoundOn(callback){
+  try{
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // If context state is suspended (common on mobile), sound might be off
+    if(ctx.state === 'suspended'){
+      ctx.resume().then(function(){
+        callback(ctx.state === 'running');
+        ctx.close();
+      }).catch(function(){ callback(false); });
+    } else {
+      callback(ctx.state === 'running');
+      ctx.close();
+    }
+  } catch(e){ callback(false); }
+}
+
+// Speak Arabic text using SpeechSynthesis
+function speakArabic(text, times, delay){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var count = 0;
+  var pause = delay || 600;
+
+  function speakOne(){
+    if(count >= times) return;
+    var utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'ar-SA';
+    utt.rate = 0.75;
+    utt.pitch = 1.1;
+    utt.volume = 1.0;
+
+    // Try to find Arabic voice
+    var voices = window.speechSynthesis.getVoices();
+    var arVoice = voices.find(function(v){ return v.lang.indexOf('ar') === 0; });
+    if(arVoice) utt.voice = arVoice;
+
+    utt.onend = function(){
+      count++;
+      if(count < times) setTimeout(speakOne, pause);
+    };
+    utt.onerror = function(){
+      count++;
+      if(count < times) setTimeout(speakOne, pause);
+    };
+    window.speechSynthesis.speak(utt);
+  }
+  speakOne();
+}
+
+// Vibrate device based on type
+function vibrateDevice(type){
+  if(!navigator.vibrate) return;
+  if(type === 'azan')        navigator.vibrate([300,100,300,100,300,100,300,100,300]);
+  else if(type === 'iqamah') navigator.vibrate([600,200,600]);
+  else                       navigator.vibrate([200,150,200]);
+}
+
+// Main audio handler based on ringer mode
+function playPrayerAudio(type){
+  isSoundOn(function(soundOn){
+    if(soundOn){
+      // Sound mode: speak + vibrate
+      vibrateDevice(type);
+      if(type === 'azan'){
+        // Allahu Akbar x2
+        speakArabic('الله أكبر', 2, 800);
+      } else if(type === 'iqamah'){
+        // Allahu Akbar x4
+        speakArabic('الله أكبر', 4, 700);
+      } else if(type === 'dhikr'){
+        // Subhanallah x2
+        speakArabic('سبحان الله', 2, 800);
+      }
+    } else {
+      // Vibrate only (vibrate/silent mode)
+      vibrateDevice(type);
+      // Notification already shown — nothing else needed in silent mode
+    }
+  });
+}
+
+// Show in-app popup
+function showPrayerPopup(icon, label, title, body, type){
+  var popup = document.getElementById('prayerPopup');
+  if(!popup) return;
+
+  document.getElementById('ppIcon').textContent  = icon;
+  document.getElementById('ppLabel').textContent = label;
+  document.getElementById('ppTitle').textContent = title;
+  document.getElementById('ppBody').textContent  = body;
+
+  // Color accent based on type
+  var accent = type === 'azan' ? 'rgba(201,168,76,.4)' :
+               type === 'iqamah' ? 'rgba(100,200,100,.4)' :
+               'rgba(100,150,255,.4)';
+  popup.querySelector('div').style.borderColor = accent;
+
+  popup.style.display = 'block';
+  popup.style.animation = 'slideDown .4s cubic-bezier(.4,0,.2,1)';
+
+  // No auto-dismiss — user must close manually
+  if(window._ppTimer) clearTimeout(window._ppTimer);
+
+  // Sound + vibrate based on ringer mode
+  playPrayerAudio(type);
+}
+
+function closePrayerPopup(){
+  var popup = document.getElementById('prayerPopup');
+  if(!popup) return;
+  popup.style.animation = 'slideUp .3s ease forwards';
+  setTimeout(function(){ popup.style.display = 'none'; }, 300);
+  if(window._ppTimer) clearTimeout(window._ppTimer);
+}
+
+// Override sendNotif to ALSO show in-app popup
+var _origSendNotif = window.sendNotif || function(){};
+window.sendNotif = function(title, body){
+  // Determine type from title
+  var type = 'dhikr';
+  var icon = '📿';
+  var label = 'REMINDER';
+
+  if(title.indexOf('5 minutes') >= 0 || title.indexOf('in 5') >= 0){
+    type = 'prep'; icon = '⏰'; label = '5 MIN WARNING';
+  } else if(title.indexOf('Azan') >= 0){
+    type = 'azan'; icon = '🕌'; label = 'AZAN TIME';
+  } else if(title.indexOf('Iqamah') >= 0){
+    type = 'iqamah'; icon = '🕌'; label = 'IQAMAH TIME';
+  } else if(title.indexOf('Dhikr') >= 0 || title.indexOf('Post') >= 0){
+    type = 'dhikr'; icon = '📿'; label = 'DHIKR TIME';
+  } else if(title.indexOf('Test') >= 0){
+    type = 'azan'; icon = '✅'; label = 'TEST';
+  }
+
+  // Show in-app popup (works even when tab is in foreground)
+  showPrayerPopup(icon, label, title, body, type);
+
+  // Also send SW notification (for background)
+  if(Notification.permission === 'granted'){
+    if(window._swReg && window._swReg.showNotification){
+      window._swReg.showNotification(title, {
+        body: body,
+        icon: '/logo.png',
+        badge: '/logo.png',
+        requireInteraction: type === 'azan' || type === 'iqamah',
+        vibrate: [200,100,200]
+      }).catch(function(e){ console.warn('SW notif error:', e); });
+    }
+  }
+};
+/* ══ END IN-APP NOTIFICATION ══ */
+</script>
+
 </body>
 </html>
