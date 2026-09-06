@@ -531,7 +531,52 @@ a{text-decoration:none;color:inherit}
       <img class="topnav-logo" id="topnavLogo" src="" alt=""/>
       <span class="topnav-name">TAQWASTEPS</span>
     </div>
-    <div class="topnav-right">
+    
+        <!-- ══ NOTIFICATION SETTINGS ══ -->
+        <div style="margin-bottom:20px;">
+          <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.18em;color:rgba(201,168,76,.6);margin-bottom:12px;padding:0 2px;">SALAH REMINDERS</div>
+
+          <!-- Master toggle -->
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:16px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:14px;color:rgba(245,240,232,.85);">Salah Reminders</div>
+              <div id="notifStatusTxt" style="font-size:11px;color:rgba(245,240,232,.4);margin-top:2px;">Checking...</div>
+            </div>
+            <button onclick="toggleSalahReminders()" id="notifToggleBtn" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:50px;padding:8px 16px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:#c9a84c;cursor:pointer;">ENABLE</button>
+          </div>
+
+          <!-- Reminder timing -->
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:16px;padding:14px 16px;margin-bottom:8px;">
+            <div style="font-size:13px;color:rgba(245,240,232,.8);margin-bottom:10px;">Remind me before Azan</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;" id="leadTimeBtns">
+              <button onclick="setLeadTime(5)"  class="lead-btn active" data-mins="5"  style="padding:7px 14px;border-radius:50px;border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.12);color:#e8c96a;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;cursor:pointer;">5 MIN</button>
+              <button onclick="setLeadTime(10)" class="lead-btn"        data-mins="10" style="padding:7px 14px;border-radius:50px;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(245,240,232,.45);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;cursor:pointer;">10 MIN</button>
+              <button onclick="setLeadTime(15)" class="lead-btn"        data-mins="15" style="padding:7px 14px;border-radius:50px;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(245,240,232,.45);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;cursor:pointer;">15 MIN</button>
+              <button onclick="setLeadTime(20)" class="lead-btn"        data-mins="20" style="padding:7px 14px;border-radius:50px;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(245,240,232,.45);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.08em;cursor:pointer;">20 MIN</button>
+            </div>
+          </div>
+
+          <!-- Per-prayer toggles -->
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:16px;overflow:hidden;margin-bottom:8px;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px;color:rgba(245,240,232,.4);letter-spacing:.1em;font-family:'Cinzel',serif;">INDIVIDUAL PRAYERS</div>
+            <div id="prayerToggles">
+              <div onclick="togglePrayerNotif('Fajr')"    class="prayer-notif-row" data-prayer="Fajr"    style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);cursor:pointer;"><span style="font-size:13px;color:rgba(245,240,232,.8);">🌙 Fajr</span><span class="pn-dot enabled" style="width:10px;height:10px;border-radius:50%;background:#c9a84c;"></span></div>
+              <div onclick="togglePrayerNotif('Dhuhr')"   class="prayer-notif-row" data-prayer="Dhuhr"   style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);cursor:pointer;"><span style="font-size:13px;color:rgba(245,240,232,.8);">☀️ Dhuhr</span><span class="pn-dot enabled" style="width:10px;height:10px;border-radius:50%;background:#c9a84c;"></span></div>
+              <div onclick="togglePrayerNotif('Asr')"     class="prayer-notif-row" data-prayer="Asr"     style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);cursor:pointer;"><span style="font-size:13px;color:rgba(245,240,232,.8);">🌤️ Asr</span><span class="pn-dot enabled" style="width:10px;height:10px;border-radius:50%;background:#c9a84c;"></span></div>
+              <div onclick="togglePrayerNotif('Maghrib')" class="prayer-notif-row" data-prayer="Maghrib" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);cursor:pointer;"><span style="font-size:13px;color:rgba(245,240,232,.8);">🌅 Maghrib</span><span class="pn-dot enabled" style="width:10px;height:10px;border-radius:50%;background:#c9a84c;"></span></div>
+              <div onclick="togglePrayerNotif('Isha')"    class="prayer-notif-row" data-prayer="Isha"    style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;"><span style="font-size:13px;color:rgba(245,240,232,.8);">🌃 Isha</span><span class="pn-dot enabled" style="width:10px;height:10px;border-radius:50%;background:#c9a84c;"></span></div>
+            </div>
+          </div>
+
+          <!-- Test + disable -->
+          <div style="display:flex;gap:8px;">
+            <button onclick="testNotification()" style="flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:50px;padding:12px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:#c9a84c;cursor:pointer;">TEST</button>
+            <button onclick="disableAllReminders()" style="flex:1;background:rgba(255,50,50,.05);border:1px solid rgba(255,100,100,.15);border-radius:50px;padding:12px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:rgba(255,130,130,.5);cursor:pointer;">DISABLE ALL</button>
+          </div>
+        </div>
+        <!-- ══ END NOTIFICATION SETTINGS ══ -->
+
+        <div class="topnav-right">
       <span class="topnav-user" id="topnavUser"></span>
       <button class="signout-btn" id="signoutBtn">SIGN OUT</button>
     </div>
@@ -1651,10 +1696,15 @@ function loginUser(user){
 
   if(!salahTimesLoaded) initPrayerTimes();
 
-  // Request notification permission after login
+  // Show beautiful permission prompt instead of immediate request
   setTimeout(function(){
-    if(typeof requestNotifPermission === 'function') requestNotifPermission();
-  }, 1500);
+    if(Notification.permission === 'granted'){
+      registerSW();
+      if(window.salahHanafi) scheduleNotifications();
+    } else if(Notification.permission === 'default'){
+      showNotifOnboarding();
+    }
+  }, 2000);
 
   // Safety net #3: pull last 7 days from Supabase and fill any empty localStorage slots.
   // Handles: new device, cleared cache, browser reset, any edge case the local archive missed.
@@ -3879,89 +3929,178 @@ function saveSub(sub){
   ).then(function(r){ if(r.error) console.warn('saveSub:',r.error.message); });
 }
 
-function sendNotif(title, body){
-  if(Notification.permission !== 'granted') return;
-  // Chrome Android requires Service Worker showNotification
-  if(window._swReg && window._swReg.showNotification){
-    window._swReg.showNotification(title, {
-      body: body,
-      icon: '/logo.png',
-      badge: '/logo.png',
-      requireInteraction: true,
-      vibrate: [200, 100, 200]
-    }).catch(function(e){ console.warn('SW notif error:',e); });
-  } else if('Notification' in window){
-    // Fallback for desktop
-    try{ new Notification(title,{body:body,icon:'/logo.png'}); }
-    catch(e){ console.warn('Notif error:',e); }
+/* ══ TAQWASTEPS NOTIFICATION SYSTEM v2 ══ */
+
+// Per-prayer notification messages
+var SALAH_MESSAGES = {
+  Fajr: {
+    prep:   { title: 'TaqwaSteps', body: 'Fajr is approaching. Prepare yourself for Salah.' },
+    azan:   { title: 'TaqwaSteps', body: 'Fajr time. May Allah grant you khushu in your prayer.' },
+    dhikr:  { title: 'TaqwaSteps', body: 'Post-Fajr dhikr. Tasbih, Ayatul Kursi, morning adhkar.' }
+  },
+  Dhuhr: {
+    prep:   { title: 'TaqwaSteps', body: 'Dhuhr is approaching. Take a moment away from the dunya.' },
+    azan:   { title: 'TaqwaSteps', body: 'Dhuhr time. Pause and prepare for Salah.' },
+    dhikr:  { title: 'TaqwaSteps', body: 'Post-Dhuhr dhikr. Remember Allah after your prayer.' }
+  },
+  Asr: {
+    prep:   { title: 'TaqwaSteps', body: 'Asr is approaching. Protect your afternoon prayer.' },
+    azan:   { title: 'TaqwaSteps', body: 'Asr time. Do not let the day pass without your Salah.' },
+    dhikr:  { title: 'TaqwaSteps', body: 'Post-Asr dhikr. Evening adhkar time.' }
+  },
+  Maghrib: {
+    prep:   { title: 'TaqwaSteps', body: 'Maghrib is approaching. Pause. Make wudu. Stand before Allah.' },
+    azan:   { title: 'TaqwaSteps', body: 'Maghrib time. The sun has set — answer the call.' },
+    dhikr:  { title: 'TaqwaSteps', body: 'Post-Maghrib dhikr. Tasbih, Ayatul Kursi, evening adhkar.' }
+  },
+  Isha: {
+    prep:   { title: 'TaqwaSteps', body: "Isha is approaching. End your day with Salah." },
+    azan:   { title: 'TaqwaSteps', body: 'Isha time. End your day with remembrance of Allah.' },
+    dhikr:  { title: 'TaqwaSteps', body: 'Post-Isha dhikr. Complete your evening remembrance.' }
   }
+};
+
+// Get message for a prayer and type
+function getSalahMsg(prayerName, type){
+  var p = SALAH_MESSAGES[prayerName];
+  if(p && p[type]) return p[type];
+  return { title:'TaqwaSteps', body: prayerName + ' reminder' };
 }
 
-var _notifTimers=[];
+// Core notification sender — uses SW showNotification (Chrome Android compatible)
+function sendNotif(prayerName, type){
+  if(Notification.permission !== 'granted') return;
+  var msg = getSalahMsg(prayerName, type);
+
+  // Notify via SW (background + foreground)
+  navigator.serviceWorker.ready.then(function(reg){
+    var options = {
+      body: msg.body,
+      icon: '/logo.png',
+      badge: '/logo.png',
+      tag: 'taqwasteps-' + prayerName + '-' + type,
+      renotify: true,
+      requireInteraction: (type === 'azan' || type === 'iqamah'),
+      data: { prayer: prayerName, type: type, url: '/webapp.html' }
+    };
+
+    // Add actions where supported (Chrome desktop + some Android)
+    if('actions' in Notification.prototype){
+      options.actions = [
+        { action: 'pray', title: 'Pray Now' },
+        { action: 'snooze', title: 'Remind Later' }
+      ];
+    }
+
+    return reg.showNotification(msg.title, options);
+  }).catch(function(e){ console.warn('SW notif error:', e); });
+
+  // Also trigger in-app popup + sound/vibration
+  if(typeof showPrayerPopup === 'function'){
+    var icon = {Fajr:'🌙',Dhuhr:'☀️',Asr:'🌤️',Maghrib:'🌅',Isha:'🌃'}[prayerName] || '🕌';
+    showPrayerPopup(icon, prayerName.toUpperCase(), msg.title, msg.body, type);
+  }
+  if(typeof playPrayerAudio === 'function') playPrayerAudio(type);
+}
+
+// Backward-compatible sendNotif for masjid/legacy calls
+function sendNotifRaw(title, body){
+  if(Notification.permission !== 'granted') return;
+  navigator.serviceWorker.ready.then(function(reg){
+    return reg.showNotification(title, {
+      body: body, icon: '/logo.png', badge: '/logo.png',
+      requireInteraction: false
+    });
+  }).catch(function(e){ console.warn('Raw notif error:', e); });
+}
+
+// Schedule prayer notifications (called after prayer times loaded)
+var _notifTimers = [];
 function scheduleNotifications(){
-  if(!window.salahHanafi){
-    console.warn('TaqwaSteps: salahHanafi not loaded yet');
-    return;
-  }
-  if(Notification.permission!=='granted'){
-    console.warn('TaqwaSteps: permission not granted');
-    return;
-  }
+  if(!window.salahHanafi){ console.warn('TaqwaSteps: prayer times not loaded'); return; }
+  if(Notification.permission !== 'granted'){ console.warn('TaqwaSteps: permission not granted'); return; }
+
   _notifTimers.forEach(function(t){ clearTimeout(t); });
-  _notifTimers=[];
-  var now=ptNow();
-  console.log('TaqwaSteps: Scheduling notifications | now='+now+'min | SW='+!!(window._swReg));
-  var prayers=[
-    {name:'Fajr',    raw:salahHanafi.Fajr},
-    {name:'Dhuhr',   raw:salahHanafi.Dhuhr},
-    {name:'Asr',     raw:(salahMadhab==='shafi'&&salahShafi)?salahShafi.Asr:salahHanafi.Asr},
-    {name:'Maghrib', raw:salahHanafi.Maghrib},
-    {name:'Isha',    raw:salahHanafi.Isha}
+  _notifTimers = [];
+
+  var now  = ptNow();
+  var lead = (window._notifLeadMins || 5); // minutes before azan
+
+  var prayers = [
+    { name:'Fajr',    raw: salahHanafi.Fajr },
+    { name:'Dhuhr',   raw: salahHanafi.Dhuhr },
+    { name:'Asr',     raw: (salahMadhab==='shafi'&&salahShafi) ? salahShafi.Asr : salahHanafi.Asr },
+    { name:'Maghrib', raw: salahHanafi.Maghrib },
+    { name:'Isha',    raw: salahHanafi.Isha }
   ];
+
   prayers.forEach(function(p){
-    var mins=ptRaw2Mins(p.raw);
-    var prep=(mins-5-now)*60000;
-    var azan=(mins-now)*60000;
-    var dhikr=(mins+15-now)*60000;
-    console.log('TaqwaSteps: '+p.name+' | mins='+mins+' prep='+Math.round(prep/60000)+'min azan='+Math.round(azan/60000)+'min');
-    if(prep>0)  _notifTimers.push((function(n){ return setTimeout(function(){ sendNotif('TaqwaSteps — '+n+' in 5 minutes','Prepare for Salah. Make wudu and get ready.'); },prep); })(p.name));
-    if(azan>0)  _notifTimers.push((function(n){ return setTimeout(function(){ sendNotif('Azan — '+n+' Time!','Allah is calling you. Answer His call.'); },azan); })(p.name));
-    if(dhikr>0) _notifTimers.push((function(n){ return setTimeout(function(){ sendNotif('Post-'+n+' Dhikr','Tasbih e Fatima, Ayatul Kursi & Masnoon Adhkar'); },dhikr); })(p.name));
+    // Skip prayers disabled by user
+    if(window._disabledPrayers && window._disabledPrayers[p.name]) return;
+
+    var mins  = ptRaw2Mins(p.raw);
+    var prep  = (mins - lead - now) * 60000;
+    var azan  = (mins - now) * 60000;
+    var dhikr = (mins + 15 - now) * 60000;
+
+    console.log('TaqwaSteps:', p.name, '| prep:', Math.round(prep/60000), 'min | azan:', Math.round(azan/60000), 'min');
+
+    if(prep  > 0) _notifTimers.push((function(n){ return setTimeout(function(){ sendNotif(n,'prep');  }, prep);  })(p.name));
+    if(azan  > 0) _notifTimers.push((function(n){ return setTimeout(function(){ sendNotif(n,'azan');  }, azan);  })(p.name));
+    if(dhikr > 0) _notifTimers.push((function(n){ return setTimeout(function(){ sendNotif(n,'dhikr'); }, dhikr); })(p.name));
   });
-  console.log('TaqwaSteps: '+_notifTimers.length+' notifications scheduled');
+
+  console.log('TaqwaSteps:', _notifTimers.length, 'notifications scheduled');
+}
+
+// ── PERMISSION FLOW ────────────────────────────────────────────
+function showNotifOnboarding(){
+  // Don't show if already decided
+  if(Notification.permission !== 'default') return;
+  // Don't show if user dismissed before
+  if(localStorage.getItem('tq_notif_dismissed') === '1') return;
+  var modal = document.getElementById('notifOnboarding');
+  if(modal) modal.style.display = 'flex';
+}
+
+function dismissNotifOnboarding(){
+  var modal = document.getElementById('notifOnboarding');
+  if(modal) modal.style.display = 'none';
+  localStorage.setItem('tq_notif_dismissed', '1');
+}
+
+function enableSalahReminders(){
+  dismissNotifOnboarding();
+  Notification.requestPermission().then(function(p){
+    if(p === 'granted'){
+      registerSW();
+      setTimeout(function(){
+        navigator.serviceWorker.ready.then(function(reg){
+          return reg.showNotification('TaqwaSteps', {
+            body: 'Salah reminders are enabled. We will remind you before each prayer.',
+            icon: '/logo.png', badge: '/logo.png', requireInteraction: false
+          });
+        });
+        if(window.salahHanafi) scheduleNotifications();
+      }, 1500);
+    } else {
+      showToast('Enable notifications in browser site settings for Salah reminders.');
+    }
+  });
 }
 
 function requestNotifPermission(){
   if(!('Notification' in window)) return;
-  if(Notification.permission==='granted'){
+  if(Notification.permission === 'granted'){
     registerSW();
     if(window.salahHanafi) scheduleNotifications();
-    return;
-  }
-  if(Notification.permission==='default'){
-    Notification.requestPermission().then(function(p){
-      if(p==='granted'){
-        showToast('Notifications enabled! TaqwaSteps will remind you for each Salah');
-        registerSW();
-        if(window.salahHanafi) scheduleNotifications();
-        // Send instant test notification to confirm it works
-        setTimeout(function(){
-          if(window._swReg && window._swReg.showNotification){
-            window._swReg.showNotification('TaqwaSteps Enabled!', {
-              body: 'You will be notified before each Salah. JazakAllah Khair!',
-              icon: '/logo.png',
-              badge: '/logo.png'
-            });
-          }
-        }, 2000);
-      } else {
-        showToast('Enable notifications in browser settings to get Salah reminders');
-      }
-    });
+  } else if(Notification.permission === 'default'){
+    showNotifOnboarding();
   }
 }
 
 /* Notification permission requested in loginUser */
+
 
 /* ══ MOOD AFTER SALAH ══ */
 var moodData={
@@ -4194,38 +4333,32 @@ window.addEventListener('load', function(){
 
 function testNotification(){
   if(!('Notification' in window)){
-    alert('ERROR: Notifications not supported in this browser!');
+    alert('Notifications are not supported in this browser.');
     return;
   }
   if(Notification.permission === 'denied'){
-    alert('Notifications are BLOCKED for taqwasteps.in\n\nFix: Browser Settings > Site Settings > Notifications > Find taqwasteps.in > Set to Allow');
+    alert('Notifications are blocked.\n\nGo to: Browser Settings > Site Settings > taqwasteps.in > Notifications > Allow');
     return;
   }
   if(Notification.permission !== 'granted'){
-    Notification.requestPermission().then(function(p){
-      if(p === 'granted') testNotification();
-      else alert('Permission denied!');
-    });
-    return;
-  }
-  if(!('serviceWorker' in navigator)){
-    alert('Service Worker not supported! Try Chrome or Brave browser.');
+    enableSalahReminders();
     return;
   }
   navigator.serviceWorker.ready.then(function(reg){
-    console.log('SW ready scope:', reg.scope);
-    return reg.showNotification('TaqwaSteps Test', {
-      body: 'Alhamdulillah! Notifications are working. You will be reminded before each Salah.',
+    return reg.showNotification('TaqwaSteps', {
+      body: 'Salah reminders are enabled. We will remind you before each prayer.',
       icon: '/logo.png',
-      requireInteraction: false
+      badge: '/logo.png',
+      requireInteraction: false,
+      tag: 'taqwasteps-test'
     });
   }).then(function(){
-    alert('Notification sent! Pull down your notification bar to see it.');
+    if(typeof showToast === 'function') showToast('Test notification sent.');
   }).catch(function(e){
     if(e.message && e.message.indexOf('showToast') >= 0){
-      alert('Notification sent! Pull down your notification bar to see it.');
+      // showNotification succeeded, showToast failed — that is fine
     } else {
-      alert('FAILED: ' + e.message);
+      alert('Failed: ' + e.message + '\n\nEnsure sw.js is uploaded to GitHub root.');
     }
   });
 }
@@ -4412,6 +4545,127 @@ window.sendNotif = function(title, body){
   }
 };
 /* ══ END IN-APP NOTIFICATION ══ */
+</script>
+
+
+<!-- ══ NOTIFICATION ONBOARDING MODAL ══ -->
+<div id="notifOnboarding" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:99997;align-items:flex-end;justify-content:center;padding:0;">
+  <div style="background:#0a2e2e;border-radius:28px 28px 0 0;width:100%;max-width:560px;padding:32px 24px 48px;border-top:1px solid rgba(201,168,76,.2);">
+    <!-- Handle -->
+    <div style="width:36px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin:0 auto 28px;"></div>
+    <!-- Icon -->
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="width:64px;height:64px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:30px;">🕌</div>
+    </div>
+    <!-- Heading -->
+    <div style="font-family:'Cinzel',serif;font-size:20px;letter-spacing:.05em;color:#e8c96a;text-align:center;margin-bottom:10px;">Never miss your Salah.</div>
+    <!-- Description -->
+    <div style="font-size:14px;color:rgba(245,240,232,.65);text-align:center;line-height:1.75;margin-bottom:28px;max-width:340px;margin-left:auto;margin-right:auto;">TaqwaSteps can remind you before each Salah so you have time to prepare yourself.</div>
+    <!-- Primary button -->
+    <button onclick="enableSalahReminders()" style="width:100%;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#061a1a;border:none;padding:16px;border-radius:50px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.15em;font-weight:700;cursor:pointer;margin-bottom:12px;">ENABLE SALAH REMINDERS</button>
+    <!-- Secondary -->
+    <button onclick="dismissNotifOnboarding()" style="width:100%;background:transparent;border:none;padding:12px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:rgba(245,240,232,.3);cursor:pointer;">Maybe Later</button>
+  </div>
+</div>
+
+
+<script>
+/* ══ NOTIFICATION SETTINGS ══ */
+window._notifLeadMins    = parseInt(localStorage.getItem('tq_notif_lead') || '5');
+window._disabledPrayers  = JSON.parse(localStorage.getItem('tq_disabled_prayers') || '{}');
+
+function refreshNotifStatus(){
+  var statusEl = document.getElementById('notifStatusTxt');
+  var btnEl    = document.getElementById('notifToggleBtn');
+  if(!statusEl || !btnEl) return;
+
+  var p = typeof Notification !== 'undefined' ? Notification.permission : 'default';
+  if(p === 'granted'){
+    statusEl.textContent = 'Active — reminders enabled';
+    statusEl.style.color = 'rgba(100,200,100,.7)';
+    btnEl.textContent    = 'DISABLE';
+    btnEl.style.color    = 'rgba(255,130,130,.7)';
+    btnEl.style.borderColor = 'rgba(255,100,100,.3)';
+  } else if(p === 'denied'){
+    statusEl.textContent = 'Blocked in browser settings';
+    statusEl.style.color = 'rgba(255,130,130,.7)';
+    btnEl.textContent    = 'ENABLE';
+  } else {
+    statusEl.textContent = 'Not enabled yet';
+    statusEl.style.color = 'rgba(245,240,232,.4)';
+    btnEl.textContent    = 'ENABLE';
+  }
+
+  // Lead time buttons
+  var leadSaved = parseInt(localStorage.getItem('tq_notif_lead') || '5');
+  document.querySelectorAll('.lead-btn').forEach(function(btn){
+    var m = parseInt(btn.getAttribute('data-mins'));
+    var active = m === leadSaved;
+    btn.style.background   = active ? 'rgba(201,168,76,.12)' : 'transparent';
+    btn.style.borderColor  = active ? 'rgba(201,168,76,.3)' : 'rgba(255,255,255,.08)';
+    btn.style.color        = active ? '#e8c96a' : 'rgba(245,240,232,.45)';
+  });
+
+  // Prayer toggles
+  var disabled = JSON.parse(localStorage.getItem('tq_disabled_prayers') || '{}');
+  document.querySelectorAll('.prayer-notif-row').forEach(function(row){
+    var prayer = row.getAttribute('data-prayer');
+    var dot    = row.querySelector('.pn-dot');
+    var isOff  = disabled[prayer];
+    if(dot) dot.style.background = isOff ? 'rgba(255,255,255,.15)' : '#c9a84c';
+    row.style.opacity = isOff ? '0.45' : '1';
+  });
+}
+
+function toggleSalahReminders(){
+  var p = typeof Notification !== 'undefined' ? Notification.permission : 'default';
+  if(p === 'granted'){
+    disableAllReminders();
+  } else {
+    enableSalahReminders();
+  }
+  setTimeout(refreshNotifStatus, 500);
+}
+
+function setLeadTime(mins){
+  window._notifLeadMins = mins;
+  localStorage.setItem('tq_notif_lead', String(mins));
+  if(typeof scheduleNotifications === 'function') scheduleNotifications();
+  refreshNotifStatus();
+  if(typeof showToast === 'function') showToast('Reminder timing updated to ' + mins + ' min before Azan.');
+}
+
+function togglePrayerNotif(prayer){
+  var disabled = JSON.parse(localStorage.getItem('tq_disabled_prayers') || '{}');
+  disabled[prayer] = !disabled[prayer];
+  if(!disabled[prayer]) delete disabled[prayer];
+  localStorage.setItem('tq_disabled_prayers', JSON.stringify(disabled));
+  window._disabledPrayers = disabled;
+  if(typeof scheduleNotifications === 'function') scheduleNotifications();
+  refreshNotifStatus();
+}
+
+function disableAllReminders(){
+  _notifTimers && _notifTimers.forEach(function(t){ clearTimeout(t); });
+  if(typeof showToast === 'function') showToast('Salah reminders disabled.');
+  refreshNotifStatus();
+}
+
+// Listen for SW messages (notification click → open Salah tab)
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'OPEN_SALAH'){
+      if(typeof showScreen === 'function') showScreen('s-salah');
+    }
+  });
+}
+
+// Refresh status whenever profile tab is shown
+document.addEventListener('visibilitychange', function(){
+  if(!document.hidden) refreshNotifStatus();
+});
+setTimeout(refreshNotifStatus, 1000);
+/* ══ END NOTIFICATION SETTINGS ══ */
 </script>
 
 </body>
