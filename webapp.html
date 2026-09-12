@@ -4248,6 +4248,32 @@ function saveMasjidTimes(){
     }
   });
   localStorage.setItem('tq_masjid_times', JSON.stringify(times));
+
+  // Save to Supabase for server-side push notifications
+  if(window.supabase && window.currentUser){
+    var disabled = JSON.parse(localStorage.getItem('tq_disabled_prayers') || '{}');
+    var lead     = parseInt(localStorage.getItem('tq_notif_lead') || '5');
+    supabase.from('masjid_times').upsert({
+      user_id:       currentUser.id,
+      masjid_name:   times._name || '',
+      fajr_azan:     (times.fajr    && times.fajr.azan)    || null,
+      fajr_iqamah:   (times.fajr    && times.fajr.iqamah)  || null,
+      dhuhr_azan:    (times.dhuhr   && times.dhuhr.azan)   || null,
+      dhuhr_iqamah:  (times.dhuhr   && times.dhuhr.iqamah) || null,
+      asr_azan:      (times.asr     && times.asr.azan)     || null,
+      asr_iqamah:    (times.asr     && times.asr.iqamah)   || null,
+      maghrib_azan:  (times.maghrib && times.maghrib.azan)  || null,
+      maghrib_iqamah:(times.maghrib && times.maghrib.iqamah)|| null,
+      isha_azan:     (times.isha    && times.isha.azan)    || null,
+      isha_iqamah:   (times.isha    && times.isha.iqamah)  || null,
+      lead_mins:      lead,
+      disabled_prayers: disabled,
+      updated_at:    new Date().toISOString()
+    }, { onConflict: 'user_id' }).then(function(r){
+      if(r.error) console.warn('masjid_times save error:', r.error.message);
+      else console.log('TaqwaSteps: masjid times saved to Supabase!');
+    });
+  }
   var status = document.getElementById('masjidStatus');
   if(status) status.style.display = hasAny ? 'block' : 'none';
   // Reschedule notifications with new times
