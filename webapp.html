@@ -3930,8 +3930,8 @@ function subscribePush(reg){
 }
 
 function saveSub(sub){
-  if(!window.supabase || !window.currentUser) return;
-  supabase.from('push_subscriptions').upsert(
+  if(typeof sb === "undefined" || !currentUser) return;
+  sb.from('push_subscriptions').upsert(
     {user_id:currentUser.id, subscription:JSON.stringify(sub), updated_at:new Date().toISOString()},
     {onConflict:'user_id'}
   ).then(function(r){ if(r.error) console.warn('saveSub:',r.error.message); });
@@ -4250,10 +4250,10 @@ function saveMasjidTimes(){
   localStorage.setItem('tq_masjid_times', JSON.stringify(times));
 
   // Save to Supabase for server-side push notifications
-  if(window.supabase && window.currentUser){
+  if(typeof sb !== 'undefined' && currentUser){
     var disabled = JSON.parse(localStorage.getItem('tq_disabled_prayers') || '{}');
     var lead     = parseInt(localStorage.getItem('tq_notif_lead') || '5');
-    supabase.from('masjid_times').upsert({
+    sb.from('masjid_times').upsert({
       user_id:       currentUser.id,
       masjid_name:   times._name || '',
       fajr_azan:     (times.fajr    && times.fajr.azan)    || null,
