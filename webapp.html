@@ -1482,8 +1482,8 @@ var dhikrPromptShown = false;
 
 // Approximate prayer time windows (24h clock)
 var PRAYER_TIMES = {
-  fajr:   {end:7},
-  dhuhr:  {end:15},
+  fajr:   {end:6.30},
+  dhuhr:  {end:16},
   asr:    {end:18},
   maghrib:{end:20},
   isha:   {end:24}
@@ -3245,7 +3245,7 @@ function renderPrayerTimes(){
 
   // Derived times
   var ishraq = ptAddMins(H.Sunrise, 15);
-  var chast   = ptMid(H.Sunrise, H.Dhuhr);
+  var duha,chast   = ptMid(H.Sunrise, H.Dhuhr);
   var zawal   = ptAddMins(H.Dhuhr, -5);
   var lastThird = ptLastThird(H.Maghrib, H.Fajr);
 
@@ -3272,7 +3272,7 @@ function renderPrayerTimes(){
   html+=ptSec('🌅','SUNRISE & NAWAFIL');
   html+=ptCard('🌅','Sunrise','Fajr ends — Makrooh begins',ptFmt(H.Sunrise),false,true,false,false);
   html+=ptCard('☀️','Ishraq','~15 mins after sunrise',ptFmt(ishraq),false,true,false,false);
-  html+=ptCard('🌤️','Chasht (Duha)','Midway between sunrise and Zuhr',ptFmt(chast),false,true,false,false);
+  html+=ptCard('🌤️','Chasht / Duha)','Midway between sunrise and Zuhr',ptFmt(duha/chast),false,true,false,false);
   html+=ptCard('⚡','Zawal','~5 mins before Zuhr · Makrooh',ptFmt(zawal),false,false,false,false);
 
   /* ZUHR */
@@ -3378,7 +3378,7 @@ function getCurrentPrayerState(){
   var ishraq  =sunrise+15;
   var dhuhr   =ptRaw2Mins(H.Dhuhr);
   var zawal   =dhuhr-5;
-  var chast   =Math.floor((sunrise+dhuhr)/2);
+  var duha(chast) =Math.floor((sunrise+dhuhr)/2);
   var asrSrc  =(salahMadhab==='shafi'&&salahShafi)?salahShafi:H;
   var asr     =ptRaw2Mins(asrSrc.Asr);
   var maghrib =ptRaw2Mins(H.Maghrib);
@@ -3392,7 +3392,7 @@ function getCurrentPrayerState(){
   if(now>=fajr && now<sunrise)    return {state:'Fajr Time',  ico:'🌙', sub:'Pray Fajr now'};
   if(now>=sunrise && now<ishraq)  return {state:'Sunrise',    ico:'🌅', sub:'Makrooh — wait for Ishraq'};
   if(now>=ishraq && now<chast)    return {state:'Ishraq',     ico:'☀️', sub:'Nawafil time — pray Ishraq'};
-  if(now>=chast && now<zawal)     return {state:'Chasht (Duha)',ico:'🌤️',sub:'Nawafil — Duha prayer'};
+  if(now>=duha(chast) && now<zawal)     return {state:'Chasht / Duha',ico:'🌤️',sub:'Nawafil — Chast / Duha prayer'};
   if(now>=zawal && now<dhuhr)     return {state:'Zawal',      ico:'⚡', sub:'Makrooh — Zuhr starts soon'};
   if(now>=dhuhr && now<asr)       return {state:'Zuhr Time',  ico:'🕌', sub:'Pray Zuhr now'};
   if(now>=asr   && now<maghrib)   return {state:'Asr Time',   ico:'🌆', sub:'Pray Asr now'};
@@ -3442,7 +3442,7 @@ function updatePTCountdown(){
       {name:'Fajr',    mins:ptRaw2Mins(salahHanafi.Fajr),    raw:salahHanafi.Fajr},
       {name:'Sunrise', mins:_sr2,                             raw:salahHanafi.Sunrise},
       {name:'Ishraq',  mins:_ishraqMins,                     raw:_minsToRaw(_ishraqMins)},
-      {name:'Chasht',  mins:_chastMins,                      raw:_minsToRaw(_chastMins)},
+      {name:'Duha / Chasht',  mins:_duha/chastMins,                      raw:_minsToRaw(_duha/chastMins)},
       {name:'Zuhr',    mins:ptRaw2Mins(salahHanafi.Dhuhr),   raw:salahHanafi.Dhuhr},
       {name:'Asr',     mins:ptRaw2Mins(_asrRaw),             raw:_asrRaw},
       {name:'Maghrib', mins:ptRaw2Mins(salahHanafi.Maghrib), raw:salahHanafi.Maghrib},
